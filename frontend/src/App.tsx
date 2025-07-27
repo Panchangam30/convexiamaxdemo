@@ -78,11 +78,15 @@ const LoadingPage = ({ progress }: { progress: number }) => (
   </div>
 );
 
-const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, setActiveTab }: { 
+const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, setActiveTab, showModal, setShowModal, selectedDrug, setSelectedDrug }: { 
   showCompoundProfile: boolean, 
   setShowCompoundProfile: (show: boolean) => void,
   activeTab: string,
-  setActiveTab: (tab: string) => void
+  setActiveTab: (tab: string) => void,
+  showModal: boolean,
+  setShowModal: (show: boolean) => void,
+  selectedDrug: string,
+  setSelectedDrug: (drug: string) => void
 }) => (
   <div className="min-h-screen bg-gray-50">
     {/* Top Header */}
@@ -289,24 +293,30 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
 
     {activeTab === 'competitive-landscape' && (
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-6">Competitive Landscape</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold text-gray-900">Competitive Landscape</h2>
+          <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+          </svg>
+        </div>
         
         {/* Sub-navigation */}
-        <div className="bg-white border-b border-gray-200 mb-6">
-          <div className="flex items-center justify-between">
-            <nav className="flex space-x-8">
-              <div className="flex items-center py-4 border-b-2 border-blue-600">
-                <span className="text-blue-600 font-medium">Direct Competitors</span>
-              </div>
-              <div className="flex items-center py-4 text-gray-500 hover:text-gray-700">
-                <span>Deal Activity</span>
-              </div>
-              <div className="flex items-center py-4 text-gray-500 hover:text-gray-700">
-                <span>Pipeline Analysis</span>
-              </div>
-            </nav>
-            <button className="px-4 py-2 text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-50">
-              Sources (4)
+        <div className="bg-gray-100 rounded-md p-1 mb-6">
+          <div className="flex justify-between">
+            <button className="flex-1 px-4 py-2 text-sm font-medium bg-white border border-gray-300 text-gray-900 rounded-md shadow-sm mr-1">
+              Direct Competitors
+            </button>
+            <button className="flex-1 px-4 py-2 text-sm font-medium bg-transparent text-gray-600 rounded-md mx-1">
+              Deal Activity
+            </button>
+            <button className="flex-1 px-4 py-2 text-sm font-medium bg-transparent text-gray-600 rounded-md mx-1">
+              Pipeline Analysis
+            </button>
+            <button className="flex-1 px-4 py-2 text-sm font-medium bg-transparent text-gray-700 rounded-md flex items-center justify-center space-x-2 ml-1">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
+              </svg>
+              <span>Sources (4)</span>
             </button>
           </div>
         </div>
@@ -322,29 +332,39 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
               </div>
               <span className="px-3 py-1 text-xs font-medium bg-black text-white rounded-full">Approved</span>
             </div>
-            <div className="space-y-3 mb-6">
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600">MoA:</span>
-                <span className="text-sm font-medium text-gray-900">3rd-gen EGFR TKI</span>
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div className="space-y-3">
+                <div>
+                  <span className="text-sm text-gray-600">MoA:</span>
+                  <div className="text-sm font-medium text-gray-900">3rd-gen EGFR TKI</div>
+                </div>
+                <div>
+                  <span className="text-sm text-gray-600">Market Value:</span>
+                  <div className="text-sm font-bold text-green-600">$5.4B</div>
+                </div>
+                <div>
+                  <span className="text-sm text-gray-600">Latest Milestone:</span>
+                  <div className="text-sm font-medium text-gray-900">Approved 2015</div>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Target:</span>
-                <span className="text-sm font-medium text-gray-900">EGFR T790M</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Market Value:</span>
-                <span className="text-sm font-bold text-green-600">$5.4B</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Patients:</span>
-                <span className="text-sm font-medium text-gray-900">45K</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Latest Milestone:</span>
-                <span className="text-sm font-medium text-gray-900">Approved 2015</span>
+              <div className="space-y-3">
+                <div>
+                  <span className="text-sm text-gray-600">Target:</span>
+                  <div className="text-sm font-medium text-gray-900">EGFR T790M</div>
+                </div>
+                <div>
+                  <span className="text-sm text-gray-600">Patients:</span>
+                  <div className="text-sm font-medium text-gray-900">45K</div>
+                </div>
               </div>
             </div>
-            <button className="w-full px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
+            <button 
+              onClick={() => {
+                setSelectedDrug('Osimertinib')
+                setShowModal(true)
+              }}
+              className="w-full px-4 py-2 text-sm bg-transparent border border-gray-200 text-black hover:bg-gray-100 hover:text-black rounded-md transition-colors"
+            >
               View Detailed Analysis
             </button>
           </div>
@@ -358,29 +378,39 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
               </div>
               <span className="px-3 py-1 text-xs font-medium  border border-black text-black rounded-full">Development</span>
             </div>
-            <div className="space-y-3 mb-6">
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600">MoA:</span>
-                <span className="text-sm font-medium text-gray-900">3rd-gen EGFR TKI</span>
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div className="space-y-3">
+                <div>
+                  <span className="text-sm text-gray-600">MoA:</span>
+                  <div className="text-sm font-medium text-gray-900">3rd-gen EGFR TKI</div>
+                </div>
+                <div>
+                  <span className="text-sm text-gray-600">Market Value:</span>
+                  <div className="text-sm font-bold text-green-600">$1.2B</div>
+                </div>
+                <div>
+                  <span className="text-sm text-gray-600">Latest Milestone:</span>
+                  <div className="text-sm font-medium text-gray-900">Phase III</div>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Target:</span>
-                <span className="text-sm font-medium text-gray-900">EGFR T790M</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Market Value:</span>
-                <span className="text-sm font-bold text-green-600">$1.2B</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Patients:</span>
-                <span className="text-sm font-medium text-gray-900">12K</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Latest Milestone:</span>
-                <span className="text-sm font-medium text-gray-900">Phase III</span>
+              <div className="space-y-3">
+                <div>
+                  <span className="text-sm text-gray-600">Target:</span>
+                  <div className="text-sm font-medium text-gray-900">EGFR T790M</div>
+                </div>
+                <div>
+                  <span className="text-sm text-gray-600">Patients:</span>
+                  <div className="text-sm font-medium text-gray-900">12K</div>
+                </div>
               </div>
             </div>
-            <button className="w-full px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
+            <button 
+              onClick={() => {
+                setSelectedDrug('Lazertinib')
+                setShowModal(true)
+              }}
+              className="w-full px-4 py-2 text-sm bg-transparent border border-gray-200 text-black hover:bg-gray-100 hover:text-black rounded-md transition-colors"
+            >
               View Detailed Analysis
             </button>
           </div>
@@ -392,19 +422,41 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 <h3 className="text-xl font-bold text-gray-900">Furmonertinib</h3>
                 <p className="text-sm text-gray-600">Allist Pharma</p>
               </div>
-              <span className="px-3 py-1 text-xs font-medium bg-black text-white rounded-full">Regional</span>
+              <span className="px-3 py-1 text-xs font-medium bg-gray-200 text-black rounded-full">Regional</span>
             </div>
-            <div className="space-y-3 mb-6">
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600">MoA:</span>
-                <span className="text-sm font-medium text-gray-900">3rd-gen EGFR TKI</span>
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div className="space-y-3">
+                <div>
+                  <span className="text-sm text-gray-600">MoA:</span>
+                  <div className="text-sm font-medium text-gray-900">3rd-gen EGFR TKI</div>
+                </div>
+                <div>
+                  <span className="text-sm text-gray-600">Market Value:</span>
+                  <div className="text-sm font-bold text-green-600">$800M</div>
+                </div>
+                <div>
+                  <span className="text-sm text-gray-600">Latest Milestone:</span>
+                  <div className="text-sm font-medium text-gray-900">Approved China</div>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Target:</span>
-                <span className="text-sm font-medium text-gray-900">EGFR T790M</span>
+              <div className="space-y-3">
+                <div>
+                  <span className="text-sm text-gray-600">Target:</span>
+                  <div className="text-sm font-medium text-gray-900">EGFR T790M</div>
+                </div>
+                <div>
+                  <span className="text-sm text-gray-600">Patients:</span>
+                  <div className="text-sm font-medium text-gray-900">8K</div>
+                </div>
               </div>
             </div>
-            <button className="w-full px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
+            <button 
+              onClick={() => {
+                setSelectedDrug('Furmonertinib')
+                setShowModal(true)
+              }}
+              className="w-full px-4 py-2 text-sm bg-transparent border border-gray-200 text-black hover:bg-gray-100 hover:text-black rounded-md transition-colors"
+            >
               View Detailed Analysis
             </button>
           </div>
@@ -416,21 +468,171 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 <h3 className="text-xl font-bold text-gray-900">Nazartinib</h3>
                 <p className="text-sm text-gray-600">Novartis</p>
               </div>
-              <span className="px-3 py-1 text-xs font-medium bg-black text-white rounded-full">Development</span>
+              <span className="px-3 py-1 text-xs font-medium border border-black text-black rounded-full">Development</span>
             </div>
-            <div className="space-y-3 mb-6">
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600">MoA:</span>
-                <span className="text-sm font-medium text-gray-900">Pan-HER TKI</span>
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div className="space-y-3">
+                <div>
+                  <span className="text-sm text-gray-600">MoA:</span>
+                  <div className="text-sm font-medium text-gray-900">Pan-HER TKI</div>
+                </div>
+                <div>
+                  <span className="text-sm text-gray-600">Market Value:</span>
+                  <div className="text-sm font-bold text-green-600">TBD</div>
+                </div>
+                <div>
+                  <span className="text-sm text-gray-600">Latest Milestone:</span>
+                  <div className="text-sm font-medium text-gray-900">Phase II</div>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Target:</span>
-                <span className="text-sm font-medium text-gray-900">EGFR/HER2</span>
+              <div className="space-y-3">
+                <div>
+                  <span className="text-sm text-gray-600">Target:</span>
+                  <div className="text-sm font-medium text-gray-900">EGFR/HER2</div>
+                </div>
+                <div>
+                  <span className="text-sm text-gray-600">Patients:</span>
+                  <div className="text-sm font-medium text-gray-900">TBD</div>
+                </div>
               </div>
             </div>
-            <button className="w-full px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
+            <button 
+              onClick={() => {
+                setSelectedDrug('Nazartinib')
+                setShowModal(true)
+              }}
+              className="w-full px-4 py-2 text-sm bg-transparent border border-gray-200 text-black hover:bg-gray-100 hover:text-black rounded-md transition-colors"
+            >
               View Detailed Analysis
             </button>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* Modal */}
+    {showModal && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+          {/* Modal Header */}
+          <div className="flex justify-between items-start p-6 border-b border-gray-200">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h2 className="text-xl font-bold text-gray-900">{selectedDrug} - Competitive Intelligence</h2>
+              </div>
+              <p className="text-sm text-gray-600">
+                Comprehensive analysis of {selectedDrug === 'Osimertinib' ? 'AstraZeneca' : 
+                selectedDrug === 'Lazertinib' ? 'Yuhan/Janssen' : 
+                selectedDrug === 'Furmonertinib' ? 'Allist Pharma' : 'Novartis'}'s {selectedDrug}.
+              </p>
+            </div>
+            <button 
+              onClick={() => setShowModal(false)}
+              className="text-gray-400 hover:text-gray-600"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Modal Navigation */}
+          <div className="px-6 py-4 border-b border-gray-200">
+            <div className="flex space-x-8">
+              <button className="text-blue-600 border-b-2 border-blue-600 pb-2 font-medium">
+                Overview
+              </button>
+              <button className="text-gray-500 hover:text-gray-700">
+                Trial Data
+              </button>
+              <button className="text-gray-500 hover:text-gray-700">
+                Differentiators
+              </button>
+              <button className="text-gray-500 hover:text-gray-700">
+                Deal Terms
+              </button>
+            </div>
+          </div>
+
+          {/* Modal Content */}
+          <div className="p-6">
+            <div className="grid grid-cols-2 gap-8 mb-8">
+              {/* Market Position */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Market Position</h3>
+                <div className="space-y-3">
+                  <div>
+                    <span className="text-sm text-gray-600">Market Value:</span>
+                    <div className="text-sm font-bold text-green-600">
+                      {selectedDrug === 'Osimertinib' ? '$5.4B' : 
+                       selectedDrug === 'Lazertinib' ? '$1.2B' : 
+                       selectedDrug === 'Furmonertinib' ? '$800M' : 'TBD'}
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Patient Base:</span>
+                    <div className="text-sm font-medium text-gray-900">
+                      {selectedDrug === 'Osimertinib' ? '45K' : 
+                       selectedDrug === 'Lazertinib' ? '12K' : 
+                       selectedDrug === 'Furmonertinib' ? '8K' : 'TBD'}
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Status:</span>
+                    <div className="text-sm font-medium text-gray-900">
+                      {selectedDrug === 'Osimertinib' ? 'approved' : 
+                       selectedDrug === 'Lazertinib' ? 'development' : 
+                       selectedDrug === 'Furmonertinib' ? 'approved' : 'development'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Mechanism */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Mechanism</h3>
+                <div className="space-y-3">
+                  <div>
+                    <span className="text-sm text-gray-600">MoA:</span>
+                    <div className="text-sm font-medium text-gray-900">
+                      {selectedDrug === 'Nazartinib' ? 'Pan-HER TKI' : '3rd-gen EGFR TKI'}
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Target:</span>
+                    <div className="text-sm font-medium text-gray-900">
+                      {selectedDrug === 'Nazartinib' ? 'EGFR/HER2' : 'EGFR T790M'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Data Sources */}
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Data Sources</h3>
+              <div className="flex space-x-4">
+                <button className="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
+                  Clarivate Cortellis
+                </button>
+                <button className="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-md transition-colors flex items-center space-x-2">
+                  <span>ClinicalTrials.gov</span>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </button>
+                <button className="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
+                  {selectedDrug === 'Osimertinib' ? 'AstraZeneca 10-K' : 
+                   selectedDrug === 'Lazertinib' ? 'Yuhan/Janssen 10-K' : 
+                   selectedDrug === 'Furmonertinib' ? 'Allist Pharma 10-K' : 'Novartis 10-K'}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -465,6 +667,8 @@ function App() {
   const [modalityOpen, setModalityOpen] = useState(false)
   const [phaseOpen, setPhaseOpen] = useState(false)
   const [routeOpen, setRouteOpen] = useState(false)
+  const [showModal, setShowModal] = useState(false)
+  const [selectedDrug, setSelectedDrug] = useState('')
 
   // Animate progress when loading
   useEffect(() => {
@@ -581,7 +785,16 @@ function App() {
   }
 
   if (showResults) {
-    return <ResultsPage showCompoundProfile={showCompoundProfile} setShowCompoundProfile={setShowCompoundProfile} activeTab={activeTab} setActiveTab={setActiveTab} />
+    return <ResultsPage 
+      showCompoundProfile={showCompoundProfile} 
+      setShowCompoundProfile={setShowCompoundProfile} 
+      activeTab={activeTab} 
+      setActiveTab={setActiveTab}
+      showModal={showModal}
+      setShowModal={setShowModal}
+      selectedDrug={selectedDrug}
+      setSelectedDrug={setSelectedDrug}
+    />
   }
 
   return (
