@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ComposedChart } from 'recharts'
 import { LuPill } from "react-icons/lu";
 import { LuTarget } from "react-icons/lu";
 import { LuMicroscope } from "react-icons/lu";
@@ -78,7 +79,7 @@ const LoadingPage = ({ progress }: { progress: number }) => (
   </div>
 );
 
-const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, setActiveTab, showModal, setShowModal, selectedDrug, setSelectedDrug, modalTab, setModalTab, activeSubTab, setActiveSubTab, showPipelineModal, setShowPipelineModal, showSourcesModal, setShowSourcesModal }: { 
+const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, setActiveTab, showModal, setShowModal, selectedDrug, setSelectedDrug, modalTab, setModalTab, activeSubTab, setActiveSubTab, showPipelineModal, setShowPipelineModal, showSourcesModal, setShowSourcesModal, showCompetitiveLandscape, setShowCompetitiveLandscape }: { 
   showCompoundProfile: boolean, 
   setShowCompoundProfile: (show: boolean) => void,
   activeTab: string,
@@ -94,7 +95,9 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
   showPipelineModal: boolean,
   setShowPipelineModal: (show: boolean) => void,
   showSourcesModal: boolean,
-  setShowSourcesModal: (show: boolean) => void
+  setShowSourcesModal: (show: boolean) => void,
+  showCompetitiveLandscape: boolean,
+  setShowCompetitiveLandscape: (show: boolean) => void
 }) => (
   <div className="min-h-screen bg-gray-50">
     {/* Top Header */}
@@ -154,9 +157,12 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
             <LuChartColumn className="w-5 h-5 mr-2 text-gray-500" />
             <span className={`font-medium ${activeTab === 'competitive-landscape' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}>Competitive Landscape</span>
           </div>
-          <div className="flex items-center py-4 text-gray-500 hover:text-gray-700 whitespace-nowrap">
-            <LuTrendingUp className="w-5 h-5 mr-2" />
-            Market Size
+          <div 
+            className={`flex items-center py-4 border-b-2 whitespace-nowrap cursor-pointer ${activeTab === 'market-size' ? 'border-blue-600' : 'border-transparent'}`}
+            onClick={() => setActiveTab('market-size')}
+          >
+            <LuTrendingUp className="w-5 h-5 mr-2 text-gray-500" />
+            <span className={`font-medium ${activeTab === 'market-size' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}>Market Size</span>
           </div>
           <div className="flex items-center py-4 text-gray-500 hover:text-gray-700 whitespace-nowrap">
             <LuDollarSign className="w-5 h-5 mr-2" />
@@ -303,13 +309,26 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
       <div className="px-6 py-8 mx-auto max-w-7xl">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold text-gray-900">Competitive Landscape</h2>
-          <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-          </svg>
+          <button 
+            onClick={() => setShowCompetitiveLandscape(!showCompetitiveLandscape)}
+            className="p-2 transition-colors rounded-full hover:bg-gray-100"
+          >
+            {showCompetitiveLandscape ? (
+              <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+              </svg>
+            ) : (
+              <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            )}
+          </button>
         </div>
         
-        {/* Sub-navigation */}
-        <div className="flex items-center mb-6">
+        {showCompetitiveLandscape && (
+          <>
+            {/* Sub-navigation */}
+            <div className="flex items-center mb-6">
           <div className="flex-1 p-1 mr-2 bg-gray-100 rounded-md">
             <div className="flex">
               <button 
@@ -830,6 +849,8 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
               </div>
             </div>
           </div>
+        )}
+          </>
         )}
       </div>
     )}
@@ -1388,6 +1409,264 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
       </div>
     )}
 
+    {activeTab === 'market-size' && (
+      <div className="px-6 py-8 mx-auto max-w-7xl">
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-3xl font-bold text-gray-900">Market Size & Growth</h2>
+          <button className="p-2 transition-colors rounded-full hover:bg-gray-100">
+            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+          {/* Top Section */}
+          <div className="flex items-start justify-between mb-8">
+            <div className="flex-1">
+              <div className="flex items-center mb-2">
+                <h3 className="text-lg font-bold text-gray-900">Market Size Index</h3>
+                <svg className="w-4 h-4 ml-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <button className="ml-2 text-sm text-blue-600 hover:text-blue-800">View Details</button>
+              </div>
+              <p className="text-sm text-gray-600">Overall market attractiveness score</p>
+            </div>
+            <div className="text-right">
+              <div className="mb-1 text-3xl font-bold text-green-600">78%</div>
+              <div className="mb-3 text-sm font-medium text-gray-900">High Potential</div>
+              <button className="flex items-center px-3 py-2 text-sm font-medium border border-black rounded-md text-blac hover:bg-gray-200">
+                <LuDatabase className="w-4 h-4 mr-2" />
+                Sources (4)
+              </button>
+            </div>
+          </div>
+
+          {/* Bottom Section - Four Key Metrics */}
+          <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
+            {/* Peak Sales Estimate */}
+            <div className="text-center">
+              <div className="flex items-center justify-center mb-2">
+                <div className="text-2xl font-bold text-blue-600">$2.51B</div>
+                <svg className="w-4 h-4 ml-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <button className="ml-2 text-sm text-blue-600 hover:text-blue-800">View Details</button>
+              </div>
+              <div className="text-sm font-medium text-gray-900">Peak Sales Estimate</div>
+            </div>
+
+            {/* CAGR (Specific Value) */}
+            <div className="text-center">
+              <div className="flex items-center justify-center mb-2">
+                <div className="text-2xl font-bold text-green-600">8.2%</div>
+                <svg className="w-4 h-4 ml-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <button className="ml-2 text-sm text-blue-600 hover:text-blue-800">View Details</button>
+              </div>
+              <div className="text-sm font-medium text-gray-900">CAGR</div>
+            </div>
+
+            {/* CAGR (Range) */}
+            <div className="text-center">
+              <div className="mb-2 text-2xl font-bold text-purple-600">8-12%</div>
+              <div className="text-sm font-medium text-gray-900">CAGR</div>
+            </div>
+
+            {/* Peak Share */}
+            <div className="text-center">
+              <div className="mb-2 text-2xl font-bold text-orange-600">27%</div>
+              <div className="text-sm font-medium text-gray-900">Peak Share</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Market Growth Projection and Key Market Assumptions */}
+        <div className="grid grid-cols-1 gap-6 mt-8 lg:grid-cols-2">
+          {/* Left Panel: Market Growth Projection */}
+          <div className="border rounded-lg shadow-sm bg-card text-card-foreground">
+            <div className="flex flex-col space-y-1.5 p-6">
+              <div className="text-2xl font-semibold leading-none tracking-tight">Market Growth Projection</div>
+              <div className="text-sm text-muted-foreground">Market size and penetration trends 2024-2030</div>
+            </div>
+            <div className="p-6 pt-0">
+              <div 
+                data-chart="chart-market-growth" 
+                className="flex aspect-video justify-center text-xs [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-none [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-sector]:outline-none [&_.recharts-surface]:outline-none h-[300px]"
+              >
+                <style>
+                  {`
+                    [data-chart=chart-market-growth] {
+                      --color-marketSize: #e76e50;
+                      --color-cagr: #10b981;
+                      --color-penetration: #1f2937;
+                    }
+                    
+                    .dark [data-chart=chart-market-growth] {
+                      --color-marketSize: #e76e50;
+                      --color-cagr: #10b981;
+                      --color-penetration: #1f2937;
+                    }
+                  `}
+                </style>
+                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                  <ComposedChart
+                    data={[
+                      { year: '2024', marketSize: 1506, penetration: 12 },
+                      { year: '2025', marketSize: 1750, penetration: 15 },
+                      { year: '2026', marketSize: 2000, penetration: 18 },
+                      { year: '2027', marketSize: 2250, penetration: 21 },
+                      { year: '2028', marketSize: 2500, penetration: 24 },
+                      { year: '2029', marketSize: 2750, penetration: 27 },
+                      { year: '2030', marketSize: 2750, penetration: 27 }
+                    ]}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
+                    <XAxis 
+                      dataKey="year" 
+                      stroke="#666"
+                      tick={{ fill: '#666', fontSize: 12 }}
+                    />
+                    <YAxis 
+                      yAxisId="left"
+                      stroke="#666"
+                      tick={{ fill: '#666', fontSize: 12 }}
+                      domain={[0, 3000]}
+                      ticks={[0, 750, 1500, 2250, 3000]}
+                    />
+                    <YAxis 
+                      yAxisId="right"
+                      orientation="right"
+                      stroke="#666"
+                      tick={{ fill: '#666', fontSize: 12 }}
+                      domain={[0, 28]}
+                      ticks={[0, 7, 14, 21, 28]}
+                    />
+                    <Tooltip
+                      content={({ active, payload, label }) => {
+                        if (active && payload && payload.length) {
+                          return (
+                            <div className="grid min-w-[8rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl">
+                              <div className="font-medium">{label}</div>
+                              <div className="grid gap-1.5">
+                                <div className="flex w-full flex-wrap gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-muted-foreground items-center">
+                                  <div className="shrink-0 rounded-[2px] border-[--color-border] bg-[--color-bg] h-2.5 w-2.5" style={{'--color-bg': 'var(--color-marketSize)', '--color-border': 'var(--color-marketSize)'} as React.CSSProperties}></div>
+                                  <div className="flex items-center justify-between flex-1 leading-none">
+                                    <div className="grid gap-1.5">
+                                      <span className="text-muted-foreground">Market Size ($M)</span>
+                                    </div>
+                                    <span className="font-mono font-medium tabular-nums text-foreground">{payload[0]?.value}</span>
+                                  </div>
+                                </div>
+                                <div className="flex w-full flex-wrap gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-muted-foreground items-center">
+                                  <div className="shrink-0 rounded-[2px] border-[--color-border] bg-[--color-bg] h-2.5 w-2.5" style={{'--color-bg': 'var(--color-penetration)', '--color-border': 'var(--color-penetration)'} as React.CSSProperties}></div>
+                                  <div className="flex items-center justify-between flex-1 leading-none">
+                                    <div className="grid gap-1.5">
+                                      <span className="text-muted-foreground">Penetration (%)</span>
+                                    </div>
+                                    <span className="font-mono font-medium tabular-nums text-foreground">{payload[1]?.value}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
+                    <Bar 
+                      yAxisId="left"
+                      dataKey="marketSize" 
+                      fill="var(--color-marketSize)"
+                      radius={0}
+                    />
+                    <Line 
+                      yAxisId="right"
+                      type="monotone" 
+                      dataKey="penetration" 
+                      stroke="var(--color-penetration)" 
+                      strokeWidth={2}
+                      fill="none"
+                      dot={{ 
+                        fill: '#fff', 
+                        stroke: 'var(--color-penetration)', 
+                        strokeWidth: 2, 
+                        r: 3 
+                      }}
+                    />
+                  </ComposedChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Panel: Key Market Assumptions */}
+          <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <h3 className="mb-4 text-lg font-bold text-gray-900">Key Market Assumptions</h3>
+            
+            <div className="space-y-4">
+              {/* Pricing (Annual) */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-gray-700">Pricing (Annual)</span>
+                  <span className="text-sm font-bold text-gray-900">$100K/patient</span>
+                </div>
+                <div className="w-full h-2 bg-gray-200 rounded-full">
+                  <div className="h-2 bg-black rounded-full" style={{width: '95%'}}></div>
+                </div>
+              </div>
+
+              {/* Peak Penetration */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-gray-700">Peak Penetration</span>
+                  <span className="text-sm font-bold text-gray-900">27%</span>
+                </div>
+                <div className="w-full h-2 bg-gray-200 rounded-full">
+                  <div className="h-2 bg-black rounded-full" style={{width: '27%'}}></div>
+                </div>
+              </div>
+
+              {/* Unmet Need Index */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-gray-700">Unmet Need Index</span>
+                  <span className="text-sm font-bold text-gray-900">8.5/10</span>
+                </div>
+                <div className="w-full h-2 bg-gray-200 rounded-full">
+                  <div className="h-2 bg-black rounded-full" style={{width: '85%'}}></div>
+                </div>
+              </div>
+
+              {/* Patient Population */}
+              <div>
+                <div className="mb-2">
+                  <span className="text-sm font-medium text-gray-700">Patient Population</span>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">US</span>
+                    <span className="text-sm font-bold text-gray-900">12,500 patients</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">EU5</span>
+                    <span className="text-sm font-bold text-gray-900">8,200 patients</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Other</span>
+                    <span className="text-sm font-bold text-gray-900">5,300 patients</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+
     {/* Pipeline Crowding Analysis Modal */}
     {showPipelineModal && (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowPipelineModal(false)}>
@@ -1521,6 +1800,7 @@ function App() {
   const [activeSubTab, setActiveSubTab] = useState('direct-competitors')
   const [showPipelineModal, setShowPipelineModal] = useState(false)
   const [showSourcesModal, setShowSourcesModal] = useState(false)
+  const [showCompetitiveLandscape, setShowCompetitiveLandscape] = useState(true)
 
   // Animate progress when loading
   useEffect(() => {
@@ -1654,6 +1934,8 @@ function App() {
       setShowPipelineModal={setShowPipelineModal}
       showSourcesModal={showSourcesModal}
       setShowSourcesModal={setShowSourcesModal}
+      showCompetitiveLandscape={showCompetitiveLandscape}
+      setShowCompetitiveLandscape={setShowCompetitiveLandscape}
     />
   }
 
