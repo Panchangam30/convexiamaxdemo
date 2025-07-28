@@ -79,7 +79,7 @@ const LoadingPage = ({ progress }: { progress: number }) => (
   </div>
 );
 
-const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, setActiveTab, showModal, setShowModal, selectedDrug, setSelectedDrug, modalTab, setModalTab, activeSubTab, setActiveSubTab, showPipelineModal, setShowPipelineModal, showSourcesModal, setShowSourcesModal, showCompetitiveLandscape, setShowCompetitiveLandscape }: { 
+const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, setActiveTab, showModal, setShowModal, selectedDrug, setSelectedDrug, modalTab, setModalTab, activeSubTab, setActiveSubTab, showPipelineModal, setShowPipelineModal, showSourcesModal, setShowSourcesModal, showCompetitiveLandscape, setShowCompetitiveLandscape, showMarketSizeModal, setShowMarketSizeModal, showPeakSalesModal, setShowPeakSalesModal, showCAGRModal, setShowCAGRModal, showMarketSourcesModal, setShowMarketSourcesModal, isMarketSizeExpanded, setIsMarketSizeExpanded }: { 
   showCompoundProfile: boolean, 
   setShowCompoundProfile: (show: boolean) => void,
   activeTab: string,
@@ -97,7 +97,17 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
   showSourcesModal: boolean,
   setShowSourcesModal: (show: boolean) => void,
   showCompetitiveLandscape: boolean,
-  setShowCompetitiveLandscape: (show: boolean) => void
+  setShowCompetitiveLandscape: (show: boolean) => void,
+  showMarketSizeModal: boolean,
+  setShowMarketSizeModal: (show: boolean) => void,
+  showPeakSalesModal: boolean,
+  setShowPeakSalesModal: (show: boolean) => void,
+  showCAGRModal: boolean,
+  setShowCAGRModal: (show: boolean) => void,
+  showMarketSourcesModal: boolean,
+  setShowMarketSourcesModal: (show: boolean) => void,
+  isMarketSizeExpanded: boolean,
+  setIsMarketSizeExpanded: (expanded: boolean) => void
 }) => (
   <div className="min-h-screen bg-gray-50">
     {/* Top Header */}
@@ -1411,16 +1421,19 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
 
     {activeTab === 'market-size' && (
       <div className="px-6 py-8 mx-auto max-w-7xl">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-3xl font-bold text-gray-900">Market Size & Growth</h2>
-          <button className="p-2 transition-colors rounded-full hover:bg-gray-100">
-            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-            </svg>
-          </button>
-        </div>
+                        <div className="flex items-center justify-between mb-8">
+                  <h2 className="text-3xl font-bold text-gray-900">Market Size & Growth</h2>
+                  <button 
+                    onClick={() => setIsMarketSizeExpanded(!isMarketSizeExpanded)}
+                    className="p-2 transition-colors rounded-full hover:bg-gray-100"
+                  >
+                    <svg className={`w-6 h-6 text-gray-600 transition-transform ${isMarketSizeExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                    </svg>
+                  </button>
+                                </div>
 
-        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
           {/* Top Section */}
           <div className="flex items-start justify-between mb-8">
             <div className="flex-1">
@@ -1429,17 +1442,25 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 <svg className="w-4 h-4 ml-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <button className="ml-2 text-sm text-blue-600 hover:text-blue-800">View Details</button>
+                <button 
+                  onClick={() => setShowMarketSizeModal(true)}
+                  className="ml-2 text-sm text-blue-600 hover:text-blue-800"
+                >
+                  View Details
+                </button>
               </div>
               <p className="text-sm text-gray-600">Overall market attractiveness score</p>
             </div>
             <div className="text-right">
               <div className="mb-1 text-3xl font-bold text-green-600">78%</div>
               <div className="mb-3 text-sm font-medium text-gray-900">High Potential</div>
-              <button className="flex items-center px-3 py-2 text-sm font-medium border border-black rounded-md text-blac hover:bg-gray-200">
-                <LuDatabase className="w-4 h-4 mr-2" />
-                Sources (4)
-              </button>
+                                    <button 
+                        onClick={() => setShowMarketSourcesModal(true)}
+                        className="flex items-center px-3 py-2 text-sm font-medium border border-black rounded-md text-blac hover:bg-gray-200"
+                      >
+                        <LuDatabase className="w-4 h-4 mr-2" />
+                        Sources (4)
+                      </button>
             </div>
           </div>
 
@@ -1452,7 +1473,12 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 <svg className="w-4 h-4 ml-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <button className="ml-2 text-sm text-blue-600 hover:text-blue-800">View Details</button>
+                <button 
+                  onClick={() => setShowPeakSalesModal(true)}
+                  className="ml-2 text-sm text-blue-600 hover:text-blue-800"
+                >
+                  View Details
+                </button>
               </div>
               <div className="text-sm font-medium text-gray-900">Peak Sales Estimate</div>
             </div>
@@ -1464,7 +1490,12 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 <svg className="w-4 h-4 ml-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <button className="ml-2 text-sm text-blue-600 hover:text-blue-800">View Details</button>
+                <button 
+                  onClick={() => setShowCAGRModal(true)}
+                  className="ml-2 text-sm text-blue-600 hover:text-blue-800"
+                >
+                  View Details
+                </button>
               </div>
               <div className="text-sm font-medium text-gray-900">CAGR</div>
             </div>
@@ -1486,7 +1517,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
         {/* Market Growth Projection and Key Market Assumptions */}
         <div className="grid grid-cols-1 gap-6 mt-8 lg:grid-cols-2">
           {/* Left Panel: Market Growth Projection */}
-          <div className="border rounded-lg shadow-sm bg-card text-card-foreground">
+          <div className="bg-white rounded-lg shadow-sm">
             <div className="flex flex-col space-y-1.5 p-6">
               <div className="text-2xl font-semibold leading-none tracking-tight">Market Growth Projection</div>
               <div className="text-sm text-muted-foreground">Market size and penetration trends 2024-2030</div>
@@ -1514,17 +1545,29 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                   <ComposedChart
                     data={[
-                      { year: '2024', marketSize: 1506, penetration: 12 },
-                      { year: '2025', marketSize: 1750, penetration: 15 },
+                      { year: '2024', marketSize: 1500, penetration: 12 },
+                      { year: '2025', marketSize: 1700, penetration: 15 },
                       { year: '2026', marketSize: 2000, penetration: 18 },
-                      { year: '2027', marketSize: 2250, penetration: 21 },
-                      { year: '2028', marketSize: 2500, penetration: 24 },
-                      { year: '2029', marketSize: 2750, penetration: 27 },
-                      { year: '2030', marketSize: 2750, penetration: 27 }
+                      { year: '2027', marketSize: 2200, penetration: 21 },
+                      { year: '2028', marketSize: 2350, penetration: 24 },
+                      { year: '2029', marketSize: 2700, penetration: 27 },
+                      { year: '2030', marketSize: 2850, penetration: 27 }
                     ]}
                     margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                   >
-                    <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
+                    <CartesianGrid 
+                      horizontal={true}
+                      vertical={false}
+                      stroke="#ccc"
+                      strokeWidth={1}
+                    />
+                    <CartesianGrid 
+                      horizontal={false}
+                      vertical={true}
+                      strokeDasharray="3 3"
+                      stroke="#ccc"
+                      strokeWidth={1}
+                    />
                     <XAxis 
                       dataKey="year" 
                       stroke="#666"
@@ -1549,14 +1592,17 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                       content={({ active, payload, label }) => {
                         if (active && payload && payload.length) {
                           return (
-                            <div className="grid min-w-[8rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl">
+                                                         <div className="grid min-w-[8rem] items-start gap-1.5 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs shadow-xl">
                               <div className="font-medium">{label}</div>
                               <div className="grid gap-1.5">
                                 <div className="flex w-full flex-wrap gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-muted-foreground items-center">
                                   <div className="shrink-0 rounded-[2px] border-[--color-border] bg-[--color-bg] h-2.5 w-2.5" style={{'--color-bg': 'var(--color-marketSize)', '--color-border': 'var(--color-marketSize)'} as React.CSSProperties}></div>
                                   <div className="flex items-center justify-between flex-1 leading-none">
                                     <div className="grid gap-1.5">
-                                      <span className="text-muted-foreground">Market Size ($M)</span>
+                                      <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-sm bg-[#e76e50]"></div>
+                                        <span className="text-muted-foreground">Market Size ($M)</span>
+                                      </div>
                                     </div>
                                     <span className="font-mono font-medium tabular-nums text-foreground">{payload[0]?.value}</span>
                                   </div>
@@ -1565,7 +1611,10 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                                   <div className="shrink-0 rounded-[2px] border-[--color-border] bg-[--color-bg] h-2.5 w-2.5" style={{'--color-bg': 'var(--color-penetration)', '--color-border': 'var(--color-penetration)'} as React.CSSProperties}></div>
                                   <div className="flex items-center justify-between flex-1 leading-none">
                                     <div className="grid gap-1.5">
-                                      <span className="text-muted-foreground">Penetration (%)</span>
+                                      <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-sm bg-[#1f2937]"></div>
+                                        <span className="text-muted-foreground">Penetration (%)</span>
+                                      </div>
                                     </div>
                                     <span className="font-mono font-medium tabular-nums text-foreground">{payload[1]?.value}</span>
                                   </div>
@@ -1660,6 +1709,447 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                     <span className="text-sm font-bold text-gray-900">5,300 patients</span>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Market Growth Drivers */}
+        <div className="mt-8">
+          <div className="p-6 bg-white rounded-lg shadow-sm">
+            <h3 className="mb-6 text-lg font-bold text-gray-900">Market Growth Drivers</h3>
+            
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+              {/* Positive Drivers */}
+              <div>
+                <h4 className="mb-3 font-semibold text-gray-900">Positive Drivers</h4>
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <div className="flex-shrink-0 w-2 h-2 mt-2 mr-3 bg-green-500 rounded-full"></div>
+                    <span className="text-sm text-gray-700">Increasing EGFR testing rates</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="flex-shrink-0 w-2 h-2 mt-2 mr-3 bg-green-500 rounded-full"></div>
+                    <span className="text-sm text-gray-700">Earlier diagnosis and treatment</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="flex-shrink-0 w-2 h-2 mt-2 mr-3 bg-green-500 rounded-full"></div>
+                    <span className="text-sm text-gray-700">Expanding treatment guidelines</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="flex-shrink-0 w-2 h-2 mt-2 mr-3 bg-green-500 rounded-full"></div>
+                    <span className="text-sm text-gray-700">Improved patient outcomes</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Risk Factors */}
+              <div>
+                <h4 className="mb-3 font-semibold text-gray-900">Risk Factors</h4>
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <div className="flex-shrink-0 w-2 h-2 mt-2 mr-3 bg-red-500 rounded-full"></div>
+                    <span className="text-sm text-gray-700">Competitive pressure on pricing</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="flex-shrink-0 w-2 h-2 mt-2 mr-3 bg-red-500 rounded-full"></div>
+                    <span className="text-sm text-gray-700">Biosimilar entry timeline</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="flex-shrink-0 w-2 h-2 mt-2 mr-3 bg-red-500 rounded-full"></div>
+                    <span className="text-sm text-gray-700">Regulatory approval delays</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="flex-shrink-0 w-2 h-2 mt-2 mr-3 bg-red-500 rounded-full"></div>
+                    <span className="text-sm text-gray-700">Market access challenges</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Key Uncertainties */}
+              <div>
+                <h4 className="mb-3 font-semibold text-gray-900">Key Uncertainties</h4>
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <div className="flex-shrink-0 w-2 h-2 mt-2 mr-3 bg-yellow-500 rounded-full"></div>
+                    <span className="text-sm text-gray-700">Combination therapy adoption</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="flex-shrink-0 w-2 h-2 mt-2 mr-3 bg-yellow-500 rounded-full"></div>
+                    <span className="text-sm text-gray-700">Emerging resistance patterns</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="flex-shrink-0 w-2 h-2 mt-2 mr-3 bg-yellow-500 rounded-full"></div>
+                    <span className="text-sm text-gray-700">Healthcare policy changes</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="flex-shrink-0 w-2 h-2 mt-2 mr-3 bg-yellow-500 rounded-full"></div>
+                    <span className="text-sm text-gray-700">Novel modality disruption</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* Market Size Index Modal */}
+    {showMarketSizeModal && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowMarketSizeModal(false)}>
+        <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+          {/* Modal Content */}
+          <div className="p-6">
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center space-x-3">
+                  <h2 className="text-xl font-bold text-gray-900">Market Size Index</h2>
+                  <span className="px-2 py-0.5 text-sm font-medium text-black bg-transparent border border-black rounded-full">78%</span>
+                </div>
+                <button 
+                  onClick={() => setShowMarketSizeModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <p className="text-sm text-gray-600">
+                Detailed breakdown of assumptions, methodology, and sources
+              </p>
+            </div>
+
+            {/* Key Assumptions */}
+            <div className="mb-6">
+              <h3 className="mb-3 text-lg font-semibold text-gray-900">Key Assumptions</h3>
+              <ul className="space-y-2 text-sm text-gray-700">
+                <li className="flex items-start">
+                  <svg className="w-4 h-4 mr-2 mt-0.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                  Peak market penetration of 27% based on comparable TKI launches
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-4 h-4 mr-2 mt-0.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                  Annual pricing of $100K aligned with current SOC
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-4 h-4 mr-2 mt-0.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                  Patient population growth of 3-5% annually
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-4 h-4 mr-2 mt-0.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                  Treatment duration of 18 months median
+                </li>
+              </ul>
+            </div>
+
+            {/* Calculation Method */}
+            <div className="mb-6">
+              <h3 className="mb-3 text-lg font-semibold text-gray-900">Calculation Method</h3>
+              <div className="p-4 rounded-lg bg-gray-50">
+                <p className="font-mono text-sm text-gray-700">
+                  Index = (Peak Sales Potential × Market Access × Competitive Position) / 100
+                </p>
+              </div>
+            </div>
+
+            {/* AI-Generated Estimate */}
+            <div className="mb-6">
+              <h3 className="mb-3 text-lg font-semibold text-gray-900">AI-Generated Estimate</h3>
+              <div className="p-4 border border-blue-200 rounded-lg bg-blue-50">
+                <p className="text-sm text-blue-700">
+                  Generated using fuzzy matching against 15 comparable EGFR TKI launches, weighted by indication overlap and competitive landscape similarity
+                </p>
+              </div>
+            </div>
+
+            {/* Data Sources */}
+            <div>
+              <h3 className="mb-3 text-lg font-semibold text-gray-900">Data Sources</h3>
+              <div className="space-y-3">
+                <button 
+                  onClick={() => window.open('https://www.evaluate.com/', '_blank')}
+                  className="flex items-center w-full p-3 text-sm transition-colors bg-transparent border border-gray-200 rounded-lg hover:bg-gray-50"
+                >
+                  <span className="px-2 py-1 mr-3 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">Database</span>
+                  <span className="flex-1 text-left text-gray-700">EvaluatePharma</span>
+                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </button>
+                <button 
+                  onClick={() => window.open('https://www.iqvia.com/', '_blank')}
+                  className="flex items-center w-full p-3 text-sm transition-colors bg-transparent border border-gray-200 rounded-lg hover:bg-gray-50"
+                >
+                  <span className="px-2 py-1 mr-3 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">Database</span>
+                  <span className="flex-1 text-left text-gray-700">IQVIA Market Research</span>
+                </button>
+                <button className="flex items-center w-full p-3 text-sm transition-colors bg-transparent border border-gray-200 rounded-lg hover:bg-gray-50">
+                  <span className="px-2 py-1 mr-3 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">Manual Input</span>
+                  <span className="flex-1 text-left text-gray-700">Internal Analysis</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* Peak Sales Estimate Modal */}
+    {showPeakSalesModal && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowPeakSalesModal(false)}>
+        <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+          {/* Modal Content */}
+          <div className="p-6">
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center space-x-3">
+                  <h2 className="text-xl font-bold text-gray-900">Peak Sales Estimate</h2>
+                  <span className="px-2 py-0.5 text-sm font-medium text-black bg-transparent border border-black rounded-full">2.51 B USD</span>
+                </div>
+                <button 
+                  onClick={() => setShowPeakSalesModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <p className="text-sm text-gray-600">
+                Detailed breakdown of assumptions, methodology, and sources
+              </p>
+            </div>
+
+            {/* Key Assumptions */}
+            <div className="mb-6">
+              <h3 className="mb-3 text-lg font-semibold text-gray-900">Key Assumptions</h3>
+              <ul className="space-y-2 text-sm text-gray-700">
+                <li className="flex items-start">
+                  <svg className="w-4 h-4 mr-2 mt-0.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                  Peak market share of 27% in year 4-5
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-4 h-4 mr-2 mt-0.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                  Blended global pricing of $156K annually
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-4 h-4 mr-2 mt-0.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                  Patient population of 26K at peak
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-4 h-4 mr-2 mt-0.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                  Treatment persistence rate of 85%
+                </li>
+              </ul>
+            </div>
+
+            {/* Calculation Method */}
+            <div className="mb-6">
+              <h3 className="mb-3 text-lg font-semibold text-gray-900">Calculation Method</h3>
+              <div className="p-4 rounded-lg bg-gray-50">
+                <p className="font-mono text-sm text-gray-700">
+                  Peak Sales = Patient Population × Market Share × Annual Price × Persistence Rate
+                </p>
+              </div>
+            </div>
+
+            {/* Data Sources */}
+            <div>
+              <h3 className="mb-3 text-lg font-semibold text-gray-900">Data Sources</h3>
+              <div className="space-y-3">
+                <button 
+                  onClick={() => window.open('https://www.evaluate.com/', '_blank')}
+                  className="flex items-center w-full p-3 text-sm transition-colors bg-transparent border border-gray-200 rounded-lg hover:bg-gray-50"
+                >
+                  <span className="px-2 py-1 mr-3 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">Database</span>
+                  <span className="flex-1 text-left text-gray-700">EvaluatePharma</span>
+                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </button>
+                <button 
+                  onClick={() => window.open('https://www.iqvia.com/', '_blank')}
+                  className="flex items-center w-full p-3 text-sm transition-colors bg-transparent border border-gray-200 rounded-lg hover:bg-gray-50"
+                >
+                  <span className="px-2 py-1 mr-3 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">Database</span>
+                  <span className="flex-1 text-left text-gray-700">IQVIA Market Research</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* CAGR Modal */}
+    {showCAGRModal && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowCAGRModal(false)}>
+        <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+          {/* Modal Content */}
+          <div className="p-6">
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center space-x-3">
+                  <h2 className="text-xl font-bold text-gray-900">CAGR</h2>
+                  <span className="px-2 py-0.5 text-sm font-medium text-black bg-transparent border border-black rounded-full">8.2%</span>
+                </div>
+                <button 
+                  onClick={() => setShowCAGRModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <p className="text-sm text-gray-600">
+                Detailed breakdown of assumptions, methodology, and sources
+              </p>
+            </div>
+
+            {/* Key Assumptions */}
+            <div className="mb-6">
+              <h3 className="mb-3 text-lg font-semibold text-gray-900">Key Assumptions</h3>
+              <ul className="space-y-2 text-sm text-gray-700">
+                <li className="flex items-start">
+                  <svg className="w-4 h-4 mr-2 mt-0.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                  CAGR of 8.2% from 2024 to 2029
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-4 h-4 mr-2 mt-0.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                  Based on historical TKI market growth
+                </li>
+              </ul>
+            </div>
+
+            {/* Calculation Method */}
+            <div className="mb-6">
+              <h3 className="mb-3 text-lg font-semibold text-gray-900">Calculation Method</h3>
+              <div className="p-4 rounded-lg bg-gray-50">
+                <p className="font-mono text-sm text-gray-700">
+                  CAGR = (End Value / Start Value)^(1 / Number of Years) - 1
+                </p>
+              </div>
+            </div>
+
+            {/* Data Sources */}
+            <div>
+              <h3 className="mb-3 text-lg font-semibold text-gray-900">Data Sources</h3>
+              <div className="space-y-3">
+                <button 
+                  onClick={() => window.open('https://www.evaluate.com/', '_blank')}
+                  className="flex items-center w-full p-3 text-sm transition-colors bg-transparent border border-gray-200 rounded-lg hover:bg-gray-50"
+                >
+                  <span className="px-2 py-1 mr-3 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">Database</span>
+                  <span className="flex-1 text-left text-gray-700">EvaluatePharma</span>
+                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </button>
+                <button 
+                  onClick={() => window.open('https://www.iqvia.com/', '_blank')}
+                  className="flex items-center w-full p-3 text-sm transition-colors bg-transparent border border-gray-200 rounded-lg hover:bg-gray-50"
+                >
+                  <span className="px-2 py-1 mr-3 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">Database</span>
+                  <span className="flex-1 text-left text-gray-700">IQVIA Market Research</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* Market Sources Sidebar Modal */}
+    {showMarketSourcesModal && (
+      <div className="fixed inset-0 z-50 flex items-center justify-end bg-black/50" onClick={() => setShowMarketSourcesModal(false)}>
+        <div className="h-full overflow-y-auto bg-white shadow-xl w-96" onClick={(e) => e.stopPropagation()}>
+          {/* Modal Content */}
+          <div className="p-6">
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-xl font-bold text-gray-900">Data Sources</h2>
+                <button 
+                  onClick={() => setShowMarketSourcesModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <p className="text-sm text-gray-600">
+                Sources used for Market Size & Growth analysis.
+              </p>
+            </div>
+
+            {/* Data Sources List */}
+            <div className="space-y-4">
+              {/* EvaluatePharma */}
+              <div className="p-4 bg-white border border-gray-200 rounded-lg">
+                <div className="flex items-start justify-between mb-2">
+                  <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">Database</span>
+                  <button 
+                    onClick={() => window.open('https://www.evaluate.com/', '_blank')}
+                    className="text-sm text-blue-600 hover:text-blue-800"
+                  >
+                    View Source
+                  </button>
+                </div>
+                <h3 className="mb-1 font-semibold text-gray-900">EvaluatePharma</h3>
+                <p className="mb-2 text-sm text-gray-600">Market sizing and competitive intelligence</p>
+                <p className="text-xs text-gray-500">Updated: Dec 2024</p>
+              </div>
+
+              {/* IQVIA Market Research */}
+              <div className="p-4 bg-white border border-gray-200 rounded-lg">
+                <div className="flex items-start justify-between mb-2">
+                  <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">Database</span>
+                </div>
+                <h3 className="mb-1 font-semibold text-gray-900">IQVIA Market Research</h3>
+                <p className="mb-2 text-sm text-gray-600">Patient population and treatment patterns</p>
+                <p className="text-xs text-gray-500">Updated: Nov 2024</p>
+              </div>
+
+              {/* Internal Analysis */}
+              <div className="p-4 bg-white border border-gray-200 rounded-lg">
+                <div className="flex items-start justify-between mb-2">
+                  <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">Manual Input</span>
+                </div>
+                <h3 className="mb-1 font-semibold text-gray-900">Internal Analysis</h3>
+                <p className="mb-2 text-sm text-gray-600">Company-specific market assumptions and pricing strategy</p>
+                <p className="text-xs text-gray-500">Updated: Current</p>
+              </div>
+
+              {/* AI Market Model */}
+              <div className="p-4 bg-white border border-gray-200 rounded-lg">
+                <div className="flex items-start justify-between mb-2">
+                  <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">AI Generated</span>
+                </div>
+                <h3 className="mb-1 font-semibold text-gray-900">AI Market Model</h3>
+                <p className="mb-2 text-sm text-gray-600">Machine learning-based market projections using comparable asset analysis</p>
+                <p className="text-xs text-gray-500">Updated: Current</p>
               </div>
             </div>
           </div>
@@ -1801,6 +2291,11 @@ function App() {
   const [showPipelineModal, setShowPipelineModal] = useState(false)
   const [showSourcesModal, setShowSourcesModal] = useState(false)
   const [showCompetitiveLandscape, setShowCompetitiveLandscape] = useState(true)
+  const [showMarketSizeModal, setShowMarketSizeModal] = useState(false)
+  const [showPeakSalesModal, setShowPeakSalesModal] = useState(false)
+  const [showCAGRModal, setShowCAGRModal] = useState(false)
+  const [showMarketSourcesModal, setShowMarketSourcesModal] = useState(false)
+  const [isMarketSizeExpanded, setIsMarketSizeExpanded] = useState(true)
 
   // Animate progress when loading
   useEffect(() => {
@@ -1917,26 +2412,36 @@ function App() {
   }
 
   if (showResults) {
-    return <ResultsPage 
-      showCompoundProfile={showCompoundProfile} 
-      setShowCompoundProfile={setShowCompoundProfile} 
-      activeTab={activeTab} 
-      setActiveTab={setActiveTab}
-      showModal={showModal}
-      setShowModal={setShowModal}
-      selectedDrug={selectedDrug}
-      setSelectedDrug={setSelectedDrug}
-      modalTab={modalTab}
-      setModalTab={setModalTab}
-      activeSubTab={activeSubTab}
-      setActiveSubTab={setActiveSubTab}
-      showPipelineModal={showPipelineModal}
-      setShowPipelineModal={setShowPipelineModal}
-      showSourcesModal={showSourcesModal}
-      setShowSourcesModal={setShowSourcesModal}
-      showCompetitiveLandscape={showCompetitiveLandscape}
-      setShowCompetitiveLandscape={setShowCompetitiveLandscape}
-    />
+    return         <ResultsPage 
+          showCompoundProfile={showCompoundProfile}
+          setShowCompoundProfile={setShowCompoundProfile}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          showModal={showModal}
+          setShowModal={setShowModal}
+          selectedDrug={selectedDrug}
+          setSelectedDrug={setSelectedDrug}
+          modalTab={modalTab}
+          setModalTab={setModalTab}
+          activeSubTab={activeSubTab}
+          setActiveSubTab={setActiveSubTab}
+          showPipelineModal={showPipelineModal}
+          setShowPipelineModal={setShowPipelineModal}
+          showSourcesModal={showSourcesModal}
+          setShowSourcesModal={setShowSourcesModal}
+          showCompetitiveLandscape={showCompetitiveLandscape}
+          setShowCompetitiveLandscape={setShowCompetitiveLandscape}
+          showMarketSizeModal={showMarketSizeModal}
+          setShowMarketSizeModal={setShowMarketSizeModal}
+          showPeakSalesModal={showPeakSalesModal}
+          setShowPeakSalesModal={setShowPeakSalesModal}
+          showCAGRModal={showCAGRModal}
+          setShowCAGRModal={setShowCAGRModal}
+          showMarketSourcesModal={showMarketSourcesModal}
+          setShowMarketSourcesModal={setShowMarketSourcesModal}
+          isMarketSizeExpanded={isMarketSizeExpanded}
+          setIsMarketSizeExpanded={setIsMarketSizeExpanded}
+        />
   }
 
   return (
