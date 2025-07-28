@@ -78,7 +78,7 @@ const LoadingPage = ({ progress }: { progress: number }) => (
   </div>
 );
 
-const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, setActiveTab, showModal, setShowModal, selectedDrug, setSelectedDrug }: { 
+const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, setActiveTab, showModal, setShowModal, selectedDrug, setSelectedDrug, modalTab, setModalTab }: { 
   showCompoundProfile: boolean, 
   setShowCompoundProfile: (show: boolean) => void,
   activeTab: string,
@@ -86,7 +86,9 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
   showModal: boolean,
   setShowModal: (show: boolean) => void,
   selectedDrug: string,
-  setSelectedDrug: (drug: string) => void
+  setSelectedDrug: (drug: string) => void,
+  modalTab: string,
+  setModalTab: (tab: string) => void
 }) => (
   <div className="min-h-screen bg-gray-50">
     {/* Top Header */}
@@ -512,17 +514,13 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
 
     {/* Modal */}
     {showModal && (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="fixed inset-0 bg-black bg-opacity-15 flex items-center justify-center z-50">
         <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
           {/* Modal Header */}
-          <div className="flex justify-between items-start p-6 border-b border-gray-200">
+          <div className="flex justify-between items-start p-6">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
+                <LuTarget className="w-6 h-6 text-black" />
                 <h2 className="text-xl font-bold text-gray-900">{selectedDrug} - Competitive Intelligence</h2>
               </div>
               <p className="text-sm text-gray-600">
@@ -542,28 +540,60 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
           </div>
 
           {/* Modal Navigation */}
-          <div className="px-6 py-4 border-b border-gray-200">
-            <div className="flex space-x-8">
-              <button className="text-blue-600 border-b-2 border-blue-600 pb-2 font-medium">
-                Overview
-              </button>
-              <button className="text-gray-500 hover:text-gray-700">
-                Trial Data
-              </button>
-              <button className="text-gray-500 hover:text-gray-700">
-                Differentiators
-              </button>
-              <button className="text-gray-500 hover:text-gray-700">
-                Deal Terms
-              </button>
+          <div className="px-6 py-4">
+            <div className="bg-gray-100 rounded-md p-1">
+              <div className="flex justify-between">
+                <button 
+                  onClick={() => setModalTab('overview')}
+                  className={`flex-1 px-4 py-2 text-sm font-medium rounded-md mr-1 ${
+                    modalTab === 'overview' 
+                      ? 'bg-white text-gray-900 shadow-sm' 
+                      : 'bg-transparent text-gray-600'
+                  }`}
+                >
+                  Overview
+                </button>
+                <button 
+                  onClick={() => setModalTab('trial-data')}
+                  className={`flex-1 px-4 py-2 text-sm font-medium rounded-md mx-1 ${
+                    modalTab === 'trial-data' 
+                      ? 'bg-white text-gray-900 shadow-sm' 
+                      : 'bg-transparent text-gray-600'
+                  }`}
+                >
+                  Trial Data
+                </button>
+                <button 
+                  onClick={() => setModalTab('differentiators')}
+                  className={`flex-1 px-4 py-2 text-sm font-medium rounded-md mx-1 ${
+                    modalTab === 'differentiators' 
+                      ? 'bg-white text-gray-900 shadow-sm' 
+                      : 'bg-transparent text-gray-600'
+                  }`}
+                >
+                  Differentiators
+                </button>
+                <button 
+                  onClick={() => setModalTab('deal-terms')}
+                  className={`flex-1 px-4 py-2 text-sm font-medium rounded-md ml-1 ${
+                    modalTab === 'deal-terms' 
+                      ? 'bg-white text-gray-900 shadow-sm' 
+                      : 'bg-transparent text-gray-600'
+                  }`}
+                >
+                  Deal Terms
+                </button>
+              </div>
             </div>
           </div>
 
           {/* Modal Content */}
           <div className="p-6">
-            <div className="grid grid-cols-2 gap-8 mb-8">
-              {/* Market Position */}
+            {modalTab === 'overview' && (
               <div>
+                <div className="grid grid-cols-2 gap-8 mb-8">
+              {/* Market Position */}
+              <div className="border border-gray-300 rounded-lg p-4">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Market Position</h3>
                 <div className="space-y-3">
                   <div>
@@ -594,7 +624,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
               </div>
 
               {/* Mechanism */}
-              <div>
+              <div className="border border-gray-300 rounded-lg p-4">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Mechanism</h3>
                 <div className="space-y-3">
                   <div>
@@ -613,26 +643,308 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
               </div>
             </div>
 
+            {/* Separator Line */}
+            <div className="border-b border-gray-300 mb-6"></div>
+
             {/* Data Sources */}
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Data Sources</h3>
               <div className="flex space-x-4">
-                <button className="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
-                  Clarivate Cortellis
+                <button 
+                  onClick={() => window.open('https://www.clarivate.com/cortellis/', '_blank')}
+                  className="px-6 py-3 text-sm border border-black bg-transparent hover:bg-gray-50 rounded-2xl transition-colors flex items-center space-x-2"
+                >
+                  <span>Clarivate Cortellis</span>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
                 </button>
-                <button className="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-md transition-colors flex items-center space-x-2">
+                <button 
+                  onClick={() => window.open('https://clinicaltrials.gov/', '_blank')}
+                  className="px-6 py-3 text-sm border border-black bg-transparent hover:bg-gray-50 rounded-2xl transition-colors flex items-center space-x-2"
+                >
                   <span>ClinicalTrials.gov</span>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                   </svg>
                 </button>
-                <button className="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
-                  {selectedDrug === 'Osimertinib' ? 'AstraZeneca 10-K' : 
-                   selectedDrug === 'Lazertinib' ? 'Yuhan/Janssen 10-K' : 
-                   selectedDrug === 'Furmonertinib' ? 'Allist Pharma 10-K' : 'Novartis 10-K'}
+                <button 
+                  onClick={() => {
+                    const company = selectedDrug === 'Osimertinib' ? 'astrazeneca' : 
+                                   selectedDrug === 'Lazertinib' ? 'janssen' : 
+                                   selectedDrug === 'Furmonertinib' ? 'allist' : 'novartis';
+                    window.open(`https://www.sec.gov/edgar/search/index.php?company=${company}`, '_blank');
+                  }}
+                  className="px-6 py-3 text-sm border border-black bg-transparent hover:bg-gray-50 rounded-2xl transition-colors flex items-center space-x-2"
+                >
+                  <span>{selectedDrug === 'Osimertinib' ? 'AstraZeneca 10-K' : 
+                         selectedDrug === 'Lazertinib' ? 'Yuhan/Janssen 10-K' : 
+                         selectedDrug === 'Furmonertinib' ? 'Allist Pharma 10-K' : 'Novartis 10-K'}</span>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
                 </button>
               </div>
             </div>
+              </div>
+            )}
+
+            {modalTab === 'trial-data' && (
+              <div>
+                {/* Clinical Trial Information */}
+                <div className="border border-gray-300 rounded-lg p-4 mb-8">
+                  <div className="flex items-center gap-3 mb-4">
+                    <LuFileText className="w-5 h-5 text-gray-600" />
+                    <h3 className="text-lg font-semibold text-gray-900">Clinical Trial Information</h3>
+                  </div>
+                  <div className="grid grid-cols-2 gap-8">
+                    <div className="space-y-3">
+                      <div>
+                        <span className="text-sm text-gray-600">Phase:</span>
+                        <div className="text-sm font-medium text-gray-900">Phase III (FLAURA)</div>
+                      </div>
+                      <div>
+                        <span className="text-sm text-gray-600">Enrollment:</span>
+                        <div className="text-sm font-medium text-gray-900">556 patients</div>
+                      </div>
+                      <div>
+                        <span className="text-sm text-gray-600">Primary Endpoint:</span>
+                        <div className="text-sm font-medium text-gray-900">Progression-free survival</div>
+                      </div>
+                      <div>
+                        <span className="text-sm text-gray-600">Trial ID:</span>
+                        <div className="text-sm font-medium text-gray-900">NCT02296125</div>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div>
+                        <span className="text-sm text-gray-600">Status:</span>
+                        <div className="flex items-center gap-2">
+                          <span className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">Completed</span>
+                        </div>
+                      </div>
+                      <div>
+                        <span className="text-sm text-gray-600">Est. Completion:</span>
+                        <div className="text-sm font-medium text-gray-900">Completed 2017</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Separator Line */}
+                <div className="border-b border-gray-300 mb-6"></div>
+
+                {/* Data Sources */}
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Data Sources</h3>
+                  <div className="flex space-x-4">
+                    <button 
+                      onClick={() => window.open('https://www.clarivate.com/cortellis/', '_blank')}
+                      className="px-6 py-3 text-sm border border-black bg-transparent hover:bg-gray-50 rounded-2xl transition-colors flex items-center space-x-2"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
+                      </svg>
+                      <span>Clarivate Cortellis</span>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </button>
+                    <button 
+                      onClick={() => window.open('https://clinicaltrials.gov/', '_blank')}
+                      className="px-6 py-3 text-sm border border-black bg-transparent hover:bg-gray-50 rounded-2xl transition-colors flex items-center space-x-2"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      <span>ClinicalTrials.gov</span>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </button>
+                    <button 
+                      onClick={() => {
+                        const company = selectedDrug === 'Osimertinib' ? 'astrazeneca' : 
+                                       selectedDrug === 'Lazertinib' ? 'janssen' : 
+                                       selectedDrug === 'Furmonertinib' ? 'allist' : 'novartis';
+                        window.open(`https://www.sec.gov/edgar/search/index.php?company=${company}`, '_blank');
+                      }}
+                      className="px-6 py-3 text-sm border border-black bg-transparent hover:bg-gray-50 rounded-2xl transition-colors flex items-center space-x-2"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      <span>{selectedDrug === 'Osimertinib' ? 'AstraZeneca 10-K' : 
+                             selectedDrug === 'Lazertinib' ? 'Yuhan/Janssen 10-K' : 
+                             selectedDrug === 'Furmonertinib' ? 'Allist Pharma 10-K' : 'Novartis 10-K'}</span>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {modalTab === 'differentiators' && (
+              <div>
+                {/* Key Differentiators */}
+                <div className="border border-gray-300 rounded-lg p-4 mb-8">
+                  <div className="flex items-center gap-3 mb-4">
+                    <LuTrendingUp className="w-5 h-5 text-gray-600" />
+                    <h3 className="text-lg font-semibold text-gray-900">Key Differentiators</h3>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                      <div className="text-sm text-gray-900">First-in-class 3rd generation EGFR TKI with T790M selectivity</div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                      <div className="text-sm text-gray-900">Superior CNS penetration vs. earlier generation TKIs</div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                      <div className="text-sm text-gray-900">Improved tolerability profile with reduced skin/GI toxicity</div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                      <div className="text-sm text-gray-900">Established first-line indication in EGFR+ NSCLC</div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                      <div className="text-sm text-gray-900">Strong real-world evidence supporting efficacy</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Separator Line */}
+                <div className="border-b border-gray-300 mb-6"></div>
+
+                {/* Data Sources */}
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Data Sources</h3>
+                  <div className="flex space-x-4">
+                    <button 
+                      onClick={() => window.open('https://www.clarivate.com/cortellis/', '_blank')}
+                      className="px-6 py-3 text-sm border border-black bg-transparent hover:bg-gray-50 rounded-2xl transition-colors flex items-center space-x-2"
+                    >
+                      <span>Clarivate Cortellis</span>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </button>
+                    <button 
+                      onClick={() => window.open('https://clinicaltrials.gov/', '_blank')}
+                      className="px-6 py-3 text-sm border border-black bg-transparent hover:bg-gray-50 rounded-2xl transition-colors flex items-center space-x-2"
+                    >
+                      <span>ClinicalTrials.gov</span>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </button>
+                    <button 
+                      onClick={() => {
+                        const company = selectedDrug === 'Osimertinib' ? 'astrazeneca' : 
+                                       selectedDrug === 'Lazertinib' ? 'janssen' : 
+                                       selectedDrug === 'Furmonertinib' ? 'allist' : 'novartis';
+                        window.open(`https://www.sec.gov/edgar/search/index.php?company=${company}`, '_blank');
+                      }}
+                      className="px-6 py-3 text-sm border border-black bg-transparent hover:bg-gray-50 rounded-2xl transition-colors flex items-center space-x-2"
+                    >
+                      <span>{selectedDrug === 'Osimertinib' ? 'AstraZeneca 10-K' : 
+                             selectedDrug === 'Lazertinib' ? 'Yuhan/Janssen 10-K' : 
+                             selectedDrug === 'Furmonertinib' ? 'Allist Pharma 10-K' : 'Novartis 10-K'}</span>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {modalTab === 'deal-terms' && (
+              <div>
+                {/* Licensing & Acquisition Terms */}
+                <div className="mb-8">
+                  <div className="flex items-center gap-3 mb-4">
+                    <LuDollarSign className="w-5 h-5 text-gray-600" />
+                    <h3 className="text-lg font-semibold text-gray-900">Licensing & Acquisition Terms</h3>
+                  </div>
+                  <div className="grid grid-cols-2 gap-8">
+                    <div className="space-y-3">
+                      <div>
+                        <span className="text-sm text-gray-600">Total Deal Value:</span>
+                        <div className="text-sm font-bold text-green-600">Not applicable (internal development)</div>
+                      </div>
+                      <div>
+                        <span className="text-sm text-gray-600">Upfront Payment:</span>
+                        <div className="text-sm font-medium text-gray-900">N/A</div>
+                      </div>
+                      <div>
+                        <span className="text-sm text-gray-600">Royalty Structure:</span>
+                        <div className="text-sm font-medium text-gray-900">N/A</div>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div>
+                        <span className="text-sm text-gray-600">Deal Date:</span>
+                        <div className="text-sm font-medium text-gray-900">Internal AstraZeneca program</div>
+                      </div>
+                      <div>
+                        <span className="text-sm text-gray-600">Milestones:</span>
+                        <div className="text-sm font-medium text-gray-900">N/A</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Separator Line */}
+                <div className="border-b border-gray-300 mb-6"></div>
+
+                {/* Data Sources */}
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Data Sources</h3>
+                  <div className="flex space-x-4">
+                    <button 
+                      onClick={() => window.open('https://www.clarivate.com/cortellis/', '_blank')}
+                      className="px-6 py-3 text-sm border border-black bg-transparent hover:bg-gray-50 rounded-2xl transition-colors flex items-center space-x-2"
+                    >
+                      <span>Clarivate Cortellis</span>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </button>
+                    <button 
+                      onClick={() => window.open('https://clinicaltrials.gov/', '_blank')}
+                      className="px-6 py-3 text-sm border border-black bg-transparent hover:bg-gray-50 rounded-2xl transition-colors flex items-center space-x-2"
+                    >
+                      <span>ClinicalTrials.gov</span>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </button>
+                    <button 
+                      onClick={() => {
+                        const company = selectedDrug === 'Osimertinib' ? 'astrazeneca' : 
+                                       selectedDrug === 'Lazertinib' ? 'janssen' : 
+                                       selectedDrug === 'Furmonertinib' ? 'allist' : 'novartis';
+                        window.open(`https://www.sec.gov/edgar/search/index.php?company=${company}`, '_blank');
+                      }}
+                      className="px-6 py-3 text-sm border border-black bg-transparent hover:bg-gray-50 rounded-2xl transition-colors flex items-center space-x-2"
+                    >
+                      <span>{selectedDrug === 'Osimertinib' ? 'AstraZeneca 10-K' : 
+                             selectedDrug === 'Lazertinib' ? 'Yuhan/Janssen 10-K' : 
+                             selectedDrug === 'Furmonertinib' ? 'Allist Pharma 10-K' : 'Novartis 10-K'}</span>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -669,6 +981,7 @@ function App() {
   const [routeOpen, setRouteOpen] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const [selectedDrug, setSelectedDrug] = useState('')
+  const [modalTab, setModalTab] = useState('overview')
 
   // Animate progress when loading
   useEffect(() => {
@@ -794,6 +1107,8 @@ function App() {
       setShowModal={setShowModal}
       selectedDrug={selectedDrug}
       setSelectedDrug={setSelectedDrug}
+      modalTab={modalTab}
+      setModalTab={setModalTab}
     />
   }
 
