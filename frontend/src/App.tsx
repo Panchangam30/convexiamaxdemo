@@ -14,11 +14,11 @@ import { LuDollarSign } from "react-icons/lu";
 import { LuShield } from "react-icons/lu";
 
 const LoadingPage = ({ progress }: { progress: number }) => (
-  <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-    <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full mx-4">
+  <div className="flex items-center justify-center min-h-screen bg-gray-50">
+    <div className="w-full max-w-md p-8 mx-4 bg-white rounded-lg shadow-lg">
       {/* Top Icon */}
       <div className="flex justify-center mb-6">
-        <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center spinning-border">
+        <div className="flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full spinning-border">
           {progress < 16.67 ? (
             <LuDatabase className="w-8 h-8 text-blue-600 icon-glow" />
           ) : progress < 33.33 ? (
@@ -36,17 +36,17 @@ const LoadingPage = ({ progress }: { progress: number }) => (
       </div>
 
       {/* Main Title */}
-      <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">
+      <h2 className="mb-2 text-2xl font-bold text-center text-gray-900">
         Generating Analysis
       </h2>
 
       {/* Subtitle */}
-      <p className="text-gray-600 text-center mb-6">
+      <p className="mb-6 text-center text-gray-600">
         Processing market intelligence and competitive data
       </p>
 
       {/* Current Step */}
-      <p className="text-black text-center mb-4 text-sm">
+      <p className="mb-4 text-sm text-center text-black">
         {progress < 16.67 ? "Gathering competitive intelligence..." : 
          progress < 33.33 ? "Analyzing market dynamics..." : 
          progress < 50 ? "Assessing regulatory pathways..." :
@@ -56,12 +56,12 @@ const LoadingPage = ({ progress }: { progress: number }) => (
       </p>
 
       {/* Progress Bar */}
-      <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
-        <div className="bg-black h-2 rounded-full transition-all duration-100" style={{ width: `${progress}%` }}></div>
+      <div className="w-full h-2 mb-4 bg-gray-200 rounded-full">
+        <div className="h-2 transition-all duration-100 bg-black rounded-full" style={{ width: `${progress}%` }}></div>
       </div>
 
       {/* Percentage */}
-      <p className="text-gray-500 text-center mb-6 text-xs">
+      <p className="mb-6 text-xs text-center text-gray-500">
         {progress}% complete
       </p>
 
@@ -78,7 +78,7 @@ const LoadingPage = ({ progress }: { progress: number }) => (
   </div>
 );
 
-const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, setActiveTab, showModal, setShowModal, selectedDrug, setSelectedDrug, modalTab, setModalTab }: { 
+const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, setActiveTab, showModal, setShowModal, selectedDrug, setSelectedDrug, modalTab, setModalTab, activeSubTab, setActiveSubTab, showPipelineModal, setShowPipelineModal, showSourcesModal, setShowSourcesModal }: { 
   showCompoundProfile: boolean, 
   setShowCompoundProfile: (show: boolean) => void,
   activeTab: string,
@@ -88,18 +88,24 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
   selectedDrug: string,
   setSelectedDrug: (drug: string) => void,
   modalTab: string,
-  setModalTab: (tab: string) => void
+  setModalTab: (tab: string) => void,
+  activeSubTab: string,
+  setActiveSubTab: (tab: string) => void,
+  showPipelineModal: boolean,
+  setShowPipelineModal: (show: boolean) => void,
+  showSourcesModal: boolean,
+  setShowSourcesModal: (show: boolean) => void
 }) => (
   <div className="min-h-screen bg-gray-50">
     {/* Top Header */}
-    <div className="bg-white border-b border-gray-200 px-6 py-4">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
+    <div className="px-6 py-4 bg-white border-b border-gray-200">
+      <div className="flex items-center justify-between mx-auto max-w-7xl">
         <div className="flex items-center space-x-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Market Analysis Agent</h1>
+            <h1 className="mb-2 text-3xl font-bold text-gray-900">Market Analysis Agent</h1>
             <p className="text-base text-gray-600">Simulating Commercial Viability for Drug Asset Evaluation</p>
           </div>
-          <div className="border-l border-gray-300 pl-8">
+          <div className="pl-8 border-l border-gray-300">
             <p className="text-sm font-bold text-gray-600">Unnamed Molecule</p>
             <p className="text-sm text-gray-600">Phase:</p>
           </div>
@@ -132,7 +138,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
 
     {/* Navigation Tabs */}
     <div className="bg-white border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="px-6 mx-auto max-w-7xl">
         <nav className="flex space-x-8">
           <div 
             className={`flex items-center py-4 border-b-2 whitespace-nowrap cursor-pointer ${activeTab === 'compound-profile' ? 'border-blue-600' : 'border-transparent'}`}
@@ -188,12 +194,12 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
 
     {/* Main Content */}
     {activeTab === 'compound-profile' && (
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="px-6 py-8 mx-auto max-w-7xl">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-3xl font-bold text-gray-900">Compound Profile</h2>
           <button 
             onClick={() => setShowCompoundProfile(!showCompoundProfile)}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 transition-colors rounded-full hover:bg-gray-100"
           >
             {showCompoundProfile ? (
               <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -208,29 +214,29 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
         </div>
 
         {showCompoundProfile && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             {/* Card 1: Mechanism of Action */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Mechanism of Action</h3>
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <h3 className="mb-4 text-lg font-semibold text-gray-900">Mechanism of Action</h3>
               <div className="space-y-4">
                 <div>
-                  <p className="text-sm font-bold text-gray-600 mb-2">Target Protein</p>
+                  <p className="mb-2 text-sm font-bold text-gray-600">Target Protein</p>
                   <p className="text-sm font-bold text-gray-900">EGFR L858R/T790M</p>
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-gray-600 mb-2">Pathway</p>
+                  <p className="mb-2 text-sm font-bold text-gray-600">Pathway</p>
                   <p className="text-sm font-bold text-gray-900">EGFR/PI3K/AKT</p>
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-gray-600 mb-2">Description</p>
+                  <p className="mb-2 text-sm font-bold text-gray-600">Description</p>
                   <p className="text-sm text-gray-900">Third-generation EGFR tyrosine kinase inhibitor designed to selectively target T790M resistance mutations while sparing wild-type EGFR, reducing skin and GI toxicity.</p>
                 </div>
               </div>
             </div>
 
             {/* Card 2: Key Preclinical Findings */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Key Preclinical Findings</h3>
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <h3 className="mb-4 text-lg font-semibold text-gray-900">Key Preclinical Findings</h3>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4 pb-4 border-b border-gray-200">
                   <div>
@@ -243,19 +249,19 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                   </div>
                 </div>
                 <div className="pt-4">
-                  <p className="text-sm font-bold text-gray-600 mb-2">Tumor Inhibition (in vivo)</p>
+                  <p className="mb-2 text-sm font-bold text-gray-600">Tumor Inhibition (in vivo)</p>
                   <div className="flex items-center space-x-3">
-                    <div className="flex-1 bg-gray-200 rounded-full h-4">
-                      <div className="bg-black h-4 rounded-full" style={{ width: '87%' }}></div>
+                    <div className="flex-1 h-4 bg-gray-200 rounded-full">
+                      <div className="h-4 bg-black rounded-full" style={{ width: '87%' }}></div>
                     </div>
                     <span className="text-sm font-bold text-gray-900">87%</span>
                   </div>
                 </div>
                 <div className="pt-4">
-                  <p className="text-sm font-bold text-gray-600 mb-2">Survival Improvement</p>
+                  <p className="mb-2 text-sm font-bold text-gray-600">Survival Improvement</p>
                   <div className="flex items-center space-x-3">
-                    <div className="flex-1 bg-gray-200 rounded-full h-4">
-                      <div className="bg-black h-4 rounded-full" style={{ width: '65%' }}></div>
+                    <div className="flex-1 h-4 bg-gray-200 rounded-full">
+                      <div className="h-4 bg-black rounded-full" style={{ width: '65%' }}></div>
                     </div>
                     <span className="text-sm font-bold text-gray-900">65%</span>
                   </div>
@@ -264,26 +270,26 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
             </div>
 
             {/* Card 3: Development Strategy */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Development Strategy</h3>
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <h3 className="mb-4 text-lg font-semibold text-gray-900">Development Strategy</h3>
               <div className="space-y-4">
                 <div>
-                  <p className="text-sm font-bold text-gray-600 mb-2">Primary Indication</p>
+                  <p className="mb-2 text-sm font-bold text-gray-600">Primary Indication</p>
                   <div className="mb-3">
-                    <span className="px-2 py-1 text-xs font-bold bg-gray-100 text-gray-700 rounded-full">NSCLC w/ T790M mutation</span>
+                    <span className="px-2 py-1 text-xs font-bold text-gray-700 bg-gray-100 rounded-full">NSCLC w/ T790M mutation</span>
                   </div>
-                  <p className="text-sm text-gray-500 pb-4 border-b border-gray-200">Targeting second-line treatment after first-generation EGFR TKI failure</p>
+                  <p className="pb-4 text-sm text-gray-500 border-b border-gray-200">Targeting second-line treatment after first-generation EGFR TKI failure</p>
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-gray-600 mb-2">Regulatory Plan</p>
-                  <div className="flex space-x-2 mb-2">
-                    <span className="px-2 py-1 text-xs bg-transparent border border-gray-300 text-gray-700 rounded-full">Breakthrough Designation</span>
-                    <span className="px-2 py-1 text-xs bg-transparent border border-gray-300 text-gray-700 rounded-full">Orphan Drug Status</span>
+                  <p className="mb-2 text-sm font-bold text-gray-600">Regulatory Plan</p>
+                  <div className="flex mb-2 space-x-2">
+                    <span className="px-2 py-1 text-xs text-gray-700 bg-transparent border border-gray-300 rounded-full">Breakthrough Designation</span>
+                    <span className="px-2 py-1 text-xs text-gray-700 bg-transparent border border-gray-300 rounded-full">Orphan Drug Status</span>
                   </div>
                   <p className="text-sm text-gray-600">Fast-track pathway with potential for accelerated approval based on ORR endpoint</p>
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-gray-600 mb-2">Timeline to Market</p>
+                  <p className="mb-2 text-sm font-bold text-gray-600">Timeline to Market</p>
                   <p className="text-lg font-bold text-blue-600">3.5 years</p>
                 </div>
               </div>
@@ -294,8 +300,8 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
     )}
 
     {activeTab === 'competitive-landscape' && (
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="flex justify-between items-center mb-4">
+      <div className="px-6 py-8 mx-auto max-w-7xl">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold text-gray-900">Competitive Landscape</h2>
           <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
@@ -303,221 +309,537 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
         </div>
         
         {/* Sub-navigation */}
-        <div className="bg-gray-100 rounded-md p-1 mb-6">
-          <div className="flex justify-between">
-            <button className="flex-1 px-4 py-2 text-sm font-medium bg-white border border-gray-300 text-gray-900 rounded-md shadow-sm mr-1">
-              Direct Competitors
-            </button>
-            <button className="flex-1 px-4 py-2 text-sm font-medium bg-transparent text-gray-600 rounded-md mx-1">
-              Deal Activity
-            </button>
-            <button className="flex-1 px-4 py-2 text-sm font-medium bg-transparent text-gray-600 rounded-md mx-1">
-              Pipeline Analysis
-            </button>
-            <button className="flex-1 px-4 py-2 text-sm font-medium bg-transparent text-gray-700 rounded-md flex items-center justify-center space-x-2 ml-1">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
-              </svg>
-              <span>Sources (4)</span>
-            </button>
+        <div className="flex items-center mb-6">
+          <div className="flex-1 p-1 mr-2 bg-gray-100 rounded-md">
+            <div className="flex">
+              <button 
+                onClick={() => setActiveSubTab('direct-competitors')}
+                className={`flex-1 px-4 py-2 mr-1 text-sm font-medium rounded-md ${
+                  activeSubTab === 'direct-competitors' 
+                    ? 'text-gray-900 bg-white border border-gray-300 shadow-sm' 
+                    : 'text-gray-600 bg-transparent'
+                }`}
+              >
+                Direct Competitors
+              </button>
+              <button 
+                onClick={() => setActiveSubTab('deal-activity')}
+                className={`flex-1 px-4 py-2 mx-1 text-sm font-medium rounded-md ${
+                  activeSubTab === 'deal-activity' 
+                    ? 'text-gray-900 bg-white border border-gray-300 shadow-sm' 
+                    : 'text-gray-600 bg-transparent'
+                }`}
+              >
+                Deal Activity
+              </button>
+              <button 
+                onClick={() => setActiveSubTab('pipeline-analysis')}
+                className={`flex-1 px-4 py-2 ml-1 text-sm font-medium rounded-md ${
+                  activeSubTab === 'pipeline-analysis' 
+                    ? 'text-gray-900 bg-white border border-gray-300 shadow-sm' 
+                    : 'text-gray-600 bg-transparent'
+                }`}
+              >
+                Pipeline Analysis
+              </button>
+            </div>
           </div>
+          <button 
+            onClick={() => setShowSourcesModal(true)}
+            className="flex items-center px-3 py-2 space-x-2 text-sm font-medium text-gray-700 bg-transparent border border-black rounded-md"
+          >
+            <LuDatabase className="w-4 h-4" />
+            <span>Sources (4)</span>
+          </button>
         </div>
 
-        {/* Competitive Cards Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Osimertinib Card */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="text-xl font-bold text-gray-900">Osimertinib</h3>
-                <p className="text-sm text-gray-600">AstraZeneca</p>
+        {/* Content based on active sub-tab */}
+        {activeSubTab === 'direct-competitors' && (
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {/* Osimertinib Card */}
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900">Osimertinib</h3>
+                  <p className="text-sm text-gray-600">AstraZeneca</p>
+                </div>
+                <span className="px-3 py-1 text-xs font-medium text-white bg-black rounded-full">Approved</span>
               </div>
-              <span className="px-3 py-1 text-xs font-medium bg-black text-white rounded-full">Approved</span>
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="space-y-3">
+                  <div>
+                    <span className="text-sm text-gray-600">MoA:</span>
+                    <div className="text-sm font-medium text-gray-900">3rd-gen EGFR TKI</div>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Market Value:</span>
+                    <div className="text-sm font-bold text-green-600">$5.4B</div>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Latest Milestone:</span>
+                    <div className="text-sm font-medium text-gray-900">Approved 2015</div>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <div>
+                    <span className="text-sm text-gray-600">Target:</span>
+                    <div className="text-sm font-medium text-gray-900">EGFR T790M</div>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Patients:</span>
+                    <div className="text-sm font-medium text-gray-900">45K</div>
+                  </div>
+                </div>
+              </div>
+              <button 
+                onClick={() => {
+                  setSelectedDrug('Osimertinib')
+                  setShowModal(true)
+                }}
+                className="w-full px-4 py-2 text-sm text-black transition-colors bg-transparent border border-gray-200 rounded-md hover:bg-gray-100 hover:text-black"
+              >
+                View Detailed Analysis
+              </button>
             </div>
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="space-y-3">
-                <div>
-                  <span className="text-sm text-gray-600">MoA:</span>
-                  <div className="text-sm font-medium text-gray-900">3rd-gen EGFR TKI</div>
-                </div>
-                <div>
-                  <span className="text-sm text-gray-600">Market Value:</span>
-                  <div className="text-sm font-bold text-green-600">$5.4B</div>
-                </div>
-                <div>
-                  <span className="text-sm text-gray-600">Latest Milestone:</span>
-                  <div className="text-sm font-medium text-gray-900">Approved 2015</div>
-                </div>
-              </div>
-              <div className="space-y-3">
-                <div>
-                  <span className="text-sm text-gray-600">Target:</span>
-                  <div className="text-sm font-medium text-gray-900">EGFR T790M</div>
-                </div>
-                <div>
-                  <span className="text-sm text-gray-600">Patients:</span>
-                  <div className="text-sm font-medium text-gray-900">45K</div>
-                </div>
-              </div>
-            </div>
-            <button 
-              onClick={() => {
-                setSelectedDrug('Osimertinib')
-                setShowModal(true)
-              }}
-              className="w-full px-4 py-2 text-sm bg-transparent border border-gray-200 text-black hover:bg-gray-100 hover:text-black rounded-md transition-colors"
-            >
-              View Detailed Analysis
-            </button>
-          </div>
 
-          {/* Lazertinib Card */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="text-xl font-bold text-gray-900">Lazertinib</h3>
-                <p className="text-sm text-gray-600">Yuhan/Janssen</p>
+            {/* Lazertinib Card */}
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900">Lazertinib</h3>
+                  <p className="text-sm text-gray-600">Yuhan/Janssen</p>
+                </div>
+                <span className="px-3 py-1 text-xs font-medium text-black border border-black rounded-full">Development</span>
               </div>
-              <span className="px-3 py-1 text-xs font-medium  border border-black text-black rounded-full">Development</span>
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="space-y-3">
+                  <div>
+                    <span className="text-sm text-gray-600">MoA:</span>
+                    <div className="text-sm font-medium text-gray-900">3rd-gen EGFR TKI</div>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Market Value:</span>
+                    <div className="text-sm font-bold text-green-600">$1.2B</div>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Latest Milestone:</span>
+                    <div className="text-sm font-medium text-gray-900">Phase III</div>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <div>
+                    <span className="text-sm text-gray-600">Target:</span>
+                    <div className="text-sm font-medium text-gray-900">EGFR T790M</div>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Patients:</span>
+                    <div className="text-sm font-medium text-gray-900">12K</div>
+                  </div>
+                </div>
+              </div>
+              <button 
+                onClick={() => {
+                  setSelectedDrug('Lazertinib')
+                  setShowModal(true)
+                }}
+                className="w-full px-4 py-2 text-sm text-black transition-colors bg-transparent border border-gray-200 rounded-md hover:bg-gray-100 hover:text-black"
+              >
+                View Detailed Analysis
+              </button>
             </div>
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="space-y-3">
-                <div>
-                  <span className="text-sm text-gray-600">MoA:</span>
-                  <div className="text-sm font-medium text-gray-900">3rd-gen EGFR TKI</div>
-                </div>
-                <div>
-                  <span className="text-sm text-gray-600">Market Value:</span>
-                  <div className="text-sm font-bold text-green-600">$1.2B</div>
-                </div>
-                <div>
-                  <span className="text-sm text-gray-600">Latest Milestone:</span>
-                  <div className="text-sm font-medium text-gray-900">Phase III</div>
-                </div>
-              </div>
-              <div className="space-y-3">
-                <div>
-                  <span className="text-sm text-gray-600">Target:</span>
-                  <div className="text-sm font-medium text-gray-900">EGFR T790M</div>
-                </div>
-                <div>
-                  <span className="text-sm text-gray-600">Patients:</span>
-                  <div className="text-sm font-medium text-gray-900">12K</div>
-                </div>
-              </div>
-            </div>
-            <button 
-              onClick={() => {
-                setSelectedDrug('Lazertinib')
-                setShowModal(true)
-              }}
-              className="w-full px-4 py-2 text-sm bg-transparent border border-gray-200 text-black hover:bg-gray-100 hover:text-black rounded-md transition-colors"
-            >
-              View Detailed Analysis
-            </button>
-          </div>
 
-          {/* Furmonertinib Card */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="text-xl font-bold text-gray-900">Furmonertinib</h3>
-                <p className="text-sm text-gray-600">Allist Pharma</p>
+            {/* Furmonertinib Card */}
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900">Furmonertinib</h3>
+                  <p className="text-sm text-gray-600">Allist Pharma</p>
+                </div>
+                <span className="px-3 py-1 text-xs font-medium text-black bg-gray-200 rounded-full">Regional</span>
               </div>
-              <span className="px-3 py-1 text-xs font-medium bg-gray-200 text-black rounded-full">Regional</span>
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="space-y-3">
+                  <div>
+                    <span className="text-sm text-gray-600">MoA:</span>
+                    <div className="text-sm font-medium text-gray-900">3rd-gen EGFR TKI</div>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Market Value:</span>
+                    <div className="text-sm font-bold text-green-600">$800M</div>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Latest Milestone:</span>
+                    <div className="text-sm font-medium text-gray-900">Approved China</div>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <div>
+                    <span className="text-sm text-gray-600">Target:</span>
+                    <div className="text-sm font-medium text-gray-900">EGFR T790M</div>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Patients:</span>
+                    <div className="text-sm font-medium text-gray-900">8K</div>
+                  </div>
+                </div>
+              </div>
+              <button 
+                onClick={() => {
+                  setSelectedDrug('Furmonertinib')
+                  setShowModal(true)
+                }}
+                className="w-full px-4 py-2 text-sm text-black transition-colors bg-transparent border border-gray-200 rounded-md hover:bg-gray-100 hover:text-black"
+              >
+                View Detailed Analysis
+              </button>
             </div>
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="space-y-3">
-                <div>
-                  <span className="text-sm text-gray-600">MoA:</span>
-                  <div className="text-sm font-medium text-gray-900">3rd-gen EGFR TKI</div>
-                </div>
-                <div>
-                  <span className="text-sm text-gray-600">Market Value:</span>
-                  <div className="text-sm font-bold text-green-600">$800M</div>
-                </div>
-                <div>
-                  <span className="text-sm text-gray-600">Latest Milestone:</span>
-                  <div className="text-sm font-medium text-gray-900">Approved China</div>
-                </div>
-              </div>
-              <div className="space-y-3">
-                <div>
-                  <span className="text-sm text-gray-600">Target:</span>
-                  <div className="text-sm font-medium text-gray-900">EGFR T790M</div>
-                </div>
-                <div>
-                  <span className="text-sm text-gray-600">Patients:</span>
-                  <div className="text-sm font-medium text-gray-900">8K</div>
-                </div>
-              </div>
-            </div>
-            <button 
-              onClick={() => {
-                setSelectedDrug('Furmonertinib')
-                setShowModal(true)
-              }}
-              className="w-full px-4 py-2 text-sm bg-transparent border border-gray-200 text-black hover:bg-gray-100 hover:text-black rounded-md transition-colors"
-            >
-              View Detailed Analysis
-            </button>
-          </div>
 
-          {/* Nazartinib Card */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="text-xl font-bold text-gray-900">Nazartinib</h3>
-                <p className="text-sm text-gray-600">Novartis</p>
+            {/* Nazartinib Card */}
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900">Nazartinib</h3>
+                  <p className="text-sm text-gray-600">Novartis</p>
+                </div>
+                <span className="px-3 py-1 text-xs font-medium text-black border border-black rounded-full">Development</span>
               </div>
-              <span className="px-3 py-1 text-xs font-medium border border-black text-black rounded-full">Development</span>
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="space-y-3">
+                  <div>
+                    <span className="text-sm text-gray-600">MoA:</span>
+                    <div className="text-sm font-medium text-gray-900">Pan-HER TKI</div>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Market Value:</span>
+                    <div className="text-sm font-bold text-green-600">TBD</div>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Latest Milestone:</span>
+                    <div className="text-sm font-medium text-gray-900">Phase II</div>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <div>
+                    <span className="text-sm text-gray-600">Target:</span>
+                    <div className="text-sm font-medium text-gray-900">EGFR/HER2</div>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Patients:</span>
+                    <div className="text-sm font-medium text-gray-900">TBD</div>
+                  </div>
+                </div>
+              </div>
+              <button 
+                onClick={() => {
+                  setSelectedDrug('Nazartinib')
+                  setShowModal(true)
+                }}
+                className="w-full px-4 py-2 text-sm text-black transition-colors bg-transparent border border-gray-200 rounded-md hover:bg-gray-100 hover:text-black"
+              >
+                View Detailed Analysis
+              </button>
             </div>
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="space-y-3">
-                <div>
-                  <span className="text-sm text-gray-600">MoA:</span>
-                  <div className="text-sm font-medium text-gray-900">Pan-HER TKI</div>
-                </div>
-                <div>
-                  <span className="text-sm text-gray-600">Market Value:</span>
-                  <div className="text-sm font-bold text-green-600">TBD</div>
-                </div>
-                <div>
-                  <span className="text-sm text-gray-600">Latest Milestone:</span>
-                  <div className="text-sm font-medium text-gray-900">Phase II</div>
-                </div>
-              </div>
-              <div className="space-y-3">
-                <div>
-                  <span className="text-sm text-gray-600">Target:</span>
-                  <div className="text-sm font-medium text-gray-900">EGFR/HER2</div>
-                </div>
-                <div>
-                  <span className="text-sm text-gray-600">Patients:</span>
-                  <div className="text-sm font-medium text-gray-900">TBD</div>
-                </div>
-              </div>
-            </div>
-            <button 
-              onClick={() => {
-                setSelectedDrug('Nazartinib')
-                setShowModal(true)
-              }}
-              className="w-full px-4 py-2 text-sm bg-transparent border border-gray-200 text-black hover:bg-gray-100 hover:text-black rounded-md transition-colors"
-            >
-              View Detailed Analysis
-            </button>
           </div>
-        </div>
+        )}
+
+        {activeSubTab === 'deal-activity' && (
+          <div className="space-y-4">
+            {/* Roche Deal */}
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-lg font-bold text-gray-900">Roche</h3>
+                    <div className="text-right">
+                      <div className="text-lg font-bold text-green-600">$1.8B</div>
+                      <div className="text-sm text-gray-600">Q2 2024</div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
+                    <div>
+                      <span className="text-sm text-gray-600">Drug/Indication:</span>
+                      <div className="text-sm font-medium text-gray-900">TGF-β inhibitor • NSCLC combination</div>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-600">Stage at Acquisition:</span>
+                      <div className="text-sm font-medium text-gray-900">Phase II</div>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-600">Strategic Rationale:</span>
+                      <div className="text-sm font-medium text-gray-900">Combo potential with PD-L1</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Merck Deal */}
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-lg font-bold text-gray-900">Merck</h3>
+                    <div className="text-right">
+                      <div className="text-lg font-bold text-green-600">$2.1B</div>
+                      <div className="text-sm text-gray-600">Q1 2024</div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
+                    <div>
+                      <span className="text-sm text-gray-600">Drug/Indication:</span>
+                      <div className="text-sm font-medium text-gray-900">KRAS G12C inhibitor • NSCLC</div>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-600">Stage at Acquisition:</span>
+                      <div className="text-sm font-medium text-gray-900">Phase III</div>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-600">Strategic Rationale:</span>
+                      <div className="text-sm font-medium text-gray-900">Resistance mechanism coverage</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bristol Myers Deal */}
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-lg font-bold text-gray-900">Bristol Myers</h3>
+                    <div className="text-right">
+                      <div className="text-lg font-bold text-green-600">$950M</div>
+                      <div className="text-sm text-gray-600">Q4 2023</div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
+                    <div>
+                      <span className="text-sm text-gray-600">Drug/Indication:</span>
+                      <div className="text-sm font-medium text-gray-900">EGFR degrader • EGFR+ tumors</div>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-600">Stage at Acquisition:</span>
+                      <div className="text-sm font-medium text-gray-900">Phase II</div>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-600">Strategic Rationale:</span>
+                      <div className="text-sm font-medium text-gray-900">Next-gen EGFR targeting</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Pfizer Deal */}
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-lg font-bold text-gray-900">Pfizer</h3>
+                    <div className="text-right">
+                      <div className="text-lg font-bold text-green-600">$1.3B</div>
+                      <div className="text-sm text-gray-600">Q3 2023</div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
+                    <div>
+                      <span className="text-sm text-gray-600">Drug/Indication:</span>
+                      <div className="text-sm font-medium text-gray-900">CDK4/6 inhibitor • NSCLC combination</div>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-600">Stage at Acquisition:</span>
+                      <div className="text-sm font-medium text-gray-900">Phase II</div>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-600">Strategic Rationale:</span>
+                      <div className="text-sm font-medium text-gray-900">Cell cycle targeting</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Market Commentary */}
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <h3 className="mb-4 text-lg font-bold text-gray-900">Market Commentary</h3>
+                  <p className="text-sm leading-relaxed text-gray-700">
+                    Recent M&A activity suggests strong appetite for EGFR-targeting assets, with premium valuations for differentiated mechanisms. Combination potential and resistance coverage driving strategic interest. Average deal multiples: 8-12x peak sales for Phase II+ assets.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeSubTab === 'pipeline-analysis' && (
+          <div className="space-y-6">
+            {/* Pipeline Crowding Analysis */}
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+              <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <h3 className="mb-4 text-lg font-semibold text-gray-900">Pipeline Crowding Analysis</h3>
+                
+                {/* NSCLC Pipeline Density */}
+                <div className="mb-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-gray-700">NSCLC Pipeline Density</span>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-lg font-bold text-red-600">35%</span>
+                      <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <button 
+                        onClick={() => setShowPipelineModal(true)}
+                        className="text-sm text-blue-600 hover:text-blue-800"
+                      >
+                        View Details
+                      </button>
+                    </div>
+                  </div>
+                  <div className="w-full h-2 mb-2 bg-gray-200 rounded-full">
+                    <div className="h-2 bg-black rounded-full" style={{ width: '35%' }}></div>
+                  </div>
+                  <p className="text-sm text-gray-600">Moderate crowding - manageable competition</p>
+                </div>
+
+                {/* Strategic Fit Rank */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-gray-700">Strategic Fit Rank</span>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-lg font-bold text-green-600">78%</span>
+                    </div>
+                  </div>
+                  <div className="w-full h-2 mb-2 bg-gray-200 rounded-full">
+                    <div className="h-2 bg-black rounded-full" style={{ width: '78%' }}></div>
+                  </div>
+                  <p className="text-sm text-gray-600">High alignment with buyer portfolios</p>
+                </div>
+              </div>
+
+              {/* White Space Opportunities */}
+              <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <h3 className="mb-4 text-lg font-semibold text-gray-900">White Space Opportunities</h3>
+                
+                {/* IP Coverage */}
+                <div className="mb-6">
+                  <h4 className="mb-3 text-sm font-medium text-gray-700">IP Coverage</h4>
+                  <div className="flex space-x-2">
+                    <span className="px-3 py-1 text-sm text-gray-900 bg-gray-100 rounded-full">Composition</span>
+                    <span className="px-3 py-1 text-sm text-gray-900 bg-transparent border border-black rounded-full">FTO Clear</span>
+                  </div>
+                </div>
+
+                {/* Data Gaps */}
+                <div>
+                  <h4 className="mb-3 text-sm font-medium text-gray-700">Data Gaps</h4>
+                  <p className="text-sm text-gray-600">Limited PubMed coverage, sparse clinical trial data in ChEMBL.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Competitive Threats */}
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <h3 className="mb-4 text-lg font-semibold text-gray-900">Competitive Threats</h3>
+              
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                {/* Emerging Modalities */}
+                <div>
+                  <h4 className="mb-3 text-sm font-medium text-gray-700">Emerging Modalities</h4>
+                  <div className="text-sm text-gray-500">
+                    {/* Content placeholder */}
+                  </div>
+                </div>
+
+                {/* Biosimilar Timeline */}
+                <div>
+                  <h4 className="mb-3 text-sm font-medium text-gray-700">Biosimilar Timeline</h4>
+                  <div className="text-sm text-gray-500">
+                    {/* Content placeholder */}
+                  </div>
+                </div>
+
+                {/* Regulatory Headwinds */}
+                <div>
+                  <h4 className="mb-3 text-sm font-medium text-gray-700">Regulatory Headwinds</h4>
+                  <div className="text-sm text-gray-500">
+                    {/* Content placeholder */}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Extended Pipeline Details */}
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <h3 className="mb-4 text-lg font-semibold text-gray-900">Extended Pipeline Details</h3>
+              
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                {/* Left Column */}
+                <div className="space-y-6">
+                  {/* PRECLINICAL CANDIDATES */}
+                  <div>
+                    <h4 className="mb-3 text-sm font-bold text-gray-700 uppercase">PRECLINICAL CANDIDATES</h4>
+                    <div className="text-sm text-gray-300 blur-sm">
+                      <div className="mb-2">• EGFR-TKI combination candidates</div>
+                      <div className="mb-2">• Novel resistance mechanisms</div>
+                      <div className="mb-2">• Next-generation inhibitors</div>
+                    </div>
+                  </div>
+
+                  {/* GEOGRAPHIC EXPANSION */}
+                  <div>
+                    <h4 className="mb-3 text-sm font-bold text-gray-700 uppercase">GEOGRAPHIC EXPANSION</h4>
+                    <div className="text-sm text-gray-300 blur-sm">
+                      <p>Primary focus on <span className="text-blue-600">US and EU markets</span> with planned expansion into Asia-Pacific regions including Japan, China, and South Korea for Phase III development.</p>
+                    </div>
+                  </div>
+
+                  {/* COMBINATION TRIALS */}
+                  <div>
+                    <h4 className="mb-3 text-sm font-bold text-gray-700 uppercase">COMBINATION TRIALS</h4>
+                    <div className="text-sm text-gray-300 blur-sm">
+                      <div className="mb-2">• EGFR + PD-L1 combination</div>
+                      <div className="mb-2">• EGFR + chemotherapy backbone</div>
+                      <div className="mb-2">• EGFR + anti-angiogenic agents</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Column */}
+                <div className="space-y-6">
+                  {/* CLINICAL PROGRAMS */}
+                  <div>
+                    <h4 className="mb-3 text-sm font-bold text-gray-700 uppercase">CLINICAL PROGRAMS</h4>
+                    <div className="text-sm text-gray-300 blur-sm">
+                      <div className="mb-2">• Phase I: Safety and PK studies</div>
+                      <div className="mb-2">• Phase II: Efficacy in T790M+ NSCLC</div>
+                      <div className="mb-2">• Phase III: Pivotal registration trials</div>
+                    </div>
+                  </div>
+
+                  {/* MECHANISM OF ACTION MAPPING */}
+                  <div>
+                    <h4 className="mb-3 text-sm font-bold text-gray-700 uppercase">MECHANISM OF ACTION MAPPING</h4>
+                    <div className="text-sm text-gray-300 blur-sm">
+                      <p>Comprehensive analysis of EGFR signaling pathways, resistance mechanisms, and cross-talk with other receptor tyrosine kinases including HER2, HER3, and MET amplification.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     )}
 
     {/* Modal */}
     {showModal && (
-      <div className="fixed inset-0 bg-gray-500 bg-opacity-20 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/70 to-black/70" onClick={() => setShowModal(false)}>
+                  <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
           {/* Modal Header */}
-          <div className="flex justify-between items-start p-6">
+          <div className="flex items-start justify-between p-6">
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <LuTarget className="w-6 h-6 text-black" />
@@ -541,7 +863,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
 
           {/* Modal Navigation */}
           <div className="px-6 py-4">
-            <div className="bg-gray-100 rounded-md p-1">
+            <div className="p-1 bg-gray-100 rounded-md">
               <div className="flex justify-between">
                 <button 
                   onClick={() => setModalTab('overview')}
@@ -593,8 +915,8 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
               <div>
                 <div className="grid grid-cols-2 gap-8 mb-8">
               {/* Market Position */}
-              <div className="border border-gray-300 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Market Position</h3>
+              <div className="p-4 border border-gray-300 rounded-lg">
+                <h3 className="mb-4 text-lg font-semibold text-gray-900">Market Position</h3>
                 <div className="space-y-3">
                   <div>
                     <span className="text-sm text-gray-600">Market Value:</span>
@@ -614,18 +936,23 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                   </div>
                   <div>
                     <span className="text-sm text-gray-600">Status:</span>
-                    <div className="text-sm font-medium text-gray-900">
-                      {selectedDrug === 'Osimertinib' ? 'approved' : 
-                       selectedDrug === 'Lazertinib' ? 'development' : 
-                       selectedDrug === 'Furmonertinib' ? 'approved' : 'development'}
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-gray-900">
+                        {selectedDrug === 'Osimertinib' ? 'approved' : 
+                         selectedDrug === 'Lazertinib' ? 'development' : 
+                         selectedDrug === 'Furmonertinib' ? 'approved' : 'development'}
+                      </span>
+                      {selectedDrug === 'Lazertinib' && (
+                        <span className="px-2 py-1 text-xs text-gray-700 bg-gray-100 rounded-full">development</span>
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Mechanism */}
-              <div className="border border-gray-300 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Mechanism</h3>
+              <div className="p-4 border border-gray-300 rounded-lg">
+                <h3 className="mb-4 text-lg font-semibold text-gray-900">Mechanism</h3>
                 <div className="space-y-3">
                   <div>
                     <span className="text-sm text-gray-600">MoA:</span>
@@ -644,42 +971,35 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
             </div>
 
             {/* Separator Line */}
-            <div className="border-b border-gray-300 mb-6"></div>
+            <div className="mb-6 border-b border-gray-300"></div>
 
             {/* Data Sources */}
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Data Sources</h3>
+              <h3 className="mb-4 text-lg font-semibold text-gray-900">Data Sources</h3>
               <div className="flex space-x-4">
                 <button 
-                  onClick={() => window.open('https://www.clarivate.com/cortellis/', '_blank')}
-                  className="px-6 py-3 text-sm border border-black bg-transparent hover:bg-gray-50 rounded-2xl transition-colors flex items-center space-x-2"
+                  onClick={() => window.open('https://www.biocentury.com/', '_blank')}
+                  className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors bg-transparent border border-black hover:bg-gray-50 rounded-2xl"
                 >
-                  <span>Clarivate Cortellis</span>
+                  <span>BioCentury Intelligence</span>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </button>
+                <button 
+                  onClick={() => window.open('https://www.janssen.com/', '_blank')}
+                  className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors bg-transparent border border-black hover:bg-gray-50 rounded-2xl"
+                >
+                  <span>Janssen Press Release</span>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                   </svg>
                 </button>
                 <button 
                   onClick={() => window.open('https://clinicaltrials.gov/', '_blank')}
-                  className="px-6 py-3 text-sm border border-black bg-transparent hover:bg-gray-50 rounded-2xl transition-colors flex items-center space-x-2"
+                  className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors bg-transparent border border-black hover:bg-gray-50 rounded-2xl"
                 >
                   <span>ClinicalTrials.gov</span>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </button>
-                <button 
-                  onClick={() => {
-                    const company = selectedDrug === 'Osimertinib' ? 'astrazeneca' : 
-                                   selectedDrug === 'Lazertinib' ? 'janssen' : 
-                                   selectedDrug === 'Furmonertinib' ? 'allist' : 'novartis';
-                    window.open(`https://www.sec.gov/edgar/search/index.php?company=${company}`, '_blank');
-                  }}
-                  className="px-6 py-3 text-sm border border-black bg-transparent hover:bg-gray-50 rounded-2xl transition-colors flex items-center space-x-2"
-                >
-                  <span>{selectedDrug === 'Osimertinib' ? 'AstraZeneca 10-K' : 
-                         selectedDrug === 'Lazertinib' ? 'Yuhan/Janssen 10-K' : 
-                         selectedDrug === 'Furmonertinib' ? 'Allist Pharma 10-K' : 'Novartis 10-K'}</span>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                   </svg>
@@ -692,7 +1012,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
             {modalTab === 'trial-data' && (
               <div>
                 {/* Clinical Trial Information */}
-                <div className="border border-gray-300 rounded-lg p-4 mb-8">
+                <div className="p-4 mb-8 border border-gray-300 rounded-lg">
                   <div className="flex items-center gap-3 mb-4">
                     <LuFileText className="w-5 h-5 text-gray-600" />
                     <h3 className="text-lg font-semibold text-gray-900">Clinical Trial Information</h3>
@@ -720,7 +1040,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                       <div>
                         <span className="text-sm text-gray-600">Status:</span>
                         <div className="flex items-center gap-2">
-                          <span className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">Completed</span>
+                          <span className="px-2 py-1 text-xs text-gray-700 bg-gray-100 rounded-full">Completed</span>
                         </div>
                       </div>
                       <div>
@@ -732,15 +1052,15 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 </div>
 
                 {/* Separator Line */}
-                <div className="border-b border-gray-300 mb-6"></div>
+                <div className="mb-6 border-b border-gray-300"></div>
 
                 {/* Data Sources */}
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Data Sources</h3>
+                  <h3 className="mb-4 text-lg font-semibold text-gray-900">Data Sources</h3>
                   <div className="flex space-x-4">
                     <button 
                       onClick={() => window.open('https://www.clarivate.com/cortellis/', '_blank')}
-                      className="px-6 py-3 text-sm border border-black bg-transparent hover:bg-gray-50 rounded-2xl transition-colors flex items-center space-x-2"
+                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors bg-transparent border border-black hover:bg-gray-50 rounded-2xl"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
@@ -752,7 +1072,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                     </button>
                     <button 
                       onClick={() => window.open('https://clinicaltrials.gov/', '_blank')}
-                      className="px-6 py-3 text-sm border border-black bg-transparent hover:bg-gray-50 rounded-2xl transition-colors flex items-center space-x-2"
+                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors bg-transparent border border-black hover:bg-gray-50 rounded-2xl"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -769,7 +1089,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                                        selectedDrug === 'Furmonertinib' ? 'allist' : 'novartis';
                         window.open(`https://www.sec.gov/edgar/search/index.php?company=${company}`, '_blank');
                       }}
-                      className="px-6 py-3 text-sm border border-black bg-transparent hover:bg-gray-50 rounded-2xl transition-colors flex items-center space-x-2"
+                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors bg-transparent border border-black hover:bg-gray-50 rounded-2xl"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -789,45 +1109,45 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
             {modalTab === 'differentiators' && (
               <div>
                 {/* Key Differentiators */}
-                <div className="border border-gray-300 rounded-lg p-4 mb-8">
+                <div className="p-4 mb-8 border border-gray-300 rounded-lg">
                   <div className="flex items-center gap-3 mb-4">
                     <LuTrendingUp className="w-5 h-5 text-gray-600" />
                     <h3 className="text-lg font-semibold text-gray-900">Key Differentiators</h3>
                   </div>
                   <div className="space-y-3">
                     <div className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                      <div className="flex-shrink-0 w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
                       <div className="text-sm text-gray-900">First-in-class 3rd generation EGFR TKI with T790M selectivity</div>
                     </div>
                     <div className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                      <div className="flex-shrink-0 w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
                       <div className="text-sm text-gray-900">Superior CNS penetration vs. earlier generation TKIs</div>
                     </div>
                     <div className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                      <div className="flex-shrink-0 w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
                       <div className="text-sm text-gray-900">Improved tolerability profile with reduced skin/GI toxicity</div>
                     </div>
                     <div className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                      <div className="flex-shrink-0 w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
                       <div className="text-sm text-gray-900">Established first-line indication in EGFR+ NSCLC</div>
                     </div>
                     <div className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                      <div className="flex-shrink-0 w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
                       <div className="text-sm text-gray-900">Strong real-world evidence supporting efficacy</div>
                     </div>
                   </div>
                 </div>
 
                 {/* Separator Line */}
-                <div className="border-b border-gray-300 mb-6"></div>
+                <div className="mb-6 border-b border-gray-300"></div>
 
                 {/* Data Sources */}
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Data Sources</h3>
+                  <h3 className="mb-4 text-lg font-semibold text-gray-900">Data Sources</h3>
                   <div className="flex space-x-4">
                     <button 
                       onClick={() => window.open('https://www.clarivate.com/cortellis/', '_blank')}
-                      className="px-6 py-3 text-sm border border-black bg-transparent hover:bg-gray-50 rounded-2xl transition-colors flex items-center space-x-2"
+                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors bg-transparent border border-black hover:bg-gray-50 rounded-2xl"
                     >
                       <span>Clarivate Cortellis</span>
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -836,7 +1156,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                     </button>
                     <button 
                       onClick={() => window.open('https://clinicaltrials.gov/', '_blank')}
-                      className="px-6 py-3 text-sm border border-black bg-transparent hover:bg-gray-50 rounded-2xl transition-colors flex items-center space-x-2"
+                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors bg-transparent border border-black hover:bg-gray-50 rounded-2xl"
                     >
                       <span>ClinicalTrials.gov</span>
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -850,7 +1170,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                                        selectedDrug === 'Furmonertinib' ? 'allist' : 'novartis';
                         window.open(`https://www.sec.gov/edgar/search/index.php?company=${company}`, '_blank');
                       }}
-                      className="px-6 py-3 text-sm border border-black bg-transparent hover:bg-gray-50 rounded-2xl transition-colors flex items-center space-x-2"
+                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors bg-transparent border border-black hover:bg-gray-50 rounded-2xl"
                     >
                       <span>{selectedDrug === 'Osimertinib' ? 'AstraZeneca 10-K' : 
                              selectedDrug === 'Lazertinib' ? 'Yuhan/Janssen 10-K' : 
@@ -867,7 +1187,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
             {modalTab === 'deal-terms' && (
               <div>
                 {/* Licensing & Acquisition Terms */}
-                <div className="mb-8">
+                <div className="p-4 mb-8 border border-gray-300 rounded-lg">
                   <div className="flex items-center gap-3 mb-4">
                     <LuDollarSign className="w-5 h-5 text-gray-600" />
                     <h3 className="text-lg font-semibold text-gray-900">Licensing & Acquisition Terms</h3>
@@ -901,15 +1221,15 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 </div>
 
                 {/* Separator Line */}
-                <div className="border-b border-gray-300 mb-6"></div>
+                <div className="mb-6 border-b border-gray-300"></div>
 
                 {/* Data Sources */}
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Data Sources</h3>
+                  <h3 className="mb-4 text-lg font-semibold text-gray-900">Data Sources</h3>
                   <div className="flex space-x-4">
                     <button 
                       onClick={() => window.open('https://www.clarivate.com/cortellis/', '_blank')}
-                      className="px-6 py-3 text-sm border border-black bg-transparent hover:bg-gray-50 rounded-2xl transition-colors flex items-center space-x-2"
+                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors bg-transparent border border-black hover:bg-gray-50 rounded-2xl"
                     >
                       <span>Clarivate Cortellis</span>
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -918,7 +1238,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                     </button>
                     <button 
                       onClick={() => window.open('https://clinicaltrials.gov/', '_blank')}
-                      className="px-6 py-3 text-sm border border-black bg-transparent hover:bg-gray-50 rounded-2xl transition-colors flex items-center space-x-2"
+                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors bg-transparent border border-black hover:bg-gray-50 rounded-2xl"
                     >
                       <span>ClinicalTrials.gov</span>
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -932,7 +1252,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                                        selectedDrug === 'Furmonertinib' ? 'allist' : 'novartis';
                         window.open(`https://www.sec.gov/edgar/search/index.php?company=${company}`, '_blank');
                       }}
-                      className="px-6 py-3 text-sm border border-black bg-transparent hover:bg-gray-50 rounded-2xl transition-colors flex items-center space-x-2"
+                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors bg-transparent border border-black hover:bg-gray-50 rounded-2xl"
                     >
                       <span>{selectedDrug === 'Osimertinib' ? 'AstraZeneca 10-K' : 
                              selectedDrug === 'Lazertinib' ? 'Yuhan/Janssen 10-K' : 
@@ -945,6 +1265,222 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* Sources Modal */}
+    {showSourcesModal && (
+      <div className="fixed inset-0 z-50 flex items-center justify-end bg-black/50" onClick={() => setShowSourcesModal(false)}>
+        <div className="h-full overflow-y-auto bg-white shadow-xl w-96" onClick={(e) => e.stopPropagation()}>
+          {/* Modal Header */}
+          <div className="flex items-center justify-between p-6 border-b border-gray-200">
+            <div>
+              <h2 className="text-xl font-bold text-gray-900">Data Sources</h2>
+              <p className="text-sm text-gray-600">Sources used for Competitive Landscape analysis</p>
+            </div>
+            <button 
+              onClick={() => setShowSourcesModal(false)}
+              className="text-gray-400 hover:text-gray-600"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Modal Content */}
+          <div className="p-6 space-y-4">
+            {/* Clarivate Cortellis */}
+            <div className="p-4 border border-gray-200 rounded-lg">
+              <div className="flex items-start space-x-3">
+                <LuDatabase className="w-6 h-6 mt-1 text-gray-600" />
+                <div className="flex-1">
+                  <div className="flex items-center mb-2 space-x-2">
+                    <h3 className="font-semibold text-gray-900">Clarivate Cortellis</h3>
+                    <span className="px-2 py-1 text-xs font-medium text-white bg-black rounded-full">Database</span>
+                  </div>
+                  <p className="mb-3 text-sm text-gray-600">Competitive intelligence and pipeline tracking</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-500">Updated: Dec 2024</span>
+                    <button 
+                      onClick={() => window.open('https://www.clarivate.com/cortellis/', '_blank')}
+                      className="text-sm text-blue-600 hover:text-blue-800"
+                    >
+                      View Source
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ClinicalTrials.gov */}
+            <div className="p-4 border border-gray-200 rounded-lg">
+              <div className="flex items-start space-x-3">
+                <LuFileText className="w-6 h-6 mt-1 text-gray-600" />
+                <div className="flex-1">
+                  <div className="flex items-center mb-2 space-x-2">
+                    <h3 className="font-semibold text-gray-900">ClinicalTrials.gov</h3>
+                    <span className="px-2 py-1 text-xs font-medium text-white bg-black rounded-full">Regulatory</span>
+                  </div>
+                  <p className="mb-3 text-sm text-gray-600">Clinical trial registry and status updates</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-500">Updated: Dec 2024</span>
+                    <button 
+                      onClick={() => window.open('https://clinicaltrials.gov/', '_blank')}
+                      className="text-sm text-blue-600 hover:text-blue-800"
+                    >
+                      View Source
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* BioCentury Intelligence */}
+            <div className="p-4 border border-gray-200 rounded-lg">
+              <div className="flex items-start space-x-3">
+                <LuDatabase className="w-6 h-6 mt-1 text-gray-600" />
+                <div className="flex-1">
+                  <div className="flex items-center mb-2 space-x-2">
+                    <h3 className="font-semibold text-gray-900">BioCentury Intelligence</h3>
+                    <span className="px-2 py-1 text-xs font-medium text-white bg-black rounded-full">Database</span>
+                  </div>
+                  <p className="mb-3 text-sm text-gray-600">Deal tracking and competitive analysis</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-500">Updated: Dec 2024</span>
+                    <button 
+                      onClick={() => window.open('https://www.biocentury.com/', '_blank')}
+                      className="text-sm text-blue-600 hover:text-blue-800"
+                    >
+                      View Source
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* PubMed Literature Review */}
+            <div className="p-4 border border-gray-200 rounded-lg">
+              <div className="flex items-start space-x-3">
+                <LuFileText className="w-6 h-6 mt-1 text-gray-600" />
+                <div className="flex-1">
+                  <div className="flex items-center mb-2 space-x-2">
+                    <h3 className="font-semibold text-gray-900">PubMed Literature Review</h3>
+                    <span className="px-2 py-1 text-xs font-medium text-white bg-black rounded-full">Literature</span>
+                  </div>
+                  <p className="mb-3 text-sm text-gray-600">Scientific literature and clinical data</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-500">Updated: Dec 2024</span>
+                    <button 
+                      onClick={() => window.open('https://pubmed.ncbi.nlm.nih.gov/', '_blank')}
+                      className="text-sm text-blue-600 hover:text-blue-800"
+                    >
+                      View Source
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* Pipeline Crowding Analysis Modal */}
+    {showPipelineModal && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowPipelineModal(false)}>
+        <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+          {/* Modal Content */}
+          <div className="p-6">
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center space-x-3">
+                  <h2 className="text-xl font-bold text-gray-900">Pipeline Crowding Analysis</h2>
+                  <span className="px-2 py-0.5 text-sm font-medium text-black bg-transparent border border-black rounded-full">35%</span>
+                </div>
+                <button 
+                  onClick={() => setShowPipelineModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <p className="text-sm text-gray-600">
+                Detailed breakdown of assumptions, methodology, and sources
+              </p>
+            </div>
+
+            {/* Key Assumptions */}
+            <div className="mb-6">
+              <h3 className="mb-3 text-lg font-semibold text-gray-900">Key Assumptions</h3>
+              <ul className="space-y-2 text-sm text-gray-700">
+                <li className="flex items-start">
+                  <span className="mr-2 text-gray-400">•</span>
+                  Based on 47 active NSCLC programs in Phase I-III
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2 text-gray-400">•</span>
+                  Weighted by target overlap and MoA similarity
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2 text-gray-400">•</span>
+                  Includes both small molecule and biologic approaches
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2 text-gray-400">•</span>
+                  Excludes early discovery programs
+                </li>
+              </ul>
+            </div>
+
+            {/* Calculation Method */}
+            <div className="mb-6">
+              <h3 className="mb-3 text-lg font-semibold text-gray-900">Calculation Method</h3>
+              <div className="p-4 rounded-lg bg-gray-50">
+                <p className="font-mono text-sm text-gray-700">
+                  Crowding = (Overlapping Programs / Total Addressable Programs) x Competitive Weight
+                </p>
+              </div>
+            </div>
+
+            {/* AI-Generated Estimate */}
+            <div className="mb-6">
+              <h3 className="mb-3 text-lg font-semibold text-gray-900">AI-Generated Estimate</h3>
+              <div className="p-4 border border-blue-200 rounded-lg bg-blue-50">
+                <p className="text-sm text-blue-700">
+                  Calculated using NLP analysis of 200+ pipeline programs, scored for target and indication overlap
+                </p>
+              </div>
+            </div>
+
+            {/* Data Sources */}
+            <div>
+              <h3 className="mb-3 text-lg font-semibold text-gray-900">Data Sources</h3>
+              <div className="space-y-3">
+                <button 
+                  onClick={() => window.open('https://www.clarivate.com/cortellis/', '_blank')}
+                  className="flex items-center w-full p-3 text-sm transition-colors bg-transparent border border-gray-200 rounded-lg hover:bg-gray-50"
+                >
+                  <span className="flex-1 text-left text-gray-700">Database Clarivate Cortellis</span>
+                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </button>
+                <button 
+                  onClick={() => window.open('https://clinicaltrials.gov/', '_blank')}
+                  className="flex items-center w-full p-3 text-sm transition-colors bg-transparent border border-gray-200 rounded-lg hover:bg-gray-50"
+                >
+                  <span className="flex-1 text-left text-gray-700">Regulatory ClinicalTrials.gov</span>
+                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -982,6 +1518,9 @@ function App() {
   const [showModal, setShowModal] = useState(false)
   const [selectedDrug, setSelectedDrug] = useState('')
   const [modalTab, setModalTab] = useState('overview')
+  const [activeSubTab, setActiveSubTab] = useState('direct-competitors')
+  const [showPipelineModal, setShowPipelineModal] = useState(false)
+  const [showSourcesModal, setShowSourcesModal] = useState(false)
 
   // Animate progress when loading
   useEffect(() => {
@@ -1109,34 +1648,40 @@ function App() {
       setSelectedDrug={setSelectedDrug}
       modalTab={modalTab}
       setModalTab={setModalTab}
+      activeSubTab={activeSubTab}
+      setActiveSubTab={setActiveSubTab}
+      showPipelineModal={showPipelineModal}
+      setShowPipelineModal={setShowPipelineModal}
+      showSourcesModal={showSourcesModal}
+      setShowSourcesModal={setShowSourcesModal}
     />
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
+    <div className="min-h-screen px-4 py-8 bg-gray-50">
       <div className="max-w-6xl mx-auto">
         {/* Header - Outside the box */}
         <div className="mb-8 text-center">
                       <div className="flex items-center justify-center mb-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+              <div className="flex items-center justify-center w-12 h-12 mr-4 bg-blue-100 rounded-full">
                 <LuMicroscope className="w-6 h-6 text-blue-600" />
               </div>
               <h1 className="text-3xl font-bold text-gray-900">Market Analysis Agent</h1>
             </div>
-          <p className="text-lg text-gray-700 mb-2">Molecule Profile & Development Context</p>
+          <p className="mb-2 text-lg text-gray-700">Molecule Profile & Development Context</p>
           <p className="text-sm text-gray-500">
             Provide as much detail as available - all fields are optional and can be updated later
           </p>
         </div>
 
         {/* Main Container - Single White Box */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+        <div className="p-8 bg-white border border-gray-200 rounded-lg shadow-sm">
           {/* Status Messages */}
           {submitStatus === 'success' && (
-            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-md">
+            <div className="p-4 mb-6 border border-green-200 rounded-md bg-green-50">
               <div className="flex">
                 <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                  <svg className="w-5 h-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
                 </div>
@@ -1148,10 +1693,10 @@ function App() {
           )}
 
           {submitStatus === 'error' && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
+            <div className="p-4 mb-6 border border-red-200 rounded-md bg-red-50">
               <div className="flex">
                 <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                  <svg className="w-5 h-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                   </svg>
                 </div>
@@ -1167,12 +1712,12 @@ function App() {
             <div>
               <div className="mb-6 text-center">
                 <div className="flex items-center justify-center mb-2">
-                  <LuTarget className="w-6 h-6 text-black mr-2" />
-                  <h2 className="text-2xl font-semibold text-gray-900 tracking-tight">
+                  <LuTarget className="w-6 h-6 mr-2 text-black" />
+                  <h2 className="text-2xl font-semibold tracking-tight text-gray-900">
                     Drug Asset Information
                   </h2>
                 </div>
-                <p className="text-gray-600 text-sm">
+                <p className="text-sm text-gray-600">
                   Comprehensive molecule profile to enable precise market analysis and competitive positioning
                 </p>
               </div>
@@ -1186,55 +1731,55 @@ function App() {
                   <h3 className="text-lg font-medium text-gray-900">Basic Information</h3>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block mb-2 text-sm font-medium text-gray-700">
                       Molecule Name
                     </label>
                     <input
                       type="text"
                       value={formData.moleculeName}
                       onChange={(e) => handleInputChange('moleculeName', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1 text-sm"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
                       placeholder="e.g., BMS-986165, Osimertinib"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block mb-2 text-sm font-medium text-gray-700">
                       Internal Code
                     </label>
                     <input
                       type="text"
                       value={formData.internalCode}
                       onChange={(e) => handleInputChange('internalCode', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1 text-sm"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
                       placeholder="e.g., Program #247A, TKI-001"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block mb-2 text-sm font-medium text-gray-700">
                       Drug Class
                     </label>
                     <input
                       type="text"
                       value={formData.drugClass}
                       onChange={(e) => handleInputChange('drugClass', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1 text-sm"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
                       placeholder="e.g., Tyrosine Kinase Inhibitor, Checkpoint Inhibitor"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block mb-2 text-sm font-medium text-gray-700">
                       Modality
                     </label>
                     <div className="relative">
                       <button
                         type="button"
                         onClick={() => setModalityOpen(!modalityOpen)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1 bg-white text-left flex justify-between items-center text-sm"
+                        className="flex items-center justify-between w-full px-3 py-2 text-sm text-left bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
                       >
                         <span className={formData.modality ? "text-black" : "text-gray-500"}>
                           {formData.modality ? 
@@ -1280,7 +1825,7 @@ function App() {
                                   handleInputChange('modality', option.value);
                                   setModalityOpen(false);
                                 }}
-                                className="w-full px-3 py-2 text-left text-black hover:bg-gray-100 focus:bg-gray-100 focus:outline-none text-sm"
+                                className="w-full px-3 py-2 text-sm text-left text-black hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
                               >
                                 {option.label}
                               </button>
@@ -1292,14 +1837,14 @@ function App() {
                   </div>
 
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block mb-2 text-sm font-medium text-gray-700">
                       Mechanism of Action
                     </label>
                     <textarea
                       value={formData.mechanismOfAction}
                       onChange={(e) => handleInputChange('mechanismOfAction', e.target.value)}
                       rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1 text-sm"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
                       placeholder="e.g., Selective inhibition of EGFR L858R/T790M mutations while sparing wild-type EGFR..."
                     />
                   </div>
@@ -1315,16 +1860,16 @@ function App() {
                 </div>
                 <h3 className="text-lg font-medium text-gray-900">Target Indications</h3>
               </div>
-                              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                              <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
                 {indications.map((indication) => (
                   <label key={indication} className="flex items-center cursor-pointer">
                     <input
                       type="checkbox"
                       checked={selectedIndications.includes(indication)}
                       onChange={() => handleIndicationToggle(indication)}
-                      className="rounded border-gray-300 text-black focus:ring-black checked:bg-black checked:border-black"
+                      className="text-black border-gray-300 rounded focus:ring-black checked:bg-black checked:border-black"
                     />
-                    <span className="text-sm text-gray-700 ml-4">{indication}</span>
+                    <span className="ml-4 text-sm text-gray-700">{indication}</span>
                   </label>
                 ))}
               </div>
@@ -1338,16 +1883,16 @@ function App() {
                 </div>
                 <h3 className="text-lg font-medium text-gray-900">Development Status</h3>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
                     Development Phase
                   </label>
                   <div className="relative">
                     <button
                       type="button"
                       onClick={() => setPhaseOpen(!phaseOpen)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1 bg-white text-left flex justify-between items-center text-sm"
+                      className="flex items-center justify-between w-full px-3 py-2 text-sm text-left bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
                     >
                       <span className={formData.developmentPhase ? "text-black" : "text-gray-500"}>
                         {formData.developmentPhase ?
@@ -1395,14 +1940,14 @@ function App() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
                     Target Launch Year
                   </label>
                   <input
                     type="number"
                     value={formData.targetLaunchYear}
                     onChange={(e) => handleInputChange('targetLaunchYear', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1 text-sm"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
                     placeholder="YYYY"
                     min="2024"
                     max="2040"
@@ -1410,14 +1955,14 @@ function App() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
                     Route of Administration
                   </label>
                   <div className="relative">
                     <button
                       type="button"
                       onClick={() => setRouteOpen(!routeOpen)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1 bg-white text-left flex justify-between items-center text-sm"
+                      className="flex items-center justify-between w-full px-3 py-2 text-sm text-left bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
                     >
                       <span className={formData.routeOfAdministration ? "text-black" : "text-gray-500"}>
                         {formData.routeOfAdministration ?
@@ -1474,16 +2019,16 @@ function App() {
                 </div>
                 <h3 className="text-lg font-medium text-gray-900">Regions of Interest</h3>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
                 {regions.map((region) => (
                   <label key={region} className="flex items-center cursor-pointer">
                     <input
                       type="checkbox"
                       checked={selectedRegions.includes(region)}
                       onChange={() => handleRegionToggle(region)}
-                      className="rounded border-gray-300 text-black focus:ring-black checked:bg-black checked:border-black"
+                      className="text-black border-gray-300 rounded focus:ring-black checked:bg-black checked:border-black"
                     />
-                    <span className="text-sm text-gray-700 ml-4">{region}</span>
+                    <span className="ml-4 text-sm text-gray-700">{region}</span>
                   </label>
                 ))}
               </div>
@@ -1499,30 +2044,30 @@ function App() {
               </div>
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
                     Relevant Clinical Trials
                   </label>
                   <input
                     type="text"
                     value={formData.clinicalTrials}
                     onChange={(e) => handleInputChange('clinicalTrials', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1 text-sm"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
                     placeholder="e.g., NCT04567890, KEYNOTE-189, CheckMate-227"
                   />
-                  <p className="text-xs text-gray-500 mt-2">
+                  <p className="mt-2 text-xs text-gray-500">
                     Enter trial identifiers or names (comma-separated)
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
                     Additional Notes
                   </label>
                   <textarea
                     value={formData.additionalNotes}
                     onChange={(e) => handleInputChange('additionalNotes', e.target.value)}
                     rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1 text-sm"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
                     placeholder="Any additional context, competitive considerations, or strategic notes..."
                   />
                 </div>
@@ -1534,11 +2079,11 @@ function App() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-gray-900 hover:bg-gray-800 disabled:bg-gray-400 text-white font-semibold py-3 px-8 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 flex items-center space-x-2"
+                className="flex items-center px-8 py-3 space-x-2 font-semibold text-white transition-colors duration-200 bg-gray-900 rounded-md hover:bg-gray-800 disabled:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
               >
                 {isSubmitting ? (
                   <>
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 mr-3 -ml-1 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
