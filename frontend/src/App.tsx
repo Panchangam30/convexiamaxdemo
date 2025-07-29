@@ -79,7 +79,7 @@ const LoadingPage = ({ progress }: { progress: number }) => (
   </div>
 );
 
-const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, setActiveTab, showModal, setShowModal, selectedDrug, setSelectedDrug, modalTab, setModalTab, activeSubTab, setActiveSubTab, showPipelineModal, setShowPipelineModal, showSourcesModal, setShowSourcesModal, showCompetitiveLandscape, setShowCompetitiveLandscape, showMarketSizeModal, setShowMarketSizeModal, showPeakSalesModal, setShowPeakSalesModal, showCAGRModal, setShowCAGRModal, showMarketSourcesModal, setShowMarketSourcesModal, isMarketSizeExpanded, setIsMarketSizeExpanded }: { 
+const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, setActiveTab, showModal, setShowModal, selectedDrug, setSelectedDrug, modalTab, setModalTab, activeSubTab, setActiveSubTab, showPipelineModal, setShowPipelineModal, showSourcesModal, setShowSourcesModal, showCompetitiveLandscape, setShowCompetitiveLandscape, showMarketSizeModal, setShowMarketSizeModal, showPeakSalesModal, setShowPeakSalesModal, showCAGRModal, setShowCAGRModal, showMarketSourcesModal, setShowMarketSourcesModal, isMarketSizeExpanded, setIsMarketSizeExpanded, showPricingModal, setShowPricingModal }: { 
   showCompoundProfile: boolean, 
   setShowCompoundProfile: (show: boolean) => void,
   activeTab: string,
@@ -107,7 +107,9 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
   showMarketSourcesModal: boolean,
   setShowMarketSourcesModal: (show: boolean) => void,
   isMarketSizeExpanded: boolean,
-  setIsMarketSizeExpanded: (expanded: boolean) => void
+  setIsMarketSizeExpanded: (expanded: boolean) => void,
+  showPricingModal: boolean,
+  setShowPricingModal: (show: boolean) => void
 }) => (
   <div className="min-h-screen bg-gray-50">
     {/* Top Header */}
@@ -124,22 +126,22 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
           </div>
         </div>
         <div className="flex space-x-3">
-          <button className="px-4 py-2 text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+          <button className="px-4 py-2 text-sm transition-colors duration-200 bg-white border border-gray-300 rounded-md hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700">
             Edit Molecule Info
           </button>
-          <button className="flex items-center px-4 py-2 text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+          <button className="flex items-center px-4 py-2 text-sm transition-colors duration-200 bg-white border border-gray-300 rounded-md hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700">
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             CSV
           </button>
-          <button className="flex items-center px-4 py-2 text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+          <button className="flex items-center px-4 py-2 text-sm transition-colors duration-200 bg-white border border-gray-300 rounded-md hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700">
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             Excel
           </button>
-          <button className="flex items-center px-4 py-2 text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+          <button className="flex items-center px-4 py-2 text-sm transition-colors duration-200 bg-white border border-gray-300 rounded-md hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700">
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
@@ -174,13 +176,19 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
             <LuTrendingUp className="w-5 h-5 mr-2 text-gray-500" />
             <span className={`font-medium ${activeTab === 'market-size' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}>Market Size</span>
           </div>
-          <div className="flex items-center py-4 text-gray-500 hover:text-gray-700 whitespace-nowrap">
-            <LuDollarSign className="w-5 h-5 mr-2" />
-            Pricing & Access
+          <div 
+            className={`flex items-center py-4 border-b-2 whitespace-nowrap cursor-pointer ${activeTab === 'pricing-access' ? 'border-blue-600' : 'border-transparent'}`}
+            onClick={() => setActiveTab('pricing-access')}
+          >
+            <LuDollarSign className="w-5 h-5 mr-2 text-gray-500" />
+            <span className={`font-medium ${activeTab === 'pricing-access' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}>Pricing & Access</span>
           </div>
-          <div className="flex items-center py-4 text-gray-500 hover:text-gray-700 whitespace-nowrap">
-            <LuShield className="w-5 h-5 mr-2" />
-            Incentives & Regulation
+          <div 
+            className={`flex items-center py-4 border-b-2 whitespace-nowrap cursor-pointer ${(activeTab as string) === 'incentives-regulation' ? 'border-blue-600' : 'border-transparent'}`}
+            onClick={() => setActiveTab('incentives-regulation')}
+          >
+            <LuShield className="w-5 h-5 mr-2 text-gray-500" />
+            <span className={`font-medium ${(activeTab as string) === 'incentives-regulation' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}>Incentives & Regulation</span>
           </div>
           <div className="flex items-center py-4 text-gray-500 hover:text-gray-700 whitespace-nowrap">
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -215,7 +223,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
           <h2 className="text-3xl font-bold text-gray-900">Compound Profile</h2>
           <button 
             onClick={() => setShowCompoundProfile(!showCompoundProfile)}
-            className="p-2 transition-colors rounded-full hover:bg-gray-100"
+            className="p-2 transition-colors duration-200 rounded-full hover:bg-blue-50 hover:text-blue-600"
           >
             {showCompoundProfile ? (
               <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -321,7 +329,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
           <h2 className="text-2xl font-bold text-gray-900">Competitive Landscape</h2>
           <button 
             onClick={() => setShowCompetitiveLandscape(!showCompetitiveLandscape)}
-            className="p-2 transition-colors rounded-full hover:bg-gray-100"
+            className="p-2 transition-colors duration-200 rounded-full hover:bg-blue-50 hover:text-blue-600"
           >
             {showCompetitiveLandscape ? (
               <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -375,7 +383,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
           </div>
           <button 
             onClick={() => setShowSourcesModal(true)}
-            className="flex items-center px-3 py-2 space-x-2 text-sm font-medium text-gray-700 bg-transparent border border-black rounded-md"
+            className="flex items-center px-3 py-2 space-x-2 text-sm font-medium text-gray-700 bg-transparent border border-black rounded-md hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
           >
             <LuDatabase className="w-4 h-4" />
             <span>Sources (4)</span>
@@ -425,7 +433,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                   setSelectedDrug('Osimertinib')
                   setShowModal(true)
                 }}
-                className="w-full px-4 py-2 text-sm text-black transition-colors bg-transparent border border-gray-200 rounded-md hover:bg-gray-100 hover:text-black"
+                className="w-full px-4 py-2 text-sm text-black transition-colors duration-200 bg-transparent border border-gray-200 rounded-md hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
               >
                 View Detailed Analysis
               </button>
@@ -471,7 +479,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                   setSelectedDrug('Lazertinib')
                   setShowModal(true)
                 }}
-                className="w-full px-4 py-2 text-sm text-black transition-colors bg-transparent border border-gray-200 rounded-md hover:bg-gray-100 hover:text-black"
+                className="w-full px-4 py-2 text-sm text-black transition-colors duration-200 bg-transparent border border-gray-200 rounded-md hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
               >
                 View Detailed Analysis
               </button>
@@ -517,7 +525,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                   setSelectedDrug('Furmonertinib')
                   setShowModal(true)
                 }}
-                className="w-full px-4 py-2 text-sm text-black transition-colors bg-transparent border border-gray-200 rounded-md hover:bg-gray-100 hover:text-black"
+                className="w-full px-4 py-2 text-sm text-black transition-colors duration-200 bg-transparent border border-gray-200 rounded-md hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
               >
                 View Detailed Analysis
               </button>
@@ -563,7 +571,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                   setSelectedDrug('Nazartinib')
                   setShowModal(true)
                 }}
-                className="w-full px-4 py-2 text-sm text-black transition-colors bg-transparent border border-gray-200 rounded-md hover:bg-gray-100 hover:text-black"
+                className="w-full px-4 py-2 text-sm text-black transition-colors duration-200 bg-transparent border border-gray-200 rounded-md hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
               >
                 View Detailed Analysis
               </button>
@@ -721,7 +729,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                       </svg>
                       <button 
                         onClick={() => setShowPipelineModal(true)}
-                        className="text-sm text-blue-600 hover:text-blue-800"
+                        className="text-sm text-blue-600 transition-colors duration-200 hover:text-blue-800"
                       >
                         View Details
                       </button>
@@ -884,7 +892,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
             </div>
             <button 
               onClick={() => setShowModal(false)}
-              className="text-gray-400 hover:text-gray-600"
+              className="text-gray-400 transition-colors duration-200 hover:text-red-500"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -1010,7 +1018,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
               <div className="flex space-x-4">
                 <button 
                   onClick={() => window.open('https://www.biocentury.com/', '_blank')}
-                  className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors bg-transparent border border-black hover:bg-gray-50 rounded-2xl"
+                  className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
                 >
                   <span>BioCentury Intelligence</span>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1019,7 +1027,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 </button>
                 <button 
                   onClick={() => window.open('https://www.janssen.com/', '_blank')}
-                  className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors bg-transparent border border-black hover:bg-gray-50 rounded-2xl"
+                  className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
                 >
                   <span>Janssen Press Release</span>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1028,7 +1036,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 </button>
                 <button 
                   onClick={() => window.open('https://clinicaltrials.gov/', '_blank')}
-                  className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors bg-transparent border border-black hover:bg-gray-50 rounded-2xl"
+                  className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
                 >
                   <span>ClinicalTrials.gov</span>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1091,7 +1099,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                   <div className="flex space-x-4">
                     <button 
                       onClick={() => window.open('https://www.clarivate.com/cortellis/', '_blank')}
-                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors bg-transparent border border-black hover:bg-gray-50 rounded-2xl"
+                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
@@ -1103,7 +1111,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                     </button>
                     <button 
                       onClick={() => window.open('https://clinicaltrials.gov/', '_blank')}
-                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors bg-transparent border border-black hover:bg-gray-50 rounded-2xl"
+                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -1120,7 +1128,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                                        selectedDrug === 'Furmonertinib' ? 'allist' : 'novartis';
                         window.open(`https://www.sec.gov/edgar/search/index.php?company=${company}`, '_blank');
                       }}
-                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors bg-transparent border border-black hover:bg-gray-50 rounded-2xl"
+                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -1178,7 +1186,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                   <div className="flex space-x-4">
                     <button 
                       onClick={() => window.open('https://www.clarivate.com/cortellis/', '_blank')}
-                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors bg-transparent border border-black hover:bg-gray-50 rounded-2xl"
+                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
                     >
                       <span>Clarivate Cortellis</span>
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1187,7 +1195,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                     </button>
                     <button 
                       onClick={() => window.open('https://clinicaltrials.gov/', '_blank')}
-                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors bg-transparent border border-black hover:bg-gray-50 rounded-2xl"
+                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
                     >
                       <span>ClinicalTrials.gov</span>
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1201,7 +1209,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                                        selectedDrug === 'Furmonertinib' ? 'allist' : 'novartis';
                         window.open(`https://www.sec.gov/edgar/search/index.php?company=${company}`, '_blank');
                       }}
-                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors bg-transparent border border-black hover:bg-gray-50 rounded-2xl"
+                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
                     >
                       <span>{selectedDrug === 'Osimertinib' ? 'AstraZeneca 10-K' : 
                              selectedDrug === 'Lazertinib' ? 'Yuhan/Janssen 10-K' : 
@@ -1260,7 +1268,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                   <div className="flex space-x-4">
                     <button 
                       onClick={() => window.open('https://www.clarivate.com/cortellis/', '_blank')}
-                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors bg-transparent border border-black hover:bg-gray-50 rounded-2xl"
+                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
                     >
                       <span>Clarivate Cortellis</span>
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1269,7 +1277,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                     </button>
                     <button 
                       onClick={() => window.open('https://clinicaltrials.gov/', '_blank')}
-                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors bg-transparent border border-black hover:bg-gray-50 rounded-2xl"
+                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
                     >
                       <span>ClinicalTrials.gov</span>
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1283,7 +1291,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                                        selectedDrug === 'Furmonertinib' ? 'allist' : 'novartis';
                         window.open(`https://www.sec.gov/edgar/search/index.php?company=${company}`, '_blank');
                       }}
-                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors bg-transparent border border-black hover:bg-gray-50 rounded-2xl"
+                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
                     >
                       <span>{selectedDrug === 'Osimertinib' ? 'AstraZeneca 10-K' : 
                              selectedDrug === 'Lazertinib' ? 'Yuhan/Janssen 10-K' : 
@@ -1313,7 +1321,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
             </div>
             <button 
               onClick={() => setShowSourcesModal(false)}
-              className="text-gray-400 hover:text-gray-600"
+              className="text-gray-400 transition-colors duration-200 hover:text-red-500"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -1423,10 +1431,10 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
       <div className="px-6 py-8 mx-auto max-w-7xl">
                         <div className="flex items-center justify-between mb-8">
                   <h2 className="text-3xl font-bold text-gray-900">Market Size & Growth</h2>
-                  <button 
-                    onClick={() => setIsMarketSizeExpanded(!isMarketSizeExpanded)}
-                    className="p-2 transition-colors rounded-full hover:bg-gray-100"
-                  >
+                            <button 
+            onClick={() => setIsMarketSizeExpanded(!isMarketSizeExpanded)}
+            className="p-2 transition-colors duration-200 rounded-full hover:bg-blue-50 hover:text-blue-600"
+          >
                     <svg className={`w-6 h-6 text-gray-600 transition-transform ${isMarketSizeExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
                     </svg>
@@ -1444,7 +1452,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 </svg>
                 <button 
                   onClick={() => setShowMarketSizeModal(true)}
-                  className="ml-2 text-sm text-blue-600 hover:text-blue-800"
+                  className="ml-2 text-sm text-blue-600 transition-colors duration-200 hover:text-blue-800"
                 >
                   View Details
                 </button>
@@ -1456,7 +1464,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
               <div className="mb-3 text-sm font-medium text-gray-900">High Potential</div>
                                     <button 
                         onClick={() => setShowMarketSourcesModal(true)}
-                        className="flex items-center px-3 py-2 text-sm font-medium border border-black rounded-md text-blac hover:bg-gray-200"
+                        className="flex items-center px-3 py-2 text-sm font-medium text-black transition-colors duration-200 border border-black rounded-md hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
                       >
                         <LuDatabase className="w-4 h-4 mr-2" />
                         Sources (4)
@@ -1475,7 +1483,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 </svg>
                 <button 
                   onClick={() => setShowPeakSalesModal(true)}
-                  className="ml-2 text-sm text-blue-600 hover:text-blue-800"
+                  className="ml-2 text-sm text-blue-600 transition-colors duration-200 hover:text-blue-800"
                 >
                   View Details
                 </button>
@@ -1492,7 +1500,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 </svg>
                 <button 
                   onClick={() => setShowCAGRModal(true)}
-                  className="ml-2 text-sm text-blue-600 hover:text-blue-800"
+                  className="ml-2 text-sm text-blue-600 transition-colors duration-200 hover:text-blue-800"
                 >
                   View Details
                 </button>
@@ -1808,7 +1816,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 </div>
                 <button 
                   onClick={() => setShowMarketSizeModal(false)}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="text-gray-400 transition-colors duration-200 hover:text-red-500"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -1877,7 +1885,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
               <div className="space-y-3">
                 <button 
                   onClick={() => window.open('https://www.evaluate.com/', '_blank')}
-                  className="flex items-center w-full p-3 text-sm transition-colors bg-transparent border border-gray-200 rounded-lg hover:bg-gray-50"
+                  className="flex items-center w-full p-3 text-sm transition-colors duration-200 bg-transparent border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
                 >
                   <span className="px-2 py-1 mr-3 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">Database</span>
                   <span className="flex-1 text-left text-gray-700">EvaluatePharma</span>
@@ -1887,12 +1895,12 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 </button>
                 <button 
                   onClick={() => window.open('https://www.iqvia.com/', '_blank')}
-                  className="flex items-center w-full p-3 text-sm transition-colors bg-transparent border border-gray-200 rounded-lg hover:bg-gray-50"
+                  className="flex items-center w-full p-3 text-sm transition-colors duration-200 bg-transparent border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
                 >
                   <span className="px-2 py-1 mr-3 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">Database</span>
                   <span className="flex-1 text-left text-gray-700">IQVIA Market Research</span>
                 </button>
-                <button className="flex items-center w-full p-3 text-sm transition-colors bg-transparent border border-gray-200 rounded-lg hover:bg-gray-50">
+                <button className="flex items-center w-full p-3 text-sm transition-colors duration-200 bg-transparent border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700">
                   <span className="px-2 py-1 mr-3 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">Manual Input</span>
                   <span className="flex-1 text-left text-gray-700">Internal Analysis</span>
                 </button>
@@ -1917,7 +1925,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 </div>
                 <button 
                   onClick={() => setShowPeakSalesModal(false)}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="text-gray-400 transition-colors duration-200 hover:text-red-500"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -1976,7 +1984,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
               <div className="space-y-3">
                 <button 
                   onClick={() => window.open('https://www.evaluate.com/', '_blank')}
-                  className="flex items-center w-full p-3 text-sm transition-colors bg-transparent border border-gray-200 rounded-lg hover:bg-gray-50"
+                  className="flex items-center w-full p-3 text-sm transition-colors duration-200 bg-transparent border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
                 >
                   <span className="px-2 py-1 mr-3 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">Database</span>
                   <span className="flex-1 text-left text-gray-700">EvaluatePharma</span>
@@ -1986,7 +1994,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 </button>
                 <button 
                   onClick={() => window.open('https://www.iqvia.com/', '_blank')}
-                  className="flex items-center w-full p-3 text-sm transition-colors bg-transparent border border-gray-200 rounded-lg hover:bg-gray-50"
+                  className="flex items-center w-full p-3 text-sm transition-colors duration-200 bg-transparent border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
                 >
                   <span className="px-2 py-1 mr-3 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">Database</span>
                   <span className="flex-1 text-left text-gray-700">IQVIA Market Research</span>
@@ -2012,7 +2020,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 </div>
                 <button 
                   onClick={() => setShowCAGRModal(false)}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="text-gray-400 transition-colors duration-200 hover:text-red-500"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -2059,7 +2067,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
               <div className="space-y-3">
                 <button 
                   onClick={() => window.open('https://www.evaluate.com/', '_blank')}
-                  className="flex items-center w-full p-3 text-sm transition-colors bg-transparent border border-gray-200 rounded-lg hover:bg-gray-50"
+                  className="flex items-center w-full p-3 text-sm transition-colors duration-200 bg-transparent border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
                 >
                   <span className="px-2 py-1 mr-3 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">Database</span>
                   <span className="flex-1 text-left text-gray-700">EvaluatePharma</span>
@@ -2069,7 +2077,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 </button>
                 <button 
                   onClick={() => window.open('https://www.iqvia.com/', '_blank')}
-                  className="flex items-center w-full p-3 text-sm transition-colors bg-transparent border border-gray-200 rounded-lg hover:bg-gray-50"
+                  className="flex items-center w-full p-3 text-sm transition-colors duration-200 bg-transparent border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
                 >
                   <span className="px-2 py-1 mr-3 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">Database</span>
                   <span className="flex-1 text-left text-gray-700">IQVIA Market Research</span>
@@ -2092,7 +2100,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 <h2 className="text-xl font-bold text-gray-900">Data Sources</h2>
                 <button 
                   onClick={() => setShowMarketSourcesModal(false)}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="text-gray-400 transition-colors duration-200 hover:text-red-500"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -2171,7 +2179,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 </div>
                 <button 
                   onClick={() => setShowPipelineModal(false)}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="text-gray-400 transition-colors duration-200 hover:text-red-500"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -2232,7 +2240,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
               <div className="space-y-3">
                 <button 
                   onClick={() => window.open('https://www.clarivate.com/cortellis/', '_blank')}
-                  className="flex items-center w-full p-3 text-sm transition-colors bg-transparent border border-gray-200 rounded-lg hover:bg-gray-50"
+                  className="flex items-center w-full p-3 text-sm transition-colors duration-200 bg-transparent border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
                 >
                   <span className="flex-1 text-left text-gray-700">Database Clarivate Cortellis</span>
                   <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -2241,7 +2249,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 </button>
                 <button 
                   onClick={() => window.open('https://clinicaltrials.gov/', '_blank')}
-                  className="flex items-center w-full p-3 text-sm transition-colors bg-transparent border border-gray-200 rounded-lg hover:bg-gray-50"
+                  className="flex items-center w-full p-3 text-sm transition-colors duration-200 bg-transparent border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
                 >
                   <span className="flex-1 text-left text-gray-700">Regulatory ClinicalTrials.gov</span>
                   <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -2252,6 +2260,713 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
             </div>
           </div>
         </div>
+      </div>
+    )}
+
+    {activeTab === 'incentives-regulation' && (
+      <div className="px-6 py-8 mx-auto max-w-7xl">
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-3xl font-bold text-gray-900">Incentives & Regulatory Opportunities</h2>
+        </div>
+
+        {/* Box 1: CNPV/PRV Eligibility Score */}
+        <div className="p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+          {/* Main Score Section */}
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h3 className="text-xl font-bold text-gray-900">CNPV/PRV Eligibility Score</h3>
+              <p className="text-sm text-gray-600">Regulatory incentive qualification assessment</p>
+            </div>
+            <div className="text-right">
+              <div className="mb-2 text-4xl font-bold text-blue-600">47%</div>
+              <span className="px-3 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full">Moderate Potential</span>
+            </div>
+          </div>
+
+          {/* Four Metrics Section */}
+          <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
+            {/* Rare Disease Eligibility */}
+            <div className="text-center">
+              <div className="mb-2 text-3xl font-bold text-green-600">85%</div>
+              <div className="text-sm font-medium text-gray-900">Rare Disease Eligibility</div>
+            </div>
+
+            {/* PRV Eligibility */}
+            <div className="text-center">
+              <div className="mb-2 text-3xl font-bold text-blue-600">45%</div>
+              <div className="text-sm font-medium text-gray-900">PRV Eligibility</div>
+            </div>
+
+            {/* National Priority */}
+            <div className="text-center">
+              <div className="mb-2 text-3xl font-bold text-purple-600">High</div>
+              <div className="text-sm font-medium text-gray-900">National Priority</div>
+            </div>
+
+            {/* Review Timeline */}
+            <div className="text-center">
+              <div className="mb-2 text-3xl font-bold text-orange-600">10-12 mo</div>
+              <div className="text-sm font-medium text-gray-900">Review Timeline</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Two-column layout for Regulatory Incentives and Timeline */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          {/* Box 2: Regulatory Incentives */}
+          <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <h3 className="mb-2 text-lg font-bold text-gray-900">Regulatory Incentives</h3>
+            <p className="mb-6 text-sm text-gray-600">Available designations and their impact.</p>
+            
+            <div className="space-y-4">
+              {/* Orphan Drug Designation */}
+              <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+                <div className="flex items-start justify-between mb-3">
+                  <h4 className="font-semibold text-gray-900">Orphan Drug Designation</h4>
+                  <span className="px-2 py-1 text-xs font-medium text-white bg-black rounded-full">Eligible</span>
+                </div>
+                <div className="mb-4 space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Value:</span>
+                    <span className="text-sm font-medium text-gray-900">$3M PDUFA fee waiver</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Exclusivity:</span>
+                    <span className="text-sm font-medium text-gray-900">7 years</span>
+                  </div>
+                  <div className="space-y-2">
+                    <span className="text-sm text-gray-600">Probability:</span>
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1 h-2 mr-3 bg-gray-200 rounded-full">
+                        <div className="h-2 bg-black rounded-full" style={{width: '85%'}}></div>
+                      </div>
+                      <span className="text-sm font-medium text-gray-900">85%</span>
+                    </div>
+                  </div>
+                </div>
+                <button className="flex items-center text-sm text-blue-600 hover:text-blue-800">
+                  <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  View Details
+                </button>
+              </div>
+
+              {/* Priority Review Voucher */}
+              <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+                <div className="flex items-start justify-between mb-3">
+                  <h4 className="font-semibold text-gray-900">Priority Review Voucher</h4>
+                  <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full">Potential</span>
+                </div>
+                <div className="mb-4 space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Value:</span>
+                    <span className="text-sm font-medium text-gray-900">$100-350M</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Exclusivity:</span>
+                    <span className="text-sm font-medium text-gray-900">N/A</span>
+                  </div>
+                  <div className="space-y-2">
+                    <span className="text-sm text-gray-600">Probability:</span>
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1 h-2 mr-3 bg-gray-200 rounded-full">
+                        <div className="h-2 bg-black rounded-full" style={{width: '45%'}}></div>
+                      </div>
+                      <span className="text-sm font-medium text-gray-900">45%</span>
+                    </div>
+                  </div>
+                </div>
+                <button className="flex items-center text-sm text-blue-600 hover:text-blue-800">
+                  <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  View Details
+                </button>
+              </div>
+
+              {/* Breakthrough Designation */}
+              <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+                <div className="flex items-start justify-between mb-3">
+                  <h4 className="font-semibold text-gray-900">Breakthrough Designation</h4>
+                  <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full">Likely</span>
+                </div>
+                <div className="mb-4 space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Value:</span>
+                    <span className="text-sm font-medium text-gray-900">Expedited review</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Exclusivity:</span>
+                    <span className="text-sm font-medium text-gray-900">N/A</span>
+                  </div>
+                  <div className="space-y-2">
+                    <span className="text-sm text-gray-600">Probability:</span>
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1 h-2 mr-3 bg-gray-200 rounded-full">
+                        <div className="h-2 bg-black rounded-full" style={{width: '65%'}}></div>
+                      </div>
+                      <span className="text-sm font-medium text-gray-900">65%</span>
+                    </div>
+                  </div>
+                </div>
+                <button className="flex items-center text-sm text-blue-600 hover:text-blue-800">
+                  <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  View Details
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Box 3: Regulatory Timeline */}
+          <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <h3 className="mb-2 text-lg font-bold text-gray-900">Regulatory Timeline</h3>
+            <p className="mb-6 text-sm text-gray-600">Key milestones and approval pathway.</p>
+            
+            <div className="space-y-4">
+              {/* Timeline Items */}
+              <div className="flex items-center space-x-3">
+                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                <div className="flex-1">
+                  <div className="font-medium text-gray-900">IND Filing</div>
+                  <div className="text-sm text-gray-600">Completed</div>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-3">
+                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                <div className="flex-1">
+                  <div className="font-medium text-gray-900">Phase I Initiation</div>
+                  <div className="text-sm text-gray-600">Q1 2024</div>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-3">
+                <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                <div className="flex-1">
+                  <div className="font-medium text-gray-900">Phase II Initiation</div>
+                  <div className="text-sm text-gray-600">Q3 2024</div>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-3">
+                <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
+                <div className="flex-1">
+                  <div className="font-medium text-gray-900">Breakthrough Designation</div>
+                  <div className="text-sm text-gray-600">Q4 2024</div>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-3">
+                <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
+                <div className="flex-1">
+                  <div className="font-medium text-gray-900">Phase III Initiation</div>
+                  <div className="text-sm text-gray-600">Q2 2025</div>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-3">
+                <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
+                <div className="flex-1">
+                  <div className="font-medium text-gray-900">NDA Filing</div>
+                  <div className="text-sm text-gray-600">Q4 2026</div>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-3">
+                <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
+                <div className="flex-1">
+                  <div className="font-medium text-gray-900">FDA Approval</div>
+                  <div className="text-sm text-gray-600">Q2 2027</div>
+                </div>
+              </div>
+            </div>
+            
+            <button className="flex items-center mt-6 text-sm text-blue-600 hover:text-blue-800">
+              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              View Details
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {activeTab === 'pricing-access' && (
+      <div className="px-6 py-8 mx-auto max-w-7xl">
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-3xl font-bold text-gray-900">Pricing & Reimbursement</h2>
+        </div>
+
+        {/* Tabs */}
+        <div className="mb-8">
+          <div className="flex items-center">
+            <div className="flex-1 p-1 mr-2 bg-gray-100 rounded-md">
+              <div className="flex">
+                <button 
+                  onClick={() => setActiveSubTab('payer-sentiment')}
+                  className={`flex-1 px-4 py-2 mr-1 text-sm font-medium rounded-md ${
+                    activeSubTab === 'payer-sentiment' 
+                      ? 'text-gray-900 bg-white border border-gray-300 shadow-sm' 
+                      : 'text-gray-600 bg-transparent'
+                  }`}
+                >
+                  Payer Sentiment
+                </button>
+                <button 
+                  onClick={() => setActiveSubTab('pricing-scenarios')}
+                  className={`flex-1 px-4 py-2 ml-1 text-sm font-medium rounded-md ${
+                    activeSubTab === 'pricing-scenarios' 
+                      ? 'text-gray-900 bg-white border border-gray-300 shadow-sm' 
+                      : 'text-gray-600 bg-transparent'
+                  }`}
+                >
+                  Pricing Scenarios
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {activeSubTab === 'payer-sentiment' && (
+          <>
+            <div className="grid grid-cols-1 gap-6 mb-8 lg:grid-cols-3">
+              {/* Medicare Card */}
+              <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <h3 className="mb-4 text-xl font-bold text-gray-900">Medicare</h3>
+                <div className="space-y-4">
+                  <div>
+                    <span className="text-sm text-gray-600">ICER:</span>
+                    <div className="text-sm font-medium text-gray-900">$125K/QALY • Mar 2024</div>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Willingness to Pay:</span>
+                    <div className="text-sm font-bold text-green-600">$150K</div>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Reimbursement Timeline:</span>
+                    <div className="text-sm font-medium text-gray-900">6-12 mo</div>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Access Barriers:</span>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      <span className="px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">Prior Authorization</span>
+                      <span className="px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">Step Therapy</span>
+                    </div>
+                  </div>
+                </div>
+                <button 
+                  className="w-full px-4 py-2 mt-6 text-sm text-black transition-colors duration-200 bg-transparent border border-gray-200 rounded-md hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
+                >
+                  View Details
+                </button>
+              </div>
+
+              {/* Commercial Card */}
+              <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <h3 className="mb-4 text-xl font-bold text-gray-900">Commercial</h3>
+                <div className="space-y-4">
+                  <div>
+                    <span className="text-sm text-gray-600">ICER:</span>
+                    <div className="text-sm font-medium text-gray-900">$110K/QALY • Feb 2024</div>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Willingness to Pay:</span>
+                    <div className="text-sm font-bold text-green-600">$180K</div>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Reimbursement Timeline:</span>
+                    <div className="text-sm font-medium text-gray-900">3-6 mo</div>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Access Barriers:</span>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      <span className="px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">Limited Networks</span>
+                      <span className="px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">Copay Limits</span>
+                    </div>
+                  </div>
+                </div>
+                <button 
+                  className="w-full px-4 py-2 mt-6 text-sm text-black transition-colors duration-200 bg-transparent border border-gray-200 rounded-md hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
+                >
+                  View Details
+                </button>
+              </div>
+
+              {/* Medicaid Card */}
+              <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <h3 className="mb-4 text-xl font-bold text-gray-900">Medicaid</h3>
+                <div className="space-y-4">
+                  <div>
+                    <span className="text-sm text-gray-600">ICER:</span>
+                    <div className="text-sm font-medium text-gray-900">$140K/QALY • Jan 2024</div>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Willingness to Pay:</span>
+                    <div className="text-sm font-bold text-green-600">$75K</div>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Reimbursement Timeline:</span>
+                    <div className="text-sm font-medium text-gray-900">12-24 mo</div>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-600">Access Barriers:</span>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      <span className="px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">State Variability</span>
+                      <span className="px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">Budget Impact</span>
+                    </div>
+                  </div>
+                </div>
+                <button 
+                  className="w-full px-4 py-2 mt-6 text-sm text-black transition-colors duration-200 bg-transparent border border-gray-200 rounded-md hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
+                >
+                  View Details
+                </button>
+              </div>
+            </div>
+
+            {/* Market Comparator Benchmarks Table */}
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <div className="mb-4">
+                <h3 className="text-lg font-bold text-gray-900">Market Comparator Benchmarks</h3>
+                <p className="text-sm text-gray-600">Pricing and access patterns for similar oncology assets</p>
+              </div>
+              
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-gray-200">
+                      <th className="px-4 py-3 font-medium text-left text-gray-900">Drug</th>
+                      <th className="px-4 py-3 font-medium text-right text-gray-900">Annual Price</th>
+                      <th className="px-4 py-3 font-medium text-left text-gray-900">Indication</th>
+                      <th className="px-4 py-3 font-medium text-left text-gray-900">Access Level</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="border-b border-gray-200">
+                      <td className="px-4 py-3 text-gray-900">Osimertinib</td>
+                      <td className="px-4 py-3 font-bold text-right text-green-600">$165K</td>
+                      <td className="px-4 py-3 text-gray-900">EGFR+ NSCLC</td>
+                      <td className="px-4 py-3">
+                        <span className="px-3 py-1 text-xs font-medium text-white bg-black rounded-full">Broad</span>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-200">
+                      <td className="px-4 py-3 text-gray-900">Alectinib</td>
+                      <td className="px-4 py-3 font-bold text-right text-green-600">$155K</td>
+                      <td className="px-4 py-3 text-gray-900">ALK+ NSCLC</td>
+                      <td className="px-4 py-3">
+                        <span className="px-3 py-1 text-xs font-medium text-white bg-black rounded-full">Broad</span>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-200">
+                      <td className="px-4 py-3 text-gray-900">Lorlatinib</td>
+                      <td className="px-4 py-3 font-bold text-right text-green-600">$195K</td>
+                      <td className="px-4 py-3 text-gray-900">ALK+ NSCLC</td>
+                      <td className="px-4 py-3">
+                        <span className="px-3 py-1 text-xs font-medium text-gray-900 bg-white border border-gray-300 rounded-full">Limited</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 text-gray-900">Selpercatinib</td>
+                      <td className="px-4 py-3 font-bold text-right text-green-600">$175K</td>
+                      <td className="px-4 py-3 text-gray-900">RET+ NSCLC</td>
+                      <td className="px-4 py-3">
+                        <span className="px-3 py-1 text-xs font-medium text-gray-900 bg-white border border-gray-300 rounded-full">Moderate</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </>
+        )}
+
+        {activeSubTab === 'pricing-scenarios' && (
+          <>
+            <div className="p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <div className="mb-6">
+                <h3 className="text-xl font-bold text-gray-900">Pricing Strategy Scenarios</h3>
+                <p className="text-sm text-gray-600">Comparative analysis of pricing and access strategies</p>
+              </div>
+              
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-gray-200">
+                      <th className="px-4 py-3 font-medium text-left text-gray-900">Scenario</th>
+                      <th className="px-4 py-3 font-medium text-right text-gray-900">US Price</th>
+                      <th className="px-4 py-3 font-medium text-right text-gray-900">Ex-US Price</th>
+                      <th className="px-4 py-3 font-medium text-right text-gray-900">Gross-to-Net</th>
+                      <th className="px-4 py-3 font-medium text-center text-gray-900">Copay Support</th>
+                      <th className="px-4 py-3 font-medium text-center text-gray-900">Access Programs</th>
+                      <th className="px-4 py-3 font-medium text-center text-gray-900">Generic Entry</th>
+                      <th className="px-4 py-3 font-medium text-right text-gray-900">LOE Impact</th>
+                      <th className="px-4 py-3 font-medium text-center text-gray-900">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="border-b border-gray-200">
+                      <td className="px-4 py-3 text-gray-900">Base Case</td>
+                      <td className="px-4 py-3 font-bold text-right text-green-600">$180K</td>
+                      <td className="px-4 py-3 font-bold text-right text-blue-600">$120K</td>
+                      <td className="px-4 py-3 text-right text-gray-900">35%</td>
+                      <td className="px-4 py-3 text-center">
+                        <span className="px-3 py-1 text-xs font-medium text-white bg-black rounded-full">Yes</span>
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <span className="px-3 py-1 text-xs font-medium text-white bg-black rounded-full">Yes</span>
+                      </td>
+                      <td className="px-4 py-3 text-center text-gray-900">Yr 8</td>
+                      <td className="px-4 py-3 font-bold text-right text-red-600">65%</td>
+                      <td className="px-4 py-3 text-center">
+                        <button className="px-4 py-2 text-sm font-medium text-black transition-colors duration-200 bg-gray-200 border border-gray-300 rounded-md hover:bg-gray-300">
+                          View Details
+                        </button>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-200">
+                      <td className="px-4 py-3 text-gray-900">Conservative</td>
+                      <td className="px-4 py-3 font-bold text-right text-green-600">$150K</td>
+                      <td className="px-4 py-3 font-bold text-right text-blue-600">$100K</td>
+                      <td className="px-4 py-3 text-right text-gray-900">45%</td>
+                      <td className="px-4 py-3 text-center">
+                        <span className="px-3 py-1 text-xs font-medium text-white bg-black rounded-full">Yes</span>
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <span className="px-3 py-1 text-xs font-medium text-white bg-black rounded-full">Yes</span>
+                      </td>
+                      <td className="px-4 py-3 text-center text-gray-900">Yr 6</td>
+                      <td className="px-4 py-3 font-bold text-right text-red-600">75%</td>
+                      <td className="px-4 py-3 text-center">
+                        <button className="px-4 py-2 text-sm font-medium text-black transition-colors duration-200 bg-gray-200 border border-gray-300 rounded-md hover:bg-gray-300">
+                          View Details
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 text-gray-900">Optimistic</td>
+                      <td className="px-4 py-3 font-bold text-right text-green-600">$220K</td>
+                      <td className="px-4 py-3 font-bold text-right text-blue-600">$150K</td>
+                      <td className="px-4 py-3 text-right text-gray-900">25%</td>
+                      <td className="px-4 py-3 text-center">
+                        <span className="px-3 py-1 text-xs font-medium text-white bg-black rounded-full">Yes</span>
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <span className="px-3 py-1 text-xs font-medium text-gray-900 bg-gray-100 border border-gray-300 rounded-full">No</span>
+                      </td>
+                      <td className="px-4 py-3 text-center text-gray-900">Yr 10</td>
+                      <td className="px-4 py-3 font-bold text-right text-red-600">45%</td>
+                      <td className="px-4 py-3 text-center">
+                        <button className="px-4 py-2 text-sm font-medium text-black transition-colors duration-200 bg-gray-200 border border-gray-300 rounded-md hover:bg-gray-300">
+                          View Details
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Rationale Cards */}
+            <div className="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-3">
+              {/* Base Case Rationale */}
+              <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <h3 className="mb-2 text-lg font-bold text-gray-900">Base Case Rationale</h3>
+                <p className="text-sm text-gray-600">Conservative pricing aligned with current SOC, balanced access strategy</p>
+              </div>
+
+              {/* Conservative Rationale */}
+              <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <h3 className="mb-2 text-lg font-bold text-gray-900">Conservative Rationale</h3>
+                <p className="text-sm text-gray-600">Lower pricing for faster uptake, higher rebates for broader access</p>
+              </div>
+
+              {/* Optimistic Rationale */}
+              <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <h3 className="mb-2 text-lg font-bold text-gray-900">Optimistic Rationale</h3>
+                <p className="text-sm text-gray-600">Premium pricing based on superior efficacy, limited access programs</p>
+              </div>
+            </div>
+
+            {/* Pricing Strategy Deep Dive */}
+            <div className="p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-bold text-gray-900">Pricing Strategy Deep Dive</h3>
+                <button 
+                  onClick={() => setShowPricingModal(true)}
+                  className="px-4 py-2 text-sm font-medium text-black transition-colors duration-200 bg-gray-200 border border-gray-300 rounded-md hover:bg-gray-300"
+                >
+                  View Details
+                </button>
+              </div>
+            </div>
+
+            {/* Access Strategy Recommendations */}
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <h3 className="mb-6 text-lg font-bold text-gray-900">Access Strategy Recommendations</h3>
+              <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+                {/* Early Access Strategies */}
+                <div>
+                  <h4 className="mb-4 font-semibold text-gray-900 text-md">Early Access Strategies</h4>
+                  <ul className="space-y-3">
+                    <li className="flex items-start">
+                      <div className="flex-shrink-0 w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                      <span className="text-gray-700">Expanded Access Program (EAP)</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="flex-shrink-0 w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                      <span className="text-gray-700">Named Patient Programs</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="flex-shrink-0 w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                      <span className="text-gray-700">Compassionate Use Protocols</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="flex-shrink-0 w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                      <span className="text-gray-700">Bridge Programs</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Commercial Access Tools */}
+                <div>
+                  <h4 className="mb-4 font-semibold text-gray-900 text-md">Commercial Access Tools</h4>
+                  <ul className="space-y-3">
+                    <li className="flex items-start">
+                      <div className="flex-shrink-0 w-2 h-2 mt-2 mr-3 bg-green-500 rounded-full"></div>
+                      <span className="text-gray-700">Patient Assistance Programs</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="flex-shrink-0 w-2 h-2 mt-2 mr-3 bg-green-500 rounded-full"></div>
+                      <span className="text-gray-700">Copay Support Cards</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="flex-shrink-0 w-2 h-2 mt-2 mr-3 bg-green-500 rounded-full"></div>
+                      <span className="text-gray-700">Hub Services</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="flex-shrink-0 w-2 h-2 mt-2 mr-3 bg-green-500 rounded-full"></div>
+                      <span className="text-gray-700">Outcomes-Based Contracts</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Pricing Strategy Modal */}
+        {showPricingModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="w-full max-w-4xl mx-4 bg-white rounded-lg shadow-xl">
+              {/* Modal Header */}
+              <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">Pricing Strategy Deep Dive</h2>
+                  <p className="text-sm text-gray-600">Detailed analysis of pricing strategies and market positioning</p>
+                </div>
+                <button
+                  onClick={() => setShowPricingModal(false)}
+                  className="p-2 text-gray-400 transition-colors duration-200 hover:text-red-500"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Modal Content */}
+              <div className="p-6 space-y-6">
+                {/* Key Assumptions */}
+                <div>
+                  <h3 className="mb-4 text-lg font-bold text-gray-900">Key Assumptions</h3>
+                  <ul className="space-y-3">
+                    <li className="flex items-start">
+                      <svg className="w-5 h-5 mr-3 mt-0.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                      <span className="text-gray-700">Peak market penetration of 27% based on comparable TKI launches</span>
+                    </li>
+                    <li className="flex items-start">
+                      <svg className="w-5 h-5 mr-3 mt-0.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                      <span className="text-gray-700">Annual pricing of $180K aligned with current SOC</span>
+                    </li>
+                    <li className="flex items-start">
+                      <svg className="w-5 h-5 mr-3 mt-0.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                      <span className="text-gray-700">Patient population growth of 3-5% annually</span>
+                    </li>
+                    <li className="flex items-start">
+                      <svg className="w-5 h-5 mr-3 mt-0.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                      <span className="text-gray-700">Treatment duration of 18 months median</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Calculation Method */}
+                <div>
+                  <h3 className="mb-4 text-lg font-bold text-gray-900">Calculation Method</h3>
+                  <div className="p-4 bg-gray-100 rounded-lg">
+                    <p className="font-mono text-gray-800">Index = (Peak Sales Potential × Market Access × Competitive Position) / 100</p>
+                  </div>
+                </div>
+
+                {/* AI-Generated Estimate */}
+                <div>
+                  <h3 className="mb-4 text-lg font-bold text-gray-900">AI-Generated Estimate</h3>
+                  <div className="p-4 rounded-lg bg-blue-50">
+                    <p className="text-blue-800">Generated using fuzzy matching against 15 comparable EGFR TKI launches, weighted by indication overlap and competitive landscape similarity</p>
+                  </div>
+                </div>
+
+                {/* Data Sources */}
+                <div>
+                  <h3 className="mb-4 text-lg font-bold text-gray-900">Data Sources</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg">
+                      <span className="text-sm font-medium text-gray-600">Database</span>
+                      <div className="flex items-center">
+                        <span className="text-sm font-medium text-gray-900">EvaluatePharma</span>
+                        <svg className="w-4 h-4 ml-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg">
+                      <span className="text-sm font-medium text-gray-600">Database</span>
+                      <div className="flex items-center">
+                        <span className="text-sm font-medium text-gray-900">IQVIA Market Research</span>
+                        <svg className="w-4 h-4 ml-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg">
+                      <span className="text-sm font-medium text-gray-600">Manual Input</span>
+                      <div className="flex items-center">
+                        <span className="text-sm font-medium text-gray-900">Internal Analysis</span>
+                        <svg className="w-4 h-4 ml-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+
       </div>
     )}
   </div>
@@ -2296,6 +3011,7 @@ function App() {
   const [showCAGRModal, setShowCAGRModal] = useState(false)
   const [showMarketSourcesModal, setShowMarketSourcesModal] = useState(false)
   const [isMarketSizeExpanded, setIsMarketSizeExpanded] = useState(true)
+  const [showPricingModal, setShowPricingModal] = useState(false)
 
   // Animate progress when loading
   useEffect(() => {
@@ -2441,6 +3157,8 @@ function App() {
           setShowMarketSourcesModal={setShowMarketSourcesModal}
           isMarketSizeExpanded={isMarketSizeExpanded}
           setIsMarketSizeExpanded={setIsMarketSizeExpanded}
+          showPricingModal={showPricingModal}
+          setShowPricingModal={setShowPricingModal}
         />
   }
 
@@ -2566,7 +3284,7 @@ function App() {
                       <button
                         type="button"
                         onClick={() => setModalityOpen(!modalityOpen)}
-                        className="flex items-center justify-between w-full px-3 py-2 text-sm text-left bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
+                        className="flex items-center justify-between w-full px-3 py-2 text-sm text-left transition-colors duration-200 bg-white border border-gray-300 rounded-md hover:bg-blue-50 hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
                       >
                         <span className={formData.modality ? "text-black" : "text-gray-500"}>
                           {formData.modality ? 
@@ -2612,7 +3330,7 @@ function App() {
                                   handleInputChange('modality', option.value);
                                   setModalityOpen(false);
                                 }}
-                                className="w-full px-3 py-2 text-sm text-left text-black hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+                                className="w-full px-3 py-2 text-sm text-left text-black transition-colors duration-200 hover:bg-blue-50 hover:text-blue-700 focus:bg-blue-50 focus:outline-none"
                               >
                                 {option.label}
                               </button>
@@ -2679,7 +3397,7 @@ function App() {
                     <button
                       type="button"
                       onClick={() => setPhaseOpen(!phaseOpen)}
-                      className="flex items-center justify-between w-full px-3 py-2 text-sm text-left bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
+                      className="flex items-center justify-between w-full px-3 py-2 text-sm text-left transition-colors duration-200 bg-white border border-gray-300 rounded-md hover:bg-blue-50 hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
                     >
                       <span className={formData.developmentPhase ? "text-black" : "text-gray-500"}>
                         {formData.developmentPhase ?
@@ -2715,7 +3433,7 @@ function App() {
                                 handleInputChange('developmentPhase', option.value);
                                 setPhaseOpen(false);
                               }}
-                              className="w-full px-3 py-2 text-left text-black hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+                              className="w-full px-3 py-2 text-left text-black transition-colors duration-200 hover:bg-blue-50 hover:text-blue-700 focus:bg-blue-50 focus:outline-none"
                             >
                               {option.label}
                             </button>
@@ -2749,7 +3467,7 @@ function App() {
                     <button
                       type="button"
                       onClick={() => setRouteOpen(!routeOpen)}
-                      className="flex items-center justify-between w-full px-3 py-2 text-sm text-left bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
+                      className="flex items-center justify-between w-full px-3 py-2 text-sm text-left transition-colors duration-200 bg-white border border-gray-300 rounded-md hover:bg-blue-50 hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1"
                     >
                       <span className={formData.routeOfAdministration ? "text-black" : "text-gray-500"}>
                         {formData.routeOfAdministration ?
@@ -2785,7 +3503,7 @@ function App() {
                                 handleInputChange('routeOfAdministration', option.value);
                                 setRouteOpen(false);
                               }}
-                              className="w-full px-3 py-2 text-left text-black hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+                              className="w-full px-3 py-2 text-left text-black transition-colors duration-200 hover:bg-blue-50 hover:text-blue-700 focus:bg-blue-50 focus:outline-none"
                             >
                               {option.label}
                             </button>
@@ -2866,7 +3584,7 @@ function App() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex items-center px-8 py-3 space-x-2 font-semibold text-white transition-colors duration-200 bg-gray-900 rounded-md hover:bg-gray-800 disabled:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+                className="flex items-center px-8 py-3 space-x-2 font-semibold text-white transition-colors duration-200 bg-gray-900 rounded-md hover:bg-blue-600 disabled:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
               >
                 {isSubmitting ? (
                   <>
