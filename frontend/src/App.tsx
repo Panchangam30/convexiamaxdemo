@@ -79,7 +79,7 @@ const LoadingPage = ({ progress }: { progress: number }) => (
   </div>
 );
 
-const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, setActiveTab, showModal, setShowModal, selectedDrug, setSelectedDrug, modalTab, setModalTab, activeSubTab, setActiveSubTab, showPipelineModal, setShowPipelineModal, showSourcesModal, setShowSourcesModal, showCompetitiveLandscape, setShowCompetitiveLandscape, showMarketSizeModal, setShowMarketSizeModal, showPeakSalesModal, setShowPeakSalesModal, showCAGRModal, setShowCAGRModal, showMarketSourcesModal, setShowMarketSourcesModal, isMarketSizeExpanded, setIsMarketSizeExpanded, showPricingModal, setShowPricingModal }: { 
+const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, setActiveTab, showModal, setShowModal, selectedDrug, setSelectedDrug, modalTab, setModalTab, activeSubTab, setActiveSubTab, showPipelineModal, setShowPipelineModal, showSourcesModal, setShowSourcesModal, showCompetitiveLandscape, setShowCompetitiveLandscape, showMarketSizeModal, setShowMarketSizeModal, showPeakSalesModal, setShowPeakSalesModal, showCAGRModal, setShowCAGRModal, showMarketSourcesModal, setShowMarketSourcesModal, isMarketSizeExpanded, setIsMarketSizeExpanded, showPricingModal, setShowPricingModal, showPatentModal, setShowPatentModal, showMethodModal, setShowMethodModal, showIPStrategyModal, setShowIPStrategyModal }: { 
   showCompoundProfile: boolean, 
   setShowCompoundProfile: (show: boolean) => void,
   activeTab: string,
@@ -109,7 +109,13 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
   isMarketSizeExpanded: boolean,
   setIsMarketSizeExpanded: (expanded: boolean) => void,
   showPricingModal: boolean,
-  setShowPricingModal: (show: boolean) => void
+  setShowPricingModal: (show: boolean) => void,
+  showPatentModal: boolean,
+  setShowPatentModal: (show: boolean) => void,
+  showMethodModal: boolean,
+  setShowMethodModal: (show: boolean) => void,
+  showIPStrategyModal: boolean,
+  setShowIPStrategyModal: (show: boolean) => void
 }) => (
   <div className="min-h-screen bg-gray-50">
     {/* Top Header */}
@@ -190,11 +196,14 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
             <LuShield className="w-5 h-5 mr-2 text-gray-500" />
             <span className={`font-medium ${(activeTab as string) === 'incentives-regulation' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}>Incentives & Regulation</span>
           </div>
-          <div className="flex items-center py-4 text-gray-500 hover:text-gray-700 whitespace-nowrap">
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div 
+            className={`flex items-center py-4 border-b-2 whitespace-nowrap cursor-pointer ${(activeTab as string) === 'ip-position' ? 'border-blue-600' : 'border-transparent'}`}
+            onClick={() => setActiveTab('ip-position')}
+          >
+            <svg className="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            IP Positioning
+            <span className={`font-medium ${(activeTab as string) === 'ip-position' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}>IP Position</span>
           </div>
           <div className="flex items-center py-4 text-gray-500 hover:text-gray-700 whitespace-nowrap">
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -2492,8 +2501,581 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
             </button>
           </div>
         </div>
+
+        {/* Spacing between sections */}
+        <div className="h-8"></div>
+
+        {/* Policy & Legislative Incentives Section */}
+        <div className="p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+          <h3 className="mb-2 text-lg font-bold text-gray-900">Policy & Legislative Incentives</h3>
+          <p className="mb-6 text-sm text-gray-600">Recent policy changes and their impact on development</p>
+          
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            {/* OBBBA 2024 Provisions */}
+            <div>
+              <h4 className="mb-3 font-bold text-gray-900">OBBBA 2024 Provisions</h4>
+              <ul className="space-y-2">
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">ODD expansion for rare cancer subtypes</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">IRA pricing exclusion (7 years)</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Enhanced tax credits for pediatric trials</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Accelerated PDUFA fee waivers</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Extended market exclusivity periods</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* FDA Modernization */}
+            <div>
+              <h4 className="mb-3 font-bold text-gray-900">FDA Modernization</h4>
+              <ul className="space-y-2">
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Real-world evidence acceptance</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Biomarker-driven approvals</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Patient-reported outcomes emphasis</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Decentralized trial support</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">AI/ML guidance implementation</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* International Harmonization */}
+            <div>
+              <h4 className="mb-3 font-bold text-gray-900">International Harmonization</h4>
+              <ul className="space-y-2">
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">EMA parallel scientific advice</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">PMDA consultation alignment</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Health Canada priority review</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Global regulatory strategy coordination</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Mutual recognition agreements</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Financial Levers & Impact Section */}
+        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+          <h3 className="mb-6 text-lg font-bold text-gray-900">Financial Levers & Impact</h3>
+          
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            {/* PRV Sale Value */}
+            <div className="text-center">
+              <div className="mb-2 text-3xl font-bold text-green-600">$100-350M</div>
+              <div className="mb-1 text-sm font-medium text-gray-900">PRV Sale Value</div>
+              <div className="text-xs text-gray-600">Based on recent market transactions</div>
+            </div>
+
+            {/* Licensing Premium */}
+            <div className="text-center">
+              <div className="mb-2 text-3xl font-bold text-blue-600">~30%</div>
+              <div className="mb-1 text-sm font-medium text-gray-900">Licensing Premium</div>
+              <div className="text-xs text-gray-600">Revenue uplift from regulatory advantages</div>
+            </div>
+
+            {/* Market Exclusivity */}
+            <div className="text-center">
+              <div className="mb-2 text-3xl font-bold text-purple-600">7 years</div>
+              <div className="mb-1 text-sm font-medium text-gray-900">Market Exclusivity</div>
+              <div className="text-xs text-gray-600">Extended protection period</div>
+            </div>
+          </div>
+        </div>
       </div>
     )}
+
+    {activeTab === 'ip-position' && (
+      <div className="px-6 py-8 mx-auto max-w-7xl">
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-3xl font-bold text-gray-900">Patent & Exclusivity</h2>
+        </div>
+
+        {/* Patent & Exclusivity Summary Card */}
+        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+          <div className="flex items-start justify-between mb-6">
+            <div>
+              <h3 className="mb-2 text-lg font-bold text-gray-900">Patent & Exclusivity Summary</h3>
+              <p className="text-sm text-gray-600">Intellectual property protection landscape</p>
+            </div>
+            {/* Years to Expiration - Top Right */}
+            <div className="text-right">
+              <div className="mb-2 text-3xl font-bold text-orange-600">4</div>
+              <div className="text-sm font-medium text-gray-900">Years to Expiration</div>
+            </div>
+          </div>
+          
+          {/* Bottom Row - 3 metrics */}
+          <div className="grid grid-cols-3 gap-8">
+            {/* Exclusivity Years */}
+            <div className="text-center">
+              <div className="mb-2 text-3xl font-bold text-blue-600">6</div>
+              <div className="text-sm font-medium text-gray-900">Exclusivity Years</div>
+            </div>
+
+            {/* Generic Entry Risk */}
+            <div className="text-center">
+              <div className="mb-2 text-3xl font-bold text-red-600">45%</div>
+              <div className="text-sm font-medium text-gray-900">Generic Entry Risk</div>
+            </div>
+
+            {/* Core IP Position */}
+            <div className="text-center">
+              <div className="mb-2 text-3xl font-bold text-green-600">Strong</div>
+              <div className="text-sm font-medium text-gray-900">Core IP Position</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Two-column layout for Patent Portfolio Analysis and Timeline */}
+        <div className="grid grid-cols-1 gap-6 mt-6 lg:grid-cols-2">
+          {/* Left Section: Patent Portfolio Analysis */}
+          <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <h3 className="mb-2 text-lg font-bold text-gray-900">Patent Portfolio Analysis</h3>
+            <p className="mb-6 text-sm text-gray-600">Detailed breakdown of IP protection</p>
+            
+            <div className="space-y-4">
+              {/* Composition of Matter Card */}
+              <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-semibold text-gray-900">Composition of Matter</h4>
+                  <div className="flex items-center space-x-2">
+                    <span className="px-3 py-1 text-xs font-medium text-white bg-black rounded-full">Strong</span>
+                    <span className="text-sm font-medium text-gray-900">2029</span>
+                  </div>
+                </div>
+                <p className="mb-3 text-sm text-gray-600">Core compound structure and key analogs</p>
+                <div className="mb-3">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm text-gray-600">Challenge Risk</span>
+                    <span className="text-sm font-medium text-gray-900">15%</span>
+                  </div>
+                  <div className="w-full h-2 bg-gray-200 rounded-full">
+                    <div className="h-2 bg-black rounded-full" style={{width: '15%'}}></div>
+                  </div>
+                </div>
+                <div className="pt-3 border-t border-gray-200">
+                  <button 
+                    onClick={() => setShowPatentModal(!showPatentModal)}
+                    className="flex items-center justify-between w-full text-sm text-gray-900 hover:text-blue-600"
+                  >
+                    <span className="font-medium">Composition of Matter Patent Analysis</span>
+                    <div className="flex items-center space-x-1">
+                      <span className="text-xs">2029</span>
+                      <svg className={`w-4 h-4 transition-transform duration-200 ${showPatentModal ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </button>
+                </div>
+                
+                {/* Expandable Patent Analysis Content */}
+                {showPatentModal && (
+                  <div className="p-4 mt-4 border border-gray-200 rounded-lg bg-gray-50">
+                    <div className="space-y-4">
+                      {/* Key Assumptions */}
+                      <div>
+                        <h4 className="mb-2 font-bold text-gray-900">Key Assumptions:</h4>
+                        <ul className="space-y-1">
+                          <li className="flex items-start">
+                            <div className="w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                            <span className="text-sm text-gray-700">Core compound patents filed 2022, 20-year term</span>
+                          </li>
+                        </ul>
+                      </div>
+
+                      {/* Data Sources */}
+                      <div>
+                        <h4 className="mb-2 font-bold text-gray-900">Data Sources:</h4>
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-700 underline">USPTO Patent Database</span>
+                            <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full">regulatory</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-700">Patent Landscape Analysis</span>
+                            <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full">manual</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-700">Freedom to Operate Study</span>
+                            <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full">manual</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* AI Derivation */}
+                      <div>
+                        <h4 className="mb-2 font-bold text-gray-900">AI Derivation:</h4>
+                        <p className="text-sm text-gray-700">Patent strength assessment using AI analysis of 500+ pharmaceutical patent challenges, weighted by patent type and therapeutic area</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Method of Use Card */}
+              <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-semibold text-gray-900">Method of Use</h4>
+                  <div className="flex items-center space-x-2">
+                    <span className="px-3 py-1 text-xs font-medium text-gray-900 bg-gray-200 rounded-full">Moderate</span>
+                    <span className="text-sm font-medium text-gray-900">2030</span>
+                  </div>
+                </div>
+                <p className="mb-3 text-sm text-gray-600">Treatment methods for EGFR+ NSCLC</p>
+                <div className="mb-3">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm text-gray-600">Challenge Risk</span>
+                    <span className="text-sm font-medium text-gray-900">35%</span>
+                  </div>
+                  <div className="w-full h-2 bg-gray-200 rounded-full">
+                    <div className="h-2 bg-black rounded-full" style={{width: '35%'}}></div>
+                  </div>
+                </div>
+                <div className="pt-3 border-t border-gray-200">
+                  <button 
+                    onClick={() => setShowMethodModal(!showMethodModal)}
+                    className="flex items-center justify-between w-full text-sm text-gray-900 hover:text-blue-600"
+                  >
+                    <span className="font-medium">Method of Use Patent Analysis</span>
+                    <div className="flex items-center space-x-1">
+                      <span className="text-xs">2030</span>
+                      <svg className={`w-4 h-4 transition-transform duration-200 ${showMethodModal ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </button>
+                </div>
+                
+                {/* Expandable Method of Use Patent Analysis Content */}
+                {showMethodModal && (
+                  <div className="p-4 mt-4 border border-gray-200 rounded-lg bg-gray-50">
+                    <div className="space-y-4">
+                      {/* Key Assumptions */}
+                      <div>
+                        <h4 className="mb-2 font-bold text-gray-900">Key Assumptions:</h4>
+                        <ul className="space-y-1">
+                          <li className="flex items-start">
+                            <div className="w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                            <span className="text-sm text-gray-700">Treatment method patents filed 2023, 20-year term</span>
+                          </li>
+                          <li className="flex items-start">
+                            <div className="w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                            <span className="text-sm text-gray-700">EGFR+ NSCLC indication coverage</span>
+                          </li>
+                        </ul>
+                      </div>
+
+                      {/* Data Sources */}
+                      <div>
+                        <h4 className="mb-2 font-bold text-gray-900">Data Sources:</h4>
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-700 underline">USPTO Patent Database</span>
+                            <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full">regulatory</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-700">Clinical Trial Analysis</span>
+                            <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full">manual</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-700">Competitive Landscape Review</span>
+                            <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full">manual</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* AI Derivation */}
+                      <div>
+                        <h4 className="mb-2 font-bold text-gray-900">AI Derivation:</h4>
+                        <p className="text-sm text-gray-700">Method of use patent strength evaluation based on 300+ oncology treatment method challenges, considering indication specificity and clinical evidence requirements</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Section: Patent Expiration Timeline */}
+          <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <h3 className="mb-2 text-lg font-bold text-gray-900">Patent Expiration Timeline</h3>
+            <p className="mb-6 text-sm text-gray-600">Visual timeline of IP protection periods</p>
+            
+            <div className="space-y-4">
+              {/* Current Position */}
+              <div className="flex items-center space-x-3">
+                <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                <div className="flex-1">
+                  <div className="font-medium text-gray-900">NOW</div>
+                  <div className="text-sm text-gray-600">2024 Current position</div>
+                </div>
+              </div>
+              
+              {/* Composition of Matter */}
+              <div className="flex items-center space-x-3">
+                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                <div className="flex-1">
+                  <div className="font-medium text-gray-900">5</div>
+                  <div className="text-sm text-gray-600">2029 Composition of Matter</div>
+                </div>
+              </div>
+              
+              {/* Method of Use */}
+              <div className="flex items-center space-x-3">
+                <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                <div className="flex-1">
+                  <div className="font-medium text-gray-900">6</div>
+                  <div className="text-sm text-gray-600">2030 Method of Use</div>
+                </div>
+              </div>
+              
+              {/* Formulation */}
+              <div className="flex items-center space-x-3">
+                <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                <div className="flex-1">
+                  <div className="font-medium text-gray-900">4</div>
+                  <div className="text-sm text-gray-600">2028 Formulation</div>
+                </div>
+              </div>
+              
+              {/* Combination */}
+              <div className="flex items-center space-x-3">
+                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                <div className="flex-1">
+                  <div className="font-medium text-gray-900">7</div>
+                  <div className="text-sm text-gray-600">2031 Combination</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* IP Protection Strategies Section */}
+        <div className="p-6 mt-8 bg-white border border-gray-200 rounded-lg shadow-sm">
+          <h3 className="mb-4 text-lg font-bold text-gray-900">IP Protection Strategies</h3>
+          <p className="mb-6 text-sm text-gray-600">Strategic approaches to extend and strengthen IP position</p>
+          
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {/* Continuation Filings */}
+            <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-semibold text-gray-900">Continuation Filings</h4>
+                <span className="px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full">Ongoing</span>
+              </div>
+              <p className="text-sm text-gray-600">Extend exclusivity by 2-3 years</p>
+            </div>
+
+            {/* Regulatory Exclusivity */}
+            <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-semibold text-gray-900">Regulatory Exclusivity</h4>
+                <span className="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">Upon approval</span>
+              </div>
+              <p className="text-sm text-gray-600">7-12 years of protection</p>
+            </div>
+
+            {/* Trade Secrets */}
+            <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-semibold text-gray-900">Trade Secrets</h4>
+                <span className="px-2 py-1 text-xs font-medium text-purple-700 bg-purple-100 rounded-full">Immediate</span>
+              </div>
+              <p className="text-sm text-gray-600">Indefinite protection</p>
+            </div>
+
+            {/* Strategic Partnerships */}
+            <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-semibold text-gray-900">Strategic Partnerships</h4>
+                <span className="px-2 py-1 text-xs font-medium text-orange-700 bg-orange-100 rounded-full">2024-2025</span>
+              </div>
+              <p className="text-sm text-gray-600">Strengthen overall IP position</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Strategic Recommendations Section */}
+        <div className="p-6 mt-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+          <h3 className="mb-4 text-lg font-bold text-gray-900">Strategic Recommendations</h3>
+          <p className="mb-6 text-sm text-gray-600">Actionable strategies organized by timeframe</p>
+          
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            {/* Immediate Actions */}
+            <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+              <h4 className="mb-3 font-bold text-gray-900">Immediate Actions</h4>
+              <ul className="space-y-2">
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-red-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">File continuation patents on new formulations</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-red-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Conduct comprehensive FTO (Freedom to Operate) analysis</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-red-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Establish trade secret protocols</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Medium-term Strategy */}
+            <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+              <h4 className="mb-3 font-bold text-gray-900">Medium-term Strategy</h4>
+              <ul className="space-y-2">
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-yellow-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700"><strong>Develop combination patent portfolio</strong></span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-yellow-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Explore international filing strategies</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-yellow-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Monitor competitor patent activity</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Long-term Planning */}
+            <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+              <h4 className="mb-3 font-bold text-gray-900">Long-term Planning</h4>
+              <ul className="space-y-2">
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-green-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Build next-generation compound IP</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-green-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Strategic licensing partnerships</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-green-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Lifecycle management planning</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Intellectual Property Strategy Section */}
+        <div className="p-6 mt-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-lg font-bold text-gray-900">IP Strategy Deep Analysis</h3>
+            </div>
+            <button 
+              onClick={() => setShowIPStrategyModal(!showIPStrategyModal)}
+              className="flex items-center px-3 py-1 space-x-2 text-sm font-medium text-gray-900 hover:text-gray-700"
+            >
+              <span>6 years exclusivity</span>
+              <svg className={`w-4 h-4 transition-transform duration-200 ${showIPStrategyModal ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+          </div>
+          
+          {showIPStrategyModal && (
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            {/* Key Assumptions */}
+            <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+              <h4 className="mb-3 font-bold text-gray-900">Key Assumptions:</h4>
+              <ul className="space-y-2">
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Core composition patents expire 2029 (5 years exclusivity)</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Method of use patents provide additional 1-2 years protection</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Regulatory exclusivity (orphan drug) adds 7 years from approval</span>
+                </li>
+                <li className="flex items-start">
+                  <div className="w-2 h-2 mt-2 mr-3 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Trade secrets for manufacturing provide indefinite protection</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Exclusivity Formula */}
+            <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+              <h4 className="mb-3 font-bold text-gray-900">Exclusivity Formula:</h4>
+              <div className="p-3 bg-white border border-gray-300 rounded-md">
+                <p className="font-mono text-sm text-gray-900">
+                  Total Exclusivity = MAX(Patent Protection, Regulatory Exclusivity) + Trade Secret Value
+                </p>
+              </div>
+            </div>
+
+            {/* Data Sources */}
+            <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+              <h4 className="mb-3 font-bold text-gray-900">Data Sources:</h4>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-700">Patent Analytics Platform</span>
+                  <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full">database</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-700">IP Law Firm Analysis</span>
+                  <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full">manual</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-700">Regulatory Exclusivity Database</span>
+                  <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full">regulatory</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          )}
+        </div>
+      </div>
+    )}
+
+
 
     {activeTab === 'pricing-access' && (
       <div className="px-6 py-8 mx-auto max-w-7xl">
@@ -3012,6 +3594,9 @@ function App() {
   const [showMarketSourcesModal, setShowMarketSourcesModal] = useState(false)
   const [isMarketSizeExpanded, setIsMarketSizeExpanded] = useState(true)
   const [showPricingModal, setShowPricingModal] = useState(false)
+  const [showPatentModal, setShowPatentModal] = useState(false)
+  const [showMethodModal, setShowMethodModal] = useState(false)
+  const [showIPStrategyModal, setShowIPStrategyModal] = useState(false)
 
   // Animate progress when loading
   useEffect(() => {
@@ -3159,6 +3744,12 @@ function App() {
           setIsMarketSizeExpanded={setIsMarketSizeExpanded}
           showPricingModal={showPricingModal}
           setShowPricingModal={setShowPricingModal}
+          showPatentModal={showPatentModal}
+          setShowPatentModal={setShowPatentModal}
+          showMethodModal={showMethodModal}
+          setShowMethodModal={setShowMethodModal}
+          showIPStrategyModal={showIPStrategyModal}
+          setShowIPStrategyModal={setShowIPStrategyModal}
         />
   }
 
