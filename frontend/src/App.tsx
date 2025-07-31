@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ComposedChart } from 'recharts'
+import { Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ComposedChart, Area } from 'recharts'
 import { LuPill } from "react-icons/lu";
 import { LuTarget } from "react-icons/lu";
 import { LuMicroscope } from "react-icons/lu";
@@ -13,6 +13,59 @@ import { LuTrendingUp } from "react-icons/lu";
 import { LuZap } from "react-icons/lu";
 import { LuDollarSign } from "react-icons/lu";
 import { LuShield } from "react-icons/lu";
+
+// Type definitions for analysis data
+interface MarketAnalysisData {
+  compoundProfile: {
+    mechanismOfAction: string;
+    preclinicalFindings: {
+      ic50Mutant: string;
+      ic50WildType: string;
+      tumorInhibition: string;
+    };
+    clinicalData: {
+      phase1Results: string;
+      phase2Results: string;
+      safetyProfile: string;
+    };
+  };
+  marketSize: {
+    totalMarketSize: string;
+    targetMarketSize: string;
+    growthRate: string;
+    keyDrivers: string[];
+  };
+  competitiveLandscape: {
+    directCompetitors: Array<{
+      name: string;
+      company: string;
+      status: string;
+      differentiation: string;
+    }>;
+    indirectCompetitors: Array<{
+      name: string;
+      company: string;
+      status: string;
+      differentiation: string;
+    }>;
+  };
+  financialProjections: {
+    peakSales: string;
+    cagr: string;
+    revenueForecast: Array<{
+      year: number;
+      revenue: number;
+    }>;
+  };
+  strategicFit: {
+    tailwindScore: number;
+    fdaDesignations: number;
+    guidanceDocuments: number;
+    policyIncentives: number;
+    advocacyActivity: number;
+    marketPrecedent: number;
+  };
+}
 
 const LoadingPage = ({ progress }: { progress: number }) => (
   <div className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -79,7 +132,7 @@ const LoadingPage = ({ progress }: { progress: number }) => (
   </div>
 );
 
-const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, setActiveTab, showModal, setShowModal, selectedDrug, setSelectedDrug, modalTab, setModalTab, activeSubTab, setActiveSubTab, showPipelineModal, setShowPipelineModal, showSourcesModal, setShowSourcesModal, showCompetitiveLandscape, setShowCompetitiveLandscape, showMarketSizeModal, setShowMarketSizeModal, showPeakSalesModal, setShowPeakSalesModal, showCAGRModal, setShowCAGRModal, showMarketSourcesModal, setShowMarketSourcesModal, isMarketSizeExpanded, setIsMarketSizeExpanded, showPricingModal, setShowPricingModal, showPatentModal, setShowPatentModal, showMethodModal, setShowMethodModal, showIPStrategyModal, setShowIPStrategyModal }: { 
+const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, setActiveTab, showModal, setShowModal, selectedDrug, setSelectedDrug, modalTab, setModalTab, activeSubTab, setActiveSubTab, showPipelineModal, setShowPipelineModal, showSourcesModal, setShowSourcesModal, showCompetitiveLandscape, setShowCompetitiveLandscape, showMarketSizeModal, setShowMarketSizeModal, showPeakSalesModal, setShowPeakSalesModal, showCAGRModal, setShowCAGRModal, showMarketSourcesModal, setShowMarketSourcesModal, isMarketSizeExpanded, setIsMarketSizeExpanded, showPricingModal, setShowPricingModal, showPatentModal, setShowPatentModal, showMethodModal, setShowMethodModal, showIPStrategyModal, setShowIPStrategyModal, analysisData }: { 
   showCompoundProfile: boolean, 
   setShowCompoundProfile: (show: boolean) => void,
   activeTab: string,
@@ -115,8 +168,31 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
   showMethodModal: boolean,
   setShowMethodModal: (show: boolean) => void,
   showIPStrategyModal: boolean,
-  setShowIPStrategyModal: (show: boolean) => void
-}) => (
+  setShowIPStrategyModal: (show: boolean) => void,
+  analysisData: MarketAnalysisData | null
+}) => {
+  // Helper function to safely get data from analysis
+  const getAnalysisData = (path: string, fallback: string = 'Data not available'): string => {
+    if (!analysisData) return fallback;
+    const keys = path.split('.');
+    let value: any = analysisData;
+    for (const key of keys) {
+      if (value && typeof value === 'object' && key in value) {
+        value = value[key];
+      } else {
+        return fallback;
+      }
+    }
+    return String(value) || fallback;
+  };
+
+  // Helper function to check if data should be blurred
+  const shouldBlur = (path: string, fallback: string = 'Data not available'): boolean => {
+    const value = getAnalysisData(path, fallback);
+    return value === fallback || value === 'Data not available';
+  };
+
+  return (
   <div className="min-h-screen bg-gray-50">
     {/* Top Header */}
     <div className="px-6 py-4 bg-white border-b border-gray-200">
@@ -127,7 +203,9 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
             <p className="text-base text-gray-600">Simulating Commercial Viability for Drug Asset Evaluation</p>
           </div>
           <div className="pl-8 border-l border-gray-300">
-            <p className="text-sm font-bold text-gray-600">Unnamed Molecule</p>
+            <p className={`text-sm font-bold text-gray-600 ${shouldBlur('moleculeName', 'Unnamed Molecule') ? 'blur-sm opacity-50' : ''}`}>
+              {getAnalysisData('moleculeName', 'Unnamed Molecule')}
+            </p>
             <p className="text-sm text-gray-600">Phase:</p>
           </div>
         </div>
@@ -160,7 +238,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
     {/* Navigation Tabs */}
     <div className="bg-white border-b border-gray-200">
       <div className="px-6 mx-auto max-w-7xl">
-        <nav className="flex space-x-8">
+        <nav className="flex justify-start space-x-8 overflow-x-auto border-b border-gray-200">
           <div 
             className={`flex items-center py-4 border-b-2 whitespace-nowrap cursor-pointer ${activeTab === 'compound-profile' ? 'border-blue-600' : 'border-transparent'}`}
             onClick={() => setActiveTab('compound-profile')}
@@ -205,21 +283,21 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
             </svg>
             <span className={`font-medium ${(activeTab as string) === 'ip-position' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}>IP Position</span>
           </div>
-          <div className="flex items-center py-4 text-gray-500 hover:text-gray-700 whitespace-nowrap">
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div 
+            className={`flex items-center py-4 border-b-2 whitespace-nowrap cursor-pointer ${activeTab === 'financial-projections' ? 'border-blue-600' : 'border-transparent'}`}
+            onClick={() => setActiveTab('financial-projections')}
+          >
+            <svg className="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
-            Financial Projections
+            <span className={`font-medium ${activeTab === 'financial-projections' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}>Financial Projections</span>
           </div>
-          <div className="flex items-center py-4 text-gray-500 hover:text-gray-700 whitespace-nowrap">
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
-            </svg>
-          </div>
-          <div className="flex items-center py-4 text-gray-500 hover:text-gray-700 whitespace-nowrap">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
+          <div 
+            className={`flex items-center py-4 border-b-2 whitespace-nowrap cursor-pointer ${activeTab === 'strategic-fit' ? 'border-blue-600' : 'border-transparent'}`}
+            onClick={() => setActiveTab('strategic-fit')}
+          >
+            <LuZap className="w-5 h-5 mr-2 text-gray-500" />
+            <span className={`font-medium ${activeTab === 'strategic-fit' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}>Strategic Fit</span>
           </div>
         </nav>
       </div>
@@ -262,7 +340,9 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 </div>
                 <div>
                   <p className="mb-2 text-sm font-bold text-gray-600">Description</p>
-                  <p className="text-sm text-gray-900">Third-generation EGFR tyrosine kinase inhibitor designed to selectively target T790M resistance mutations while sparing wild-type EGFR, reducing skin and GI toxicity.</p>
+                  <p className={`text-sm text-gray-900 ${shouldBlur('compoundProfile.mechanismOfAction', 'Third-generation EGFR tyrosine kinase inhibitor designed to selectively target T790M resistance mutations while sparing wild-type EGFR, reducing skin and GI toxicity.') ? 'blur-sm opacity-50' : ''}`}>
+              {getAnalysisData('compoundProfile.mechanismOfAction', 'Third-generation EGFR tyrosine kinase inhibitor designed to selectively target T790M resistance mutations while sparing wild-type EGFR, reducing skin and GI toxicity.')}
+            </p>
                 </div>
               </div>
             </div>
@@ -274,11 +354,15 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 <div className="grid grid-cols-2 gap-4 pb-4 border-b border-gray-200">
                   <div>
                     <p className="text-sm font-bold text-gray-600">IC50 (Mutant)</p>
-                    <p className="text-lg font-bold text-green-600">2.5 nM</p>
+                    <p className={`text-lg font-bold text-green-600 ${shouldBlur('compoundProfile.preclinicalFindings.ic50Mutant', '2.5 nM') ? 'blur-sm opacity-50' : ''}`}>
+              {getAnalysisData('compoundProfile.preclinicalFindings.ic50Mutant', '2.5 nM')}
+            </p>
                   </div>
                   <div>
                     <p className="text-sm font-bold text-gray-600">IC50 (Wild-type)</p>
-                    <p className="text-lg font-bold text-gray-900">180 nM</p>
+                    <p className={`text-lg font-bold text-gray-900 ${shouldBlur('compoundProfile.preclinicalFindings.ic50WildType', '180 nM') ? 'blur-sm opacity-50' : ''}`}>
+              {getAnalysisData('compoundProfile.preclinicalFindings.ic50WildType', '180 nM')}
+            </p>
                   </div>
                 </div>
                 <div className="pt-4">
@@ -287,7 +371,9 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                     <div className="flex-1 h-4 bg-gray-200 rounded-full">
                       <div className="h-4 bg-black rounded-full" style={{ width: '87%' }}></div>
                     </div>
-                    <span className="text-sm font-bold text-gray-900">87%</span>
+                    <span className={`text-sm font-bold text-gray-900 ${shouldBlur('compoundProfile.preclinicalFindings.tumorInhibition', '87%') ? 'blur-sm opacity-50' : ''}`}>
+              {getAnalysisData('compoundProfile.preclinicalFindings.tumorInhibition', '87%')}
+            </span>
                   </div>
                 </div>
                 <div className="pt-4">
@@ -1469,7 +1555,9 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
               <p className="text-sm text-gray-600">Overall market attractiveness score</p>
             </div>
             <div className="text-right">
-              <div className="mb-1 text-3xl font-bold text-green-600">78%</div>
+              <div className={`mb-1 text-3xl font-bold text-green-600 ${shouldBlur('marketSize.totalMarketSize', '78%') ? 'blur-sm opacity-50' : ''}`}>
+              {getAnalysisData('marketSize.totalMarketSize', '78%')}
+            </div>
               <div className="mb-3 text-sm font-medium text-gray-900">High Potential</div>
                                     <button 
                         onClick={() => setShowMarketSourcesModal(true)}
@@ -1486,7 +1574,9 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
             {/* Peak Sales Estimate */}
             <div className="text-center">
               <div className="flex items-center justify-center mb-2">
-                <div className="text-2xl font-bold text-blue-600">$2.51B</div>
+                <div className={`text-2xl font-bold text-blue-600 ${shouldBlur('financialProjections.peakSales', '$2.51B') ? 'blur-sm opacity-50' : ''}`}>
+              {getAnalysisData('financialProjections.peakSales', '$2.51B')}
+            </div>
                 <svg className="w-4 h-4 ml-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -1503,7 +1593,9 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
             {/* CAGR (Specific Value) */}
             <div className="text-center">
               <div className="flex items-center justify-center mb-2">
-                <div className="text-2xl font-bold text-green-600">8.2%</div>
+                <div className={`text-2xl font-bold text-green-600 ${shouldBlur('financialProjections.cagr', '8.2%') ? 'blur-sm opacity-50' : ''}`}>
+              {getAnalysisData('financialProjections.cagr', '8.2%')}
+            </div>
                 <svg className="w-4 h-4 ml-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -3551,8 +3643,975 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
 
       </div>
     )}
+
+    {activeTab === 'financial-projections' && (
+      <div className="px-6 py-8 mx-auto max-w-7xl">
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center">
+            <h2 className="text-3xl font-bold text-gray-900">Financial Forecasting</h2>
+          </div>
+        </div>
+
+        {/* Financial Projections Grid */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {/* Card 1: Peak Revenue */}
+          <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div className="flex items-start justify-between mb-3">
+              <div className="text-2xl font-bold text-blue-600">$3.826B</div>
+              <div className="flex items-center space-x-1">
+                <div className="w-4 h-4 text-gray-400">
+                  <svg fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                  </svg>
+                </div>
+                <span className="text-xs font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+              </div>
+            </div>
+            <div className="text-sm font-medium text-gray-900">Peak Revenue</div>
+            <div className="text-xs text-gray-500">2030</div>
+          </div>
+
+          {/* Card 2: Total 10-Year Revenue */}
+          <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div className="flex items-start justify-between mb-3">
+              <div className="text-2xl font-bold text-blue-600">$25.654B</div>
+              <div className="flex items-center space-x-1">
+                <div className="w-4 h-4 text-gray-400">
+                  <svg fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                  </svg>
+                </div>
+                <span className="text-xs font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+              </div>
+            </div>
+            <div className="text-sm font-medium text-gray-900">Total 10-Year Revenue</div>
+            <div className="text-xs text-gray-500">2024-2033</div>
+          </div>
+
+          {/* Card 3: Peak Market Share */}
+          <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div className="flex items-start justify-between mb-3">
+              <div className="text-2xl font-bold text-blue-600">17.1%</div>
+              <div className="flex items-center space-x-1">
+                <div className="w-4 h-4 text-gray-400">
+                  <svg fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                  </svg>
+                </div>
+                <span className="text-xs font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+              </div>
+            </div>
+            <div className="text-sm font-medium text-gray-900">Peak Market Share</div>
+            <div className="text-xs text-gray-500">2030</div>
+          </div>
+
+          {/* Card 4: Peak Patients */}
+          <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div className="flex items-start justify-between mb-3">
+              <div className="text-2xl font-bold text-blue-600">26K</div>
+              <div className="flex items-center space-x-1">
+                <div className="w-4 h-4 text-gray-400">
+                  <svg fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                  </svg>
+                </div>
+                <span className="text-xs font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+              </div>
+            </div>
+            <div className="text-sm font-medium text-gray-900">Peak Patients</div>
+            <div className="text-xs text-gray-500">2030</div>
+          </div>
+
+          {/* Card 5: Avg Selling Price */}
+          <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div className="flex items-start justify-between mb-3">
+              <div className="text-2xl font-bold text-blue-600">$156K</div>
+              <div className="flex items-center space-x-1">
+                <div className="w-4 h-4 text-gray-400">
+                  <svg fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                  </svg>
+                </div>
+                <span className="text-xs font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+              </div>
+            </div>
+            <div className="text-sm font-medium text-gray-900">Avg Selling Price</div>
+            <div className="text-xs text-gray-500">Blended global</div>
+          </div>
+
+          {/* Card 6: Persistence Rate */}
+          <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div className="flex items-start justify-between mb-3">
+              <div className="text-2xl font-bold text-blue-600">85%</div>
+              <div className="flex items-center space-x-1">
+                <div className="w-4 h-4 text-gray-400">
+                  <svg fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                  </svg>
+                </div>
+                <span className="text-xs font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+              </div>
+            </div>
+            <div className="text-sm font-medium text-gray-900">Persistence Rate</div>
+            <div className="text-xs text-gray-500">12-month</div>
+          </div>
+
+          {/* Card 7: Treatment Duration */}
+          <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div className="flex items-start justify-between mb-3">
+              <div className="text-2xl font-bold text-blue-600">18 mo</div>
+              <div className="flex items-center space-x-1">
+                <div className="w-4 h-4 text-gray-400">
+                  <svg fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                  </svg>
+                </div>
+                <span className="text-xs font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+              </div>
+            </div>
+            <div className="text-sm font-medium text-gray-900">Treatment Duration</div>
+            <div className="text-xs text-gray-500">Median</div>
+          </div>
+
+          {/* Card 8: Geographic Split */}
+          <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div className="flex items-start justify-between mb-3">
+              <div className="text-2xl font-bold text-blue-600">60% US / 40%</div>
+              <div className="flex items-center space-x-1">
+                <div className="w-4 h-4 text-gray-400">
+                  <svg fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                  </svg>
+                </div>
+                <span className="text-xs font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+              </div>
+            </div>
+            <div className="text-sm font-medium text-gray-900">Ex-US</div>
+            <div className="text-xs text-gray-500">Geographic Split</div>
+            <div className="text-xs text-gray-500">Peak year</div>
+          </div>
+
+          {/* Revenue Forecasting Chart */}
+          <div className="p-6 mt-8 bg-white border border-gray-200 rounded-lg shadow-sm col-span-full">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-semibold text-gray-900">Revenue Forecasting (2024-2033)</h3>
+              <button 
+                onClick={() => setShowSourcesModal(true)}
+                className="flex items-center px-3 py-2 space-x-2 text-sm font-medium text-gray-700 bg-transparent border border-black rounded-md hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
+              >
+                <LuDatabase className="w-4 h-4" />
+                <span>Sources (4)</span>
+              </button>
+            </div>
+            <p className="mb-6 text-sm text-gray-600">US vs Ex-US revenue with market share overlay</p>
+            
+            <div className="h-[400px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <ComposedChart data={[
+                  { year: '2024', usRevenue: 0, exUsRevenue: 0, marketShare: 0, grossToNet: 0 },
+                  { year: '2025', usRevenue: 0, exUsRevenue: 0, marketShare: 0, grossToNet: 0 },
+                  { year: '2026', usRevenue: 0, exUsRevenue: 0, marketShare: 0, grossToNet: 0 },
+                  { year: '2027', usRevenue: 500, exUsRevenue: 100, marketShare: 5, grossToNet: 20 },
+                  { year: '2028', usRevenue: 1800, exUsRevenue: 600, marketShare: 10, grossToNet: 30 },
+                  { year: '2029', usRevenue: 2700, exUsRevenue: 1200, marketShare: 15, grossToNet: 35 },
+                  { year: '2030', usRevenue: 2900, exUsRevenue: 1500, marketShare: 17, grossToNet: 38 },
+                  { year: '2031', usRevenue: 2700, exUsRevenue: 1400, marketShare: 16, grossToNet: 39 },
+                  { year: '2032', usRevenue: 2500, exUsRevenue: 1200, marketShare: 16, grossToNet: 40 },
+                  { year: '2033', usRevenue: 1800, exUsRevenue: 900, marketShare: 14, grossToNet: 40 }
+                ]}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
+                  <XAxis 
+                    dataKey="year" 
+                    axisLine={{ stroke: '#666' }}
+                    tickLine={{ stroke: '#666' }}
+                    tick={{ fill: '#666', fontSize: 12 }}
+                  />
+                  <YAxis 
+                    yAxisId="left"
+                    axisLine={{ stroke: '#666' }}
+                    tickLine={{ stroke: '#666' }}
+                    tick={{ fill: '#666', fontSize: 12 }}
+                    domain={[0, 6000]}
+                    ticks={[0, 1500, 3000, 4500, 6000]}
+                  />
+                  <YAxis 
+                    yAxisId="right"
+                    orientation="right"
+                    axisLine={{ stroke: '#666' }}
+                    tickLine={{ stroke: '#666' }}
+                    tick={{ fill: '#666', fontSize: 12 }}
+                    domain={[0, 60]}
+                    ticks={[0, 15, 30, 45, 60]}
+                  />
+                  <Tooltip />
+                  <Bar yAxisId="left" dataKey="usRevenue" stackId="a" fill="#ff6b35" />
+                  <Bar yAxisId="left" dataKey="exUsRevenue" stackId="a" fill="#20b2aa" />
+                  <Line 
+                    yAxisId="right" 
+                    type="monotone" 
+                    dataKey="marketShare" 
+                    stroke="#000" 
+                    strokeWidth={2}
+                    dot={{ fill: '#fff', stroke: '#000', strokeWidth: 2, r: 3 }}
+                  />
+                  <Line 
+                    yAxisId="right" 
+                    type="monotone" 
+                    dataKey="grossToNet" 
+                    stroke="#ffd700" 
+                    strokeWidth={2}
+                    strokeDasharray="5 5"
+                    dot={{ fill: '#fff', stroke: '#ffd700', strokeWidth: 2, r: 3 }}
+                  />
+                </ComposedChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Loss of Exclusivity Impact and Financial Outcome Metrics */}
+          <div className="grid grid-cols-1 gap-6 mt-8 lg:grid-cols-2 col-span-full">
+            {/* Left Section: Loss of Exclusivity Impact */}
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold text-gray-900">Loss of Exclusivity Impact</h3>
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 text-gray-400">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                  </div>
+                  <span className="text-sm font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+                </div>
+              </div>
+              <p className="mb-6 text-sm text-gray-600">Revenue erosion from generic competition</p>
+              
+              <div className="h-[300px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <ComposedChart data={[
+                    { year: '2030', revenue: 4500, loeImpact: 0 },
+                    { year: '2031', revenue: 4100, loeImpact: 200 },
+                    { year: '2032', revenue: 3700, loeImpact: 500 },
+                    { year: '2033', revenue: 3200, loeImpact: 800 },
+                    { year: '2034', revenue: 2500, loeImpact: 1200 },
+                    { year: '2035', revenue: 2000, loeImpact: 1500 }
+                  ]}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
+                    <XAxis 
+                      dataKey="year" 
+                      axisLine={{ stroke: '#666' }}
+                      tickLine={{ stroke: '#666' }}
+                      tick={{ fill: '#666', fontSize: 12 }}
+                    />
+                    <YAxis 
+                      axisLine={{ stroke: '#666' }}
+                      tickLine={{ stroke: '#666' }}
+                      tick={{ fill: '#666', fontSize: 12 }}
+                      domain={[0, 6000]}
+                      ticks={[0, 1500, 3000, 4500, 6000]}
+                    />
+                    <Tooltip />
+                    <Area 
+                      type="monotone" 
+                      dataKey="revenue" 
+                      stackId="1"
+                      stroke="#ff6b35" 
+                      fill="#ff6b35" 
+                      fillOpacity={0.6}
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="loeImpact" 
+                      stackId="1"
+                      stroke="#ffa07a" 
+                      fill="#ffa07a" 
+                      fillOpacity={0.6}
+                    />
+                  </ComposedChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Right Section: Financial Outcome Metrics */}
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <h3 className="mb-2 text-lg font-semibold text-gray-900">Financial Outcome Metrics</h3>
+              <p className="mb-6 text-sm text-gray-600">Key valuation and return metrics</p>
+              
+              {/* Top Row - Two Key Metrics */}
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="p-4 rounded-lg bg-gray-50">
+                  <div className="text-2xl font-bold text-green-600">$8.2B</div>
+                  <div className="text-sm text-gray-600">ANPV (8% discount)</div>
+                </div>
+                <div className="p-4 rounded-lg bg-gray-50">
+                  <div className="text-2xl font-bold text-blue-600">3.2x</div>
+                  <div className="text-sm text-gray-600">Peak Sales Multiple</div>
+                </div>
+              </div>
+              
+              {/* Bottom Section - Additional Metrics */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-700">IRR</span>
+                  <span className="text-sm font-bold text-green-600">24.5%</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-700">Payback Period</span>
+                  <span className="text-sm font-bold text-gray-900">4.2 years</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-700">Risk-Adjusted NPV</span>
+                  <span className="text-sm font-bold text-blue-600">$4.8B</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Licensing Power Index */}
+          <div className="p-6 mt-8 bg-white border border-gray-200 rounded-lg shadow-sm col-span-full">
+            <h3 className="mb-2 text-lg font-semibold text-gray-900">Licensing Power Index</h3>
+            <p className="mb-6 text-sm text-gray-600">Factors influencing licensing attractiveness and valuation</p>
+            
+            {/* Three Columns */}
+            <div className="grid grid-cols-1 gap-6 mb-6 md:grid-cols-3">
+              {/* Pricing Leverage */}
+              <div>
+                <h4 className="mb-3 text-base font-semibold text-gray-900">Pricing Leverage (85/100)</h4>
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <div className="w-2 h-2 mt-2 mr-3 bg-green-500 rounded-full"></div>
+                    <span className="text-sm text-gray-700">Premium pricing supported by efficacy</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="w-2 h-2 mt-2 mr-3 bg-green-500 rounded-full"></div>
+                    <span className="text-sm text-gray-700">Limited direct competition</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="w-2 h-2 mt-2 mr-3 bg-green-500 rounded-full"></div>
+                    <span className="text-sm text-gray-700">Strong payer acceptance</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Exclusivity Window */}
+              <div>
+                <h4 className="mb-3 text-base font-semibold text-gray-900">Exclusivity Window (72/100)</h4>
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <div className="w-2 h-2 mt-2 mr-3 bg-yellow-500 rounded-full"></div>
+                    <span className="text-sm text-gray-700">6-year core exclusivity period</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="w-2 h-2 mt-2 mr-3 bg-yellow-500 rounded-full"></div>
+                    <span className="text-sm text-gray-700">Moderate generic entry risk</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="w-2 h-2 mt-2 mr-3 bg-green-500 rounded-full"></div>
+                    <span className="text-sm text-gray-700">Regulatory exclusivity overlap</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Payer Alignment */}
+              <div>
+                <h4 className="mb-3 text-base font-semibold text-gray-900">Payer Alignment (78/100)</h4>
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <div className="w-2 h-2 mt-2 mr-3 bg-green-500 rounded-full"></div>
+                    <span className="text-sm text-gray-700">Strong health economic profile</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="w-2 h-2 mt-2 mr-3 bg-green-500 rounded-full"></div>
+                    <span className="text-sm text-gray-700">Clear unmet medical need</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="w-2 h-2 mt-2 mr-3 bg-yellow-500 rounded-full"></div>
+                    <span className="text-sm text-gray-700">Moderate access barriers</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Overall Licensing Power Index */}
+            <div className="pt-6 border-t border-gray-200">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-base font-semibold text-gray-900">Overall Licensing Power Index</h4>
+                <div className="flex items-center space-x-3">
+                  <span className="text-2xl font-bold text-blue-600">78/100</span>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 text-gray-400">
+                      <svg fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                      </svg>
+                    </div>
+                    <span className="text-sm font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+                  </div>
+                </div>
+              </div>
+              <p className="text-sm text-gray-700">
+                Strong licensing position driven by differentiated efficacy profile, reasonable exclusivity window, and favorable market dynamics. Premium valuation expected in competitive process.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {activeTab === 'strategic-fit' && (
+      <div className="px-6 py-8 mx-auto max-w-7xl">
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-3xl font-bold text-gray-900">Strategic Fit & Tailwind Score</h2>
+          <button className="p-2 transition-colors duration-200 rounded-full hover:bg-gray-100">
+            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Strategic Tailwind Score Card */}
+        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+          <div className="flex items-start justify-between mb-6">
+            <div>
+              <div className="flex items-center mb-2 space-x-2">
+                <h3 className="text-lg font-semibold text-gray-900">Strategic Tailwind Score</h3>
+                <div className="w-4 h-4 text-gray-400">
+                  <svg fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                  </svg>
+                </div>
+                <span className="text-sm font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+              </div>
+              <p className="text-sm text-gray-600">Regulatory and policy environment assessment</p>
+            </div>
+            <div className="text-right">
+              <div className={`mb-1 text-4xl font-bold text-blue-600 ${shouldBlur('strategicFit.tailwindScore', '67') ? 'blur-sm opacity-50' : ''}`}>
+              {getAnalysisData('strategicFit.tailwindScore', '67')}
+            </div>
+              <div className="mb-3 text-sm font-medium text-gray-900">Strong Tailwinds</div>
+              <button 
+                onClick={() => setShowSourcesModal(true)}
+                className="flex items-center px-3 py-2 space-x-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+              >
+                <LuDatabase className="w-4 h-4" />
+                <span>Sources (4)</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Five Categories */}
+          <div className="grid grid-cols-5 gap-4 pt-6 border-t border-gray-200">
+            <div className="text-center">
+              <div className="mb-1 text-lg font-bold text-green-600">18/25</div>
+              <div className="text-xs text-gray-600">FDA Designations</div>
+            </div>
+            <div className="text-center">
+              <div className="mb-1 text-lg font-bold text-green-600">15/20</div>
+              <div className="text-xs text-gray-600">Guidance Documents</div>
+            </div>
+            <div className="text-center">
+              <div className="mb-1 text-lg font-bold text-green-600">12/20</div>
+              <div className="text-xs text-gray-600">Policy Incentives</div>
+            </div>
+            <div className="text-center">
+              <div className="mb-1 text-lg font-bold text-green-600">14/15</div>
+              <div className="text-xs text-gray-600">Advocacy Activity</div>
+            </div>
+            <div className="text-center">
+              <div className="mb-1 text-lg font-bold text-green-600">8/20</div>
+              <div className="text-xs text-gray-600">Market Precedent</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Four Category Cards Grid */}
+        <div className="grid grid-cols-1 gap-6 mt-6 md:grid-cols-2">
+          {/* FDA Designations Card */}
+          <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="text-lg font-semibold text-gray-900">FDA Designations</h4>
+              <div className="text-lg font-bold text-blue-600">18/25</div>
+            </div>
+            <div className="w-full h-2 mb-6 bg-gray-200 rounded-full">
+              <div className="h-2 bg-black rounded-full" style={{ width: '72%' }}></div>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-700">Breakthrough Therapy</span>
+                <div className="flex items-center space-x-2">
+                  <span className="px-2 py-1 text-xs font-medium text-white bg-black rounded-full">High</span>
+                  <div className="w-4 h-4 text-gray-400">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                  </div>
+                  <span className="text-xs font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-700">Fast Track</span>
+                <div className="flex items-center space-x-2">
+                  <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full">Medium</span>
+                  <div className="w-4 h-4 text-gray-400">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                  </div>
+                  <span className="text-xs font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-700">Orphan Drug</span>
+                <div className="flex items-center space-x-2">
+                  <span className="px-2 py-1 text-xs font-medium text-white bg-black rounded-full">High</span>
+                  <div className="w-4 h-4 text-gray-400">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                  </div>
+                  <span className="text-xs font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-700">Priority Review</span>
+                <div className="flex items-center space-x-2">
+                  <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full">Medium</span>
+                  <div className="w-4 h-4 text-gray-400">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                  </div>
+                  <span className="text-xs font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Guidance Documents Card */}
+          <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="text-lg font-semibold text-gray-900">Guidance Documents</h4>
+              <div className="text-lg font-bold text-blue-600">15/20</div>
+            </div>
+            <div className="w-full h-2 mb-6 bg-gray-200 rounded-full">
+              <div className="h-2 bg-black rounded-full" style={{ width: '75%' }}></div>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-700">Oncology Endpoints</span>
+                <div className="flex items-center space-x-2">
+                  <span className="px-2 py-1 text-xs font-medium text-white bg-black rounded-full">High</span>
+                  <div className="w-4 h-4 text-gray-400">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                  </div>
+                  <span className="text-xs font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-700">Biomarker Strategy</span>
+                <div className="flex items-center space-x-2">
+                  <span className="px-2 py-1 text-xs font-medium text-white bg-black rounded-full">High</span>
+                  <div className="w-4 h-4 text-gray-400">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                  </div>
+                  <span className="text-xs font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-700">Real-World Evidence</span>
+                <div className="flex items-center space-x-2">
+                  <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full">Medium</span>
+                  <div className="w-4 h-4 text-gray-400">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                  </div>
+                  <span className="text-xs font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-700">Patient-Reported Outcomes</span>
+                <div className="flex items-center space-x-2">
+                  <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full">Medium</span>
+                  <div className="w-4 h-4 text-gray-400">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                  </div>
+                  <span className="text-xs font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Policy Incentives Card */}
+          <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="text-lg font-semibold text-gray-900">Policy Incentives</h4>
+              <div className="text-lg font-bold text-blue-600">12/20</div>
+            </div>
+            <div className="w-full h-2 mb-6 bg-gray-200 rounded-full">
+              <div className="h-2 bg-black rounded-full" style={{ width: '60%' }}></div>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-700">ARPA-H Funding</span>
+                <div className="flex items-center space-x-2">
+                  <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full">Medium</span>
+                  <div className="w-4 h-4 text-gray-400">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                  </div>
+                  <span className="text-xs font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-700">Medicare Innovation</span>
+                <div className="flex items-center space-x-2">
+                  <span className="px-2 py-1 text-xs font-medium text-white bg-black rounded-full">High</span>
+                  <div className="w-4 h-4 text-gray-400">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                  </div>
+                  <span className="text-xs font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-700">IRA Exclusions</span>
+                <div className="flex items-center space-x-2">
+                  <span className="px-2 py-1 text-xs font-medium text-white bg-black rounded-full">High</span>
+                  <div className="w-4 h-4 text-gray-400">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                  </div>
+                  <span className="text-xs font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-700">Tax Credits</span>
+                <div className="flex items-center space-x-2">
+                  <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full">Low</span>
+                  <div className="w-4 h-4 text-gray-400">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                  </div>
+                  <span className="text-xs font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Advocacy Activity Card */}
+          <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="text-lg font-semibold text-gray-900">Advocacy Activity</h4>
+              <div className="text-lg font-bold text-blue-600">14/15</div>
+            </div>
+            <div className="w-full h-2 mb-6 bg-gray-200 rounded-full">
+              <div className="h-2 bg-black rounded-full" style={{ width: '93%' }}></div>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-700">Patient Organizations</span>
+                <div className="flex items-center space-x-2">
+                  <span className="px-2 py-1 text-xs font-medium text-white bg-black rounded-full">High</span>
+                  <div className="w-4 h-4 text-gray-400">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                  </div>
+                  <span className="text-xs font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-700">KOL Support</span>
+                <div className="flex items-center space-x-2">
+                  <span className="px-2 py-1 text-xs font-medium text-white bg-black rounded-full">High</span>
+                  <div className="w-4 h-4 text-gray-400">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                  </div>
+                  <span className="text-xs font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-700">Medical Societies</span>
+                <div className="flex items-center space-x-2">
+                  <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full">Medium</span>
+                  <div className="w-4 h-4 text-gray-400">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                  </div>
+                  <span className="text-xs font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-700">Congressional Interest</span>
+                <div className="flex items-center space-x-2">
+                  <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full">Medium</span>
+                  <div className="w-4 h-4 text-gray-400">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                  </div>
+                  <span className="text-xs font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Impact on Buyer Interest Section */}
+        <div className="p-6 mt-8 bg-white border border-gray-200 rounded-lg shadow-sm">
+          <div className="mb-6">
+            <h3 className="text-2xl font-bold text-gray-900">Impact on Buyer Interest</h3>
+            <p className="text-sm text-gray-600">How regulatory tailwinds influence acquisition attractiveness</p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            {/* Regulatory Pathway Clarity Card */}
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <div className="flex items-start justify-between mb-4">
+                <h4 className="text-lg font-semibold text-gray-900">Regulatory Pathway Clarity</h4>
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 text-gray-400">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                  </div>
+                  <span className="text-sm font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+                </div>
+              </div>
+              <div className="flex items-center mb-3">
+                <span className="px-3 py-1 text-xs font-medium text-white bg-black rounded-full">High Impact</span>
+              </div>
+              <p className="text-sm text-gray-600">Clear FDA guidance reduces development risk and timeline uncertainty</p>
+            </div>
+
+            {/* Policy Support Card */}
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <div className="flex items-start justify-between mb-4">
+                <h4 className="text-lg font-semibold text-gray-900">Policy Support</h4>
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 text-gray-400">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                  </div>
+                  <span className="text-sm font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+                </div>
+              </div>
+              <div className="flex items-center mb-3">
+                <span className="px-3 py-1 text-xs font-medium text-white bg-gray-500 rounded-full">Medium Impact</span>
+              </div>
+              <p className="text-sm text-gray-600">Legislative incentives provide financial benefits and competitive advantages</p>
+            </div>
+
+            {/* Market Access Precedent Card */}
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <div className="flex items-start justify-between mb-4">
+                <h4 className="text-lg font-semibold text-gray-900">Market Access Precedent</h4>
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 text-gray-400">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                  </div>
+                  <span className="text-sm font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+                </div>
+              </div>
+              <div className="flex items-center mb-3">
+                <span className="px-3 py-1 text-xs font-medium text-white bg-black rounded-full">High Impact</span>
+              </div>
+              <p className="text-sm text-gray-600">Established payer acceptance patterns reduce commercial risk</p>
+            </div>
+
+            {/* Advocacy Momentum Card */}
+            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <div className="flex items-start justify-between mb-4">
+                <h4 className="text-lg font-semibold text-gray-900">Advocacy Momentum</h4>
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 text-gray-400">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                  </div>
+                  <span className="text-sm font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+                </div>
+              </div>
+              <div className="flex items-center mb-3">
+                <span className="px-3 py-1 text-xs font-medium text-white bg-gray-500 rounded-full">Medium Impact</span>
+              </div>
+              <p className="text-sm text-gray-600">Strong patient advocacy creates favorable environment for approval and access</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Strategic Action Plan Section */}
+        <div className="p-6 mt-8 bg-white border border-gray-200 rounded-lg shadow-sm">
+          <div className="flex items-start justify-between mb-6">
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900">Strategic Action Plan</h3>
+              <p className="text-sm text-gray-600">Recommended actions to maximize regulatory tailwinds</p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 text-gray-400">
+                <svg fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                </svg>
+              </div>
+              <span className="text-sm font-medium text-blue-600 cursor-pointer hover:underline">View Details</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            {/* Immediate Actions */}
+            <div>
+              <h4 className="mb-4 text-lg font-semibold text-gray-900">Immediate (0-6 months)</h4>
+              <ul className="space-y-3">
+                <li className="flex items-start space-x-3">
+                  <div className="w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Submit Breakthrough Therapy Designation request</span>
+                </li>
+                <li className="flex items-start space-x-3">
+                  <div className="w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Initiate patient advocacy partnerships</span>
+                </li>
+                <li className="flex items-start space-x-3">
+                  <div className="w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Engage with FDA on biomarker strategy</span>
+                </li>
+                <li className="flex items-start space-x-3">
+                  <div className="w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Develop real-world evidence plan</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Near-term Actions */}
+            <div>
+              <h4 className="mb-4 text-lg font-semibold text-gray-900">Near-term (6-18 months)</h4>
+              <ul className="space-y-3">
+                <li className="flex items-start space-x-3">
+                  <div className="w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">File for Fast Track designation</span>
+                </li>
+                <li className="flex items-start space-x-3">
+                  <div className="w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Engage with CMS on coverage strategy</span>
+                </li>
+                <li className="flex items-start space-x-3">
+                  <div className="w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Establish KOL advisory board</span>
+                </li>
+                <li className="flex items-start space-x-3">
+                  <div className="w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Develop health economics dossier</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Long-term Actions */}
+            <div>
+              <h4 className="mb-4 text-lg font-semibold text-gray-900">Long-term (18+ months)</h4>
+              <ul className="space-y-3">
+                <li className="flex items-start space-x-3">
+                  <div className="w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Prepare for Priority Review Voucher</span>
+                </li>
+                <li className="flex items-start space-x-3">
+                  <div className="w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Establish outcomes-based contracts</span>
+                </li>
+                <li className="flex items-start space-x-3">
+                  <div className="w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Build international regulatory strategy</span>
+                </li>
+                <li className="flex items-start space-x-3">
+                  <div className="w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Develop lifecycle management plan</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Key Success Factors Section */}
+        <div className="p-6 mt-8 bg-white border border-gray-200 rounded-lg shadow-sm">
+          <h3 className="mb-6 text-2xl font-bold text-gray-900">Key Success Factors</h3>
+          
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            {/* Regulatory Excellence */}
+            <div>
+              <h4 className="mb-4 text-lg font-semibold text-gray-900">Regulatory Excellence</h4>
+              <ul className="space-y-3">
+                <li className="flex items-start space-x-3">
+                  <div className="w-2 h-2 mt-2 bg-green-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Proactive FDA engagement</span>
+                </li>
+                <li className="flex items-start space-x-3">
+                  <div className="w-2 h-2 mt-2 bg-green-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Robust biomarker strategy</span>
+                </li>
+                <li className="flex items-start space-x-3">
+                  <div className="w-2 h-2 mt-2 bg-green-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Quality clinical execution</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Stakeholder Alignment */}
+            <div>
+              <h4 className="mb-4 text-lg font-semibold text-gray-900">Stakeholder Alignment</h4>
+              <ul className="space-y-3">
+                <li className="flex items-start space-x-3">
+                  <div className="w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Patient advocacy partnerships</span>
+                </li>
+                <li className="flex items-start space-x-3">
+                  <div className="w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">KOL engagement strategy</span>
+                </li>
+                <li className="flex items-start space-x-3">
+                  <div className="w-2 h-2 mt-2 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Payer relationship building</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Commercial Readiness */}
+            <div>
+              <h4 className="mb-4 text-lg font-semibold text-gray-900">Commercial Readiness</h4>
+              <ul className="space-y-3">
+                <li className="flex items-start space-x-3">
+                  <div className="w-2 h-2 mt-2 bg-purple-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Market access preparation</span>
+                </li>
+                <li className="flex items-start space-x-3">
+                  <div className="w-2 h-2 mt-2 bg-purple-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Health economics evidence</span>
+                </li>
+                <li className="flex items-start space-x-3">
+                  <div className="w-2 h-2 mt-2 bg-purple-500 rounded-full"></div>
+                  <span className="text-sm text-gray-700">Launch strategy development</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
   </div>
-);
+  );
+}
 
 function App() {
   const [formData, setFormData] = useState({
@@ -3597,6 +4656,7 @@ function App() {
   const [showPatentModal, setShowPatentModal] = useState(false)
   const [showMethodModal, setShowMethodModal] = useState(false)
   const [showIPStrategyModal, setShowIPStrategyModal] = useState(false)
+  const [analysisData, setAnalysisData] = useState<MarketAnalysisData | null>(null)
 
   // Animate progress when loading
   useEffect(() => {
@@ -3677,7 +4737,12 @@ function App() {
 
       if (response.ok) {
         setSubmitStatus('success')
-        setSubmitMessage(`Market analysis submitted successfully! Analysis ID: ${result.data.id}`)
+        setSubmitMessage(`Market analysis completed successfully! Analysis ID: ${result.data.id}`)
+        
+        // Store the analysis data for use in the results page
+        setAnalysisData(result.data)
+        localStorage.setItem('marketAnalysisData', JSON.stringify(result.data))
+        
         // Reset form after successful submission
         setFormData({
           moleculeName: '',
@@ -3695,9 +4760,10 @@ function App() {
         setSelectedRegions([])
       } else {
         setSubmitStatus('error')
-        setSubmitMessage(result.error || 'Failed to submit market analysis')
+        setSubmitMessage(result.error || 'Failed to complete market analysis')
       }
-    } catch {
+    } catch (error) {
+      console.error('Error submitting market analysis:', error)
       setSubmitStatus('error')
       setSubmitMessage('Network error. Please check your connection and try again.')
     } finally {
@@ -3750,6 +4816,7 @@ function App() {
           setShowMethodModal={setShowMethodModal}
           showIPStrategyModal={showIPStrategyModal}
           setShowIPStrategyModal={setShowIPStrategyModal}
+          analysisData={analysisData}
         />
   }
 
@@ -4200,4 +5267,4 @@ function App() {
   )
 }
 
-export default App
+export default App;
