@@ -16,12 +16,18 @@ import { LuShield } from "react-icons/lu";
 
 // Type definitions for analysis data
 interface MarketAnalysisData {
+  moleculeName: string;
   compoundProfile: {
+    targetProtein: string;
+    pathway: string;
     mechanismOfAction: string;
+    primaryIndication: string;
+    developmentStrategy: string;
     preclinicalFindings: {
       ic50Mutant: string;
       ic50WildType: string;
       tumorInhibition: string;
+      survivalImprovement: string;
     };
     clinicalData: {
       phase1Results: string;
@@ -41,6 +47,11 @@ interface MarketAnalysisData {
       company: string;
       status: string;
       differentiation: string;
+      mechanismOfAction: string;
+      marketValue: string;
+      latestMilestone: string;
+      target: string;
+      patients: string;
     }>;
     indirectCompetitors: Array<{
       name: string;
@@ -58,12 +69,94 @@ interface MarketAnalysisData {
     }>;
   };
   strategicFit: {
-    tailwindScore: number;
-    fdaDesignations: number;
-    guidanceDocuments: number;
-    policyIncentives: number;
-    advocacyActivity: number;
-    marketPrecedent: number;
+    tailwindScore: string;
+    fdaDesignations: string;
+    guidanceDocuments: string;
+    policyIncentives: string;
+    advocacyActivity: string;
+    marketPrecedent: string;
+  };
+  contentSections?: {
+    compoundProfileTitle?: string;
+    compoundProfileDescription?: string;
+    targetProteinDescription?: string;
+    pathwayDescription?: string;
+    mechanismDescription?: string;
+    indicationDescription?: string;
+    strategyDescription?: string;
+    marketSizeTitle?: string;
+    marketSizeDescription?: string;
+    marketGrowthDescription?: string;
+    competitiveTitle?: string;
+    competitiveDescription?: string;
+    competitorAnalysisDescription?: string;
+    financialTitle?: string;
+    financialDescription?: string;
+    revenueForecastDescription?: string;
+    loeImpactDescription?: string;
+    strategicTitle?: string;
+    strategicDescription?: string;
+    tailwindDescription?: string;
+    fdaDescription?: string;
+    guidanceDescription?: string;
+    policyDescription?: string;
+    advocacyDescription?: string;
+    marketGrowthChartTitle?: string;
+    marketGrowthChartDescription?: string;
+    revenueChartTitle?: string;
+    revenueChartDescription?: string;
+    loeChartTitle?: string;
+    loeChartDescription?: string;
+    fdaCardDescription?: string;
+    guidanceCardDescription?: string;
+    policyCardDescription?: string;
+    advocacyCardDescription?: string;
+    
+    // Additional dynamic content fields
+    marketGrowthSubtitle?: string;
+    revenueForecastSubtitle?: string;
+    loeImpactSubtitle?: string;
+    survivalImprovementDescription?: string;
+    breakthroughTherapyStatus?: string;
+    fastTrackStatus?: string;
+    orphanDrugStatus?: string;
+    priorityReviewStatus?: string;
+    oncologyEndpointsStatus?: string;
+    biomarkerStrategyStatus?: string;
+    clinicalTrialDesignStatus?: string;
+    regulatoryPathwayStatus?: string;
+    orphanDrugIncentiveStatus?: string;
+    acceleratedApprovalStatus?: string;
+    priorityReviewVoucherStatus?: string;
+    patientAccessStatus?: string;
+    physicianEducationStatus?: string;
+    payerEngagementStatus?: string;
+    regulatoryAdvocacyStatus?: string;
+    marketPrecedentDescription?: string;
+    competitiveAdvantageDescription?: string;
+    clinicalEfficacyDescription?: string;
+    safetyProfileDescription?: string;
+    marketAccessDescription?: string;
+    pricingStrategyDescription?: string;
+    reimbursementDescription?: string;
+    launchStrategyDescription?: string;
+    lifecycleManagementDescription?: string;
+    riskAssessmentDescription?: string;
+    opportunityAnalysisDescription?: string;
+    
+    // Regulatory and Timeline Fields
+    timelineToMarket?: string;
+    regulatoryPlanDescription?: string;
+    breakthroughDesignationLabel?: string;
+    orphanDrugStatusLabel?: string;
+    fastTrackPathwayDescription?: string;
+    
+    sources?: Array<{
+      title: string;
+      url: string;
+      description: string;
+      type: string;
+    }>;
   };
 }
 
@@ -175,10 +268,10 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
   const getAnalysisData = (path: string, fallback: string = 'Data not available'): string => {
     if (!analysisData) return fallback;
     const keys = path.split('.');
-    let value: any = analysisData;
+    let value: unknown = analysisData;
     for (const key of keys) {
       if (value && typeof value === 'object' && key in value) {
-        value = value[key];
+        value = (value as Record<string, unknown>)[key];
       } else {
         return fallback;
       }
@@ -188,8 +281,114 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
 
   // Helper function to check if data should be blurred
   const shouldBlur = (path: string, fallback: string = 'Data not available'): boolean => {
-    const value = getAnalysisData(path, fallback);
-    return value === fallback || value === 'Data not available';
+    if (!analysisData) return true;
+    const keys = path.split('.');
+    let value: unknown = analysisData;
+    for (const key of keys) {
+      if (value && typeof value === 'object' && key in value) {
+        value = (value as Record<string, unknown>)[key];
+      } else {
+        return true; // Blur if path doesn't exist
+      }
+    }
+    // Only blur if we have no value or if it's exactly the fallback
+    return !value || String(value).trim() === '' || String(value) === fallback;
+  };
+
+  // Helper function to generate market growth chart data
+  const getMarketGrowthData = () => {
+    if (!analysisData?.financialProjections?.revenueForecast) {
+      return [
+        { year: '2024', marketSize: 1500, penetration: 12 },
+        { year: '2025', marketSize: 1700, penetration: 15 },
+        { year: '2026', marketSize: 2000, penetration: 18 },
+        { year: '2027', marketSize: 2200, penetration: 21 },
+        { year: '2028', marketSize: 2350, penetration: 24 },
+        { year: '2029', marketSize: 2700, penetration: 27 },
+        { year: '2030', marketSize: 2850, penetration: 27 }
+      ];
+    }
+
+    const revenueData = analysisData.financialProjections.revenueForecast;
+    const peakRevenue = Math.max(...revenueData.map(d => d.revenue));
+    const marketSizeMultiplier = 3.5; // Market size is typically 3-4x peak revenue
+
+    return revenueData.map((item) => ({
+      year: item.year.toString(),
+      marketSize: Math.round((item.revenue / peakRevenue) * 3000 * marketSizeMultiplier),
+      penetration: Math.round((item.revenue / peakRevenue) * 30)
+    }));
+  };
+
+  // Helper function to generate revenue forecasting chart data
+  const getRevenueForecastData = () => {
+    if (!analysisData?.financialProjections?.revenueForecast) {
+      return [
+        { year: '2024', usRevenue: 0, exUsRevenue: 0, marketShare: 0, grossToNet: 0 },
+        { year: '2025', usRevenue: 0, exUsRevenue: 0, marketShare: 0, grossToNet: 0 },
+        { year: '2026', usRevenue: 0, exUsRevenue: 0, marketShare: 0, grossToNet: 0 },
+        { year: '2027', usRevenue: 500, exUsRevenue: 100, marketShare: 5, grossToNet: 20 },
+        { year: '2028', usRevenue: 1800, exUsRevenue: 600, marketShare: 10, grossToNet: 30 },
+        { year: '2029', usRevenue: 2700, exUsRevenue: 1200, marketShare: 15, grossToNet: 35 },
+        { year: '2030', usRevenue: 2900, exUsRevenue: 1500, marketShare: 17, grossToNet: 38 },
+        { year: '2031', usRevenue: 2700, exUsRevenue: 1400, marketShare: 16, grossToNet: 39 },
+        { year: '2032', usRevenue: 2500, exUsRevenue: 1200, marketShare: 16, grossToNet: 40 },
+        { year: '2033', usRevenue: 1800, exUsRevenue: 900, marketShare: 14, grossToNet: 40 }
+      ];
+    }
+
+    const revenueData = analysisData.financialProjections.revenueForecast;
+    const peakRevenue = Math.max(...revenueData.map(d => d.revenue));
+
+    return revenueData.map((item, index) => {
+      const usRevenue = Math.round(item.revenue * 0.65); // 65% US revenue
+      const exUsRevenue = Math.round(item.revenue * 0.35); // 35% ex-US revenue
+      const marketShare = Math.round((item.revenue / peakRevenue) * 20);
+      const grossToNet = Math.round(20 + (index * 2)); // Increasing over time
+
+      return {
+        year: item.year.toString(),
+        usRevenue,
+        exUsRevenue,
+        marketShare,
+        grossToNet
+      };
+    });
+  };
+
+  // Helper function to generate LOE impact chart data
+  const getLOEImpactData = () => {
+    if (!analysisData?.financialProjections?.revenueForecast) {
+      return [
+        { year: '2030', revenue: 4500, loeImpact: 0 },
+        { year: '2031', revenue: 4100, loeImpact: 200 },
+        { year: '2032', revenue: 3700, loeImpact: 500 },
+        { year: '2033', revenue: 3200, loeImpact: 800 },
+        { year: '2034', revenue: 2500, loeImpact: 1200 },
+        { year: '2035', revenue: 2000, loeImpact: 1500 }
+      ];
+    }
+
+    const revenueData = analysisData.financialProjections.revenueForecast;
+    const peakRevenue = Math.max(...revenueData.map(d => d.revenue));
+    const peakYear = revenueData.find(d => d.revenue === peakRevenue)?.year || 2030;
+
+    // Generate LOE impact data starting from peak year
+    const loeData = [];
+    for (let i = 0; i < 6; i++) {
+      const year = peakYear + i;
+      const baseRevenue = peakRevenue * Math.pow(0.9, i); // Gradual decline
+      const loeImpact = peakRevenue * 0.1 * (i + 1); // Increasing LOE impact
+      const finalRevenue = Math.max(baseRevenue - loeImpact, 0);
+
+      loeData.push({
+        year: year.toString(),
+        revenue: Math.round(finalRevenue),
+        loeImpact: Math.round(loeImpact)
+      });
+    }
+
+    return loeData;
   };
 
   return (
@@ -307,7 +506,9 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
     {activeTab === 'compound-profile' && (
       <div className="px-6 py-8 mx-auto max-w-7xl">
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-3xl font-bold text-gray-900">Compound Profile</h2>
+          <h2 className={`text-3xl font-bold text-gray-900 ${shouldBlur('contentSections.compoundProfileTitle', 'Compound Profile') ? 'blur-sm opacity-50' : ''}`}>
+            {getAnalysisData('contentSections.compoundProfileTitle', 'Compound Profile')}
+          </h2>
           <button 
             onClick={() => setShowCompoundProfile(!showCompoundProfile)}
             className="p-2 transition-colors duration-200 rounded-full hover:bg-blue-50 hover:text-blue-600"
@@ -330,19 +531,29 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
             <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
               <h3 className="mb-4 text-lg font-semibold text-gray-900">Mechanism of Action</h3>
               <div className="space-y-4">
-                <div>
-                  <p className="mb-2 text-sm font-bold text-gray-600">Target Protein</p>
-                  <p className="text-sm font-bold text-gray-900">EGFR L858R/T790M</p>
-                </div>
-                <div>
-                  <p className="mb-2 text-sm font-bold text-gray-600">Pathway</p>
-                  <p className="text-sm font-bold text-gray-900">EGFR/PI3K/AKT</p>
-                </div>
+                                  <div>
+                    <p className="mb-2 text-sm font-bold text-gray-600">Target Protein</p>
+                    <p className={`text-sm font-bold text-gray-900 ${shouldBlur('compoundProfile.targetProtein', 'EGFR L858R/T790M') ? 'blur-sm opacity-50' : ''}`}>
+                      {getAnalysisData('compoundProfile.targetProtein', 'EGFR L858R/T790M')}
+                    </p>
+                    <p className={`text-xs text-gray-600 mt-1 ${shouldBlur('contentSections.targetProteinDescription', 'EGFR and its mutations play a pivotal role in NSCLC pathology.') ? 'blur-sm opacity-50' : ''}`}>
+                      {getAnalysisData('contentSections.targetProteinDescription', 'EGFR and its mutations play a pivotal role in NSCLC pathology.')}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="mb-2 text-sm font-bold text-gray-600">Pathway</p>
+                    <p className={`text-sm font-bold text-gray-900 ${shouldBlur('compoundProfile.pathway', 'EGFR/PI3K/AKT') ? 'blur-sm opacity-50' : ''}`}>
+                      {getAnalysisData('compoundProfile.pathway', 'EGFR/PI3K/AKT')}
+                    </p>
+                    <p className={`text-xs text-gray-600 mt-1 ${shouldBlur('contentSections.pathwayDescription', 'Osimertinib\'s interference with the EGFR signaling pathway underscores the drug\'s potent anti-tumor activity.') ? 'blur-sm opacity-50' : ''}`}>
+                      {getAnalysisData('contentSections.pathwayDescription', 'Osimertinib\'s interference with the EGFR signaling pathway underscores the drug\'s potent anti-tumor activity.')}
+                    </p>
+                  </div>
                 <div>
                   <p className="mb-2 text-sm font-bold text-gray-600">Description</p>
-                  <p className={`text-sm text-gray-900 ${shouldBlur('compoundProfile.mechanismOfAction', 'Third-generation EGFR tyrosine kinase inhibitor designed to selectively target T790M resistance mutations while sparing wild-type EGFR, reducing skin and GI toxicity.') ? 'blur-sm opacity-50' : ''}`}>
-              {getAnalysisData('compoundProfile.mechanismOfAction', 'Third-generation EGFR tyrosine kinase inhibitor designed to selectively target T790M resistance mutations while sparing wild-type EGFR, reducing skin and GI toxicity.')}
-            </p>
+                  <p className={`text-sm text-gray-900 ${shouldBlur('contentSections.mechanismDescription', 'Third-generation EGFR tyrosine kinase inhibitor designed to selectively target T790M resistance mutations while sparing wild-type EGFR, reducing skin and GI toxicity.') ? 'blur-sm opacity-50' : ''}`}>
+                    {getAnalysisData('contentSections.mechanismDescription', 'Third-generation EGFR tyrosine kinase inhibitor designed to selectively target T790M resistance mutations while sparing wild-type EGFR, reducing skin and GI toxicity.')}
+                  </p>
                 </div>
               </div>
             </div>
@@ -369,10 +580,11 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                   <p className="mb-2 text-sm font-bold text-gray-600">Tumor Inhibition (in vivo)</p>
                   <div className="flex items-center space-x-3">
                     <div className="flex-1 h-4 bg-gray-200 rounded-full">
-                      <div className="h-4 bg-black rounded-full" style={{ width: '87%' }}></div>
+                      <div className={`h-4 bg-black rounded-full transition-all duration-300 ${shouldBlur('compoundProfile.preclinicalFindings.tumorInhibition', '87%') ? 'blur-sm opacity-50' : ''}`} 
+                           style={{ width: `${getAnalysisData('compoundProfile.preclinicalFindings.tumorInhibition', '87')}%` }}></div>
                     </div>
                     <span className={`text-sm font-bold text-gray-900 ${shouldBlur('compoundProfile.preclinicalFindings.tumorInhibition', '87%') ? 'blur-sm opacity-50' : ''}`}>
-              {getAnalysisData('compoundProfile.preclinicalFindings.tumorInhibition', '87%')}
+              {getAnalysisData('compoundProfile.preclinicalFindings.tumorInhibition', '87')}%
             </span>
                   </div>
                 </div>
@@ -380,9 +592,12 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                   <p className="mb-2 text-sm font-bold text-gray-600">Survival Improvement</p>
                   <div className="flex items-center space-x-3">
                     <div className="flex-1 h-4 bg-gray-200 rounded-full">
-                      <div className="h-4 bg-black rounded-full" style={{ width: '65%' }}></div>
+                      <div className={`h-4 bg-black rounded-full transition-all duration-300 ${shouldBlur('compoundProfile.preclinicalFindings.survivalImprovement', '65%') ? 'blur-sm opacity-50' : ''}`} 
+                           style={{ width: `${getAnalysisData('compoundProfile.preclinicalFindings.survivalImprovement', '65')}%` }}></div>
                     </div>
-                    <span className="text-sm font-bold text-gray-900">65%</span>
+                    <span className={`text-sm font-bold text-gray-900 ${shouldBlur('compoundProfile.preclinicalFindings.survivalImprovement', '65%') ? 'blur-sm opacity-50' : ''}`}>
+                      {getAnalysisData('compoundProfile.preclinicalFindings.survivalImprovement', '65')}%
+                    </span>
                   </div>
                 </div>
               </div>
@@ -394,22 +609,41 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
               <div className="space-y-4">
                 <div>
                   <p className="mb-2 text-sm font-bold text-gray-600">Primary Indication</p>
-                  <div className="mb-3">
-                    <span className="px-2 py-1 text-xs font-bold text-gray-700 bg-gray-100 rounded-full">NSCLC w/ T790M mutation</span>
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {getAnalysisData('compoundProfile.primaryIndication', 'NSCLC w/ T790M mutation')
+                      .split(',')
+                      .map((indication: string, index: number) => (
+                        <span 
+                          key={index}
+                          className={`px-2 py-1 text-xs font-bold text-gray-700 bg-gray-100 rounded-full ${shouldBlur('compoundProfile.primaryIndication', 'NSCLC w/ T790M mutation') ? 'blur-sm opacity-50' : ''}`}
+                        >
+                          {indication.trim()}
+                        </span>
+                      ))}
                   </div>
-                  <p className="pb-4 text-sm text-gray-500 border-b border-gray-200">Targeting second-line treatment after first-generation EGFR TKI failure</p>
+                                      <p className={`pb-4 text-sm text-gray-500 border-b border-gray-200 ${shouldBlur('compoundProfile.developmentStrategy', 'Targeting second-line treatment after first-generation EGFR TKI failure') ? 'blur-sm opacity-50' : ''}`}>
+                      {getAnalysisData('compoundProfile.developmentStrategy', 'Targeting second-line treatment after first-generation EGFR TKI failure')}
+                    </p>
                 </div>
                 <div>
                   <p className="mb-2 text-sm font-bold text-gray-600">Regulatory Plan</p>
                   <div className="flex mb-2 space-x-2">
-                    <span className="px-2 py-1 text-xs text-gray-700 bg-transparent border border-gray-300 rounded-full">Breakthrough Designation</span>
-                    <span className="px-2 py-1 text-xs text-gray-700 bg-transparent border border-gray-300 rounded-full">Orphan Drug Status</span>
+                    <span className={`px-2 py-1 text-xs text-gray-700 bg-transparent border border-gray-300 rounded-full ${shouldBlur('contentSections.breakthroughDesignationLabel', 'Breakthrough Designation') ? 'blur-sm opacity-50' : ''}`}>
+                      {getAnalysisData('contentSections.breakthroughDesignationLabel', 'Breakthrough Designation')}
+                    </span>
+                    <span className={`px-2 py-1 text-xs text-gray-700 bg-transparent border border-gray-300 rounded-full ${shouldBlur('contentSections.orphanDrugStatusLabel', 'Orphan Drug Status') ? 'blur-sm opacity-50' : ''}`}>
+                      {getAnalysisData('contentSections.orphanDrugStatusLabel', 'Orphan Drug Status')}
+                    </span>
                   </div>
-                  <p className="text-sm text-gray-600">Fast-track pathway with potential for accelerated approval based on ORR endpoint</p>
+                  <p className={`text-sm text-gray-600 ${shouldBlur('contentSections.fastTrackPathwayDescription', 'Fast-track pathway with potential for accelerated approval based on ORR endpoint') ? 'blur-sm opacity-50' : ''}`}>
+                    {getAnalysisData('contentSections.fastTrackPathwayDescription', 'Fast-track pathway with potential for accelerated approval based on ORR endpoint')}
+                  </p>
                 </div>
                 <div>
                   <p className="mb-2 text-sm font-bold text-gray-600">Timeline to Market</p>
-                  <p className="text-lg font-bold text-blue-600">3.5 years</p>
+                  <p className={`text-lg font-bold text-blue-600 ${shouldBlur('contentSections.timelineToMarket', '3.5 years') ? 'blur-sm opacity-50' : ''}`}>
+                    {getAnalysisData('contentSections.timelineToMarket', '3.5 years')}
+                  </p>
                 </div>
               </div>
             </div>
@@ -488,189 +722,76 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
         {/* Content based on active sub-tab */}
         {activeSubTab === 'direct-competitors' && (
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            {/* Osimertinib Card */}
-            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">Osimertinib</h3>
-                  <p className="text-sm text-gray-600">AstraZeneca</p>
+            {analysisData?.competitiveLandscape?.directCompetitors?.map((competitor, index) => (
+              <div key={index} className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <h3 className={`text-xl font-bold text-gray-900 ${shouldBlur(`competitiveLandscape.directCompetitors.${index}.name`, 'Competitor Name') ? 'blur-sm opacity-50' : ''}`}>
+                      {competitor.name || 'Competitor Name'}
+                    </h3>
+                    <p className={`text-sm text-gray-600 ${shouldBlur(`competitiveLandscape.directCompetitors.${index}.company`, 'Company Name') ? 'blur-sm opacity-50' : ''}`}>
+                      {competitor.company || 'Company Name'}
+                    </p>
+                  </div>
+                  <span className={`px-3 py-1 text-xs font-medium rounded-full ${shouldBlur(`competitiveLandscape.directCompetitors.${index}.status`, 'Status') ? 'blur-sm opacity-50' : ''} ${
+                    (competitor.status || '').toLowerCase().includes('approved') 
+                      ? 'text-white bg-black' 
+                      : (competitor.status || '').toLowerCase().includes('development') 
+                        ? 'text-black border border-black bg-transparent'
+                        : (competitor.status || '').toLowerCase().includes('regional') 
+                          ? 'text-black bg-gray-200'
+                          : 'text-black border border-black bg-transparent'
+                  }`}>
+                    {competitor.status || 'Status'}
+                  </span>
                 </div>
-                <span className="px-3 py-1 text-xs font-medium text-white bg-black rounded-full">Approved</span>
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="space-y-3">
+                    <div>
+                      <span className="text-sm text-gray-600">MoA:</span>
+                      <div className={`text-sm font-medium text-gray-900 ${shouldBlur(`competitiveLandscape.directCompetitors.${index}.mechanismOfAction`, 'Mechanism') ? 'blur-sm opacity-50' : ''}`}>
+                        {competitor.mechanismOfAction || 'Mechanism'}
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-600">Market Value:</span>
+                      <div className={`text-sm font-bold text-green-600 ${shouldBlur(`competitiveLandscape.directCompetitors.${index}.marketValue`, 'Market Value') ? 'blur-sm opacity-50' : ''}`}>
+                        {competitor.marketValue || 'Market Value'}
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-600">Latest Milestone:</span>
+                      <div className={`text-sm font-medium text-gray-900 ${shouldBlur(`competitiveLandscape.directCompetitors.${index}.latestMilestone`, 'Milestone') ? 'blur-sm opacity-50' : ''}`}>
+                        {competitor.latestMilestone || 'Milestone'}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div>
+                      <span className="text-sm text-gray-600">Target:</span>
+                      <div className={`text-sm font-medium text-gray-900 ${shouldBlur(`competitiveLandscape.directCompetitors.${index}.target`, 'Target') ? 'blur-sm opacity-50' : ''}`}>
+                        {competitor.target || 'Target'}
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-600">Patients:</span>
+                      <div className={`text-sm font-medium text-gray-900 ${shouldBlur(`competitiveLandscape.directCompetitors.${index}.patients`, 'Patients') ? 'blur-sm opacity-50' : ''}`}>
+                        {competitor.patients || 'Patients'}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => {
+                    setSelectedDrug(competitor.name || 'Competitor')
+                    setShowModal(true)
+                  }}
+                  className="w-full px-4 py-2 text-sm text-black transition-colors duration-200 bg-transparent border border-gray-200 rounded-md hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
+                >
+                  View Detailed Analysis
+                </button>
               </div>
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="space-y-3">
-                  <div>
-                    <span className="text-sm text-gray-600">MoA:</span>
-                    <div className="text-sm font-medium text-gray-900">3rd-gen EGFR TKI</div>
-                  </div>
-                  <div>
-                    <span className="text-sm text-gray-600">Market Value:</span>
-                    <div className="text-sm font-bold text-green-600">$5.4B</div>
-                  </div>
-                  <div>
-                    <span className="text-sm text-gray-600">Latest Milestone:</span>
-                    <div className="text-sm font-medium text-gray-900">Approved 2015</div>
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <div>
-                    <span className="text-sm text-gray-600">Target:</span>
-                    <div className="text-sm font-medium text-gray-900">EGFR T790M</div>
-                  </div>
-                  <div>
-                    <span className="text-sm text-gray-600">Patients:</span>
-                    <div className="text-sm font-medium text-gray-900">45K</div>
-                  </div>
-                </div>
-              </div>
-              <button 
-                onClick={() => {
-                  setSelectedDrug('Osimertinib')
-                  setShowModal(true)
-                }}
-                className="w-full px-4 py-2 text-sm text-black transition-colors duration-200 bg-transparent border border-gray-200 rounded-md hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
-              >
-                View Detailed Analysis
-              </button>
-            </div>
-
-            {/* Lazertinib Card */}
-            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">Lazertinib</h3>
-                  <p className="text-sm text-gray-600">Yuhan/Janssen</p>
-                </div>
-                <span className="px-3 py-1 text-xs font-medium text-black border border-black rounded-full">Development</span>
-              </div>
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="space-y-3">
-                  <div>
-                    <span className="text-sm text-gray-600">MoA:</span>
-                    <div className="text-sm font-medium text-gray-900">3rd-gen EGFR TKI</div>
-                  </div>
-                  <div>
-                    <span className="text-sm text-gray-600">Market Value:</span>
-                    <div className="text-sm font-bold text-green-600">$1.2B</div>
-                  </div>
-                  <div>
-                    <span className="text-sm text-gray-600">Latest Milestone:</span>
-                    <div className="text-sm font-medium text-gray-900">Phase III</div>
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <div>
-                    <span className="text-sm text-gray-600">Target:</span>
-                    <div className="text-sm font-medium text-gray-900">EGFR T790M</div>
-                  </div>
-                  <div>
-                    <span className="text-sm text-gray-600">Patients:</span>
-                    <div className="text-sm font-medium text-gray-900">12K</div>
-                  </div>
-                </div>
-              </div>
-              <button 
-                onClick={() => {
-                  setSelectedDrug('Lazertinib')
-                  setShowModal(true)
-                }}
-                className="w-full px-4 py-2 text-sm text-black transition-colors duration-200 bg-transparent border border-gray-200 rounded-md hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
-              >
-                View Detailed Analysis
-              </button>
-            </div>
-
-            {/* Furmonertinib Card */}
-            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">Furmonertinib</h3>
-                  <p className="text-sm text-gray-600">Allist Pharma</p>
-                </div>
-                <span className="px-3 py-1 text-xs font-medium text-black bg-gray-200 rounded-full">Regional</span>
-              </div>
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="space-y-3">
-                  <div>
-                    <span className="text-sm text-gray-600">MoA:</span>
-                    <div className="text-sm font-medium text-gray-900">3rd-gen EGFR TKI</div>
-                  </div>
-                  <div>
-                    <span className="text-sm text-gray-600">Market Value:</span>
-                    <div className="text-sm font-bold text-green-600">$800M</div>
-                  </div>
-                  <div>
-                    <span className="text-sm text-gray-600">Latest Milestone:</span>
-                    <div className="text-sm font-medium text-gray-900">Approved China</div>
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <div>
-                    <span className="text-sm text-gray-600">Target:</span>
-                    <div className="text-sm font-medium text-gray-900">EGFR T790M</div>
-                  </div>
-                  <div>
-                    <span className="text-sm text-gray-600">Patients:</span>
-                    <div className="text-sm font-medium text-gray-900">8K</div>
-                  </div>
-                </div>
-              </div>
-              <button 
-                onClick={() => {
-                  setSelectedDrug('Furmonertinib')
-                  setShowModal(true)
-                }}
-                className="w-full px-4 py-2 text-sm text-black transition-colors duration-200 bg-transparent border border-gray-200 rounded-md hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
-              >
-                View Detailed Analysis
-              </button>
-            </div>
-
-            {/* Nazartinib Card */}
-            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">Nazartinib</h3>
-                  <p className="text-sm text-gray-600">Novartis</p>
-                </div>
-                <span className="px-3 py-1 text-xs font-medium text-black border border-black rounded-full">Development</span>
-              </div>
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="space-y-3">
-                  <div>
-                    <span className="text-sm text-gray-600">MoA:</span>
-                    <div className="text-sm font-medium text-gray-900">Pan-HER TKI</div>
-                  </div>
-                  <div>
-                    <span className="text-sm text-gray-600">Market Value:</span>
-                    <div className="text-sm font-bold text-green-600">TBD</div>
-                  </div>
-                  <div>
-                    <span className="text-sm text-gray-600">Latest Milestone:</span>
-                    <div className="text-sm font-medium text-gray-900">Phase II</div>
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <div>
-                    <span className="text-sm text-gray-600">Target:</span>
-                    <div className="text-sm font-medium text-gray-900">EGFR/HER2</div>
-                  </div>
-                  <div>
-                    <span className="text-sm text-gray-600">Patients:</span>
-                    <div className="text-sm font-medium text-gray-900">TBD</div>
-                  </div>
-                </div>
-              </div>
-              <button 
-                onClick={() => {
-                  setSelectedDrug('Nazartinib')
-                  setShowModal(true)
-                }}
-                className="w-full px-4 py-2 text-sm text-black transition-colors duration-200 bg-transparent border border-gray-200 rounded-md hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
-              >
-                View Detailed Analysis
-              </button>
-            </div>
+            ))}
           </div>
         )}
 
@@ -980,9 +1101,10 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 <h2 className="text-xl font-bold text-gray-900">{selectedDrug} - Competitive Intelligence</h2>
               </div>
               <p className="text-sm text-gray-600">
-                Comprehensive analysis of {selectedDrug === 'Osimertinib' ? 'AstraZeneca' : 
-                selectedDrug === 'Lazertinib' ? 'Yuhan/Janssen' : 
-                selectedDrug === 'Furmonertinib' ? 'Allist Pharma' : 'Novartis'}'s {selectedDrug}.
+                Comprehensive analysis of {(() => {
+                  const competitor = analysisData?.competitiveLandscape?.directCompetitors?.find(c => c.name === selectedDrug);
+                  return competitor?.company || 'Company';
+                })()}'s {selectedDrug}.
               </p>
             </div>
             <button 
@@ -1055,26 +1177,29 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                   <div>
                     <span className="text-sm text-gray-600">Market Value:</span>
                     <div className="text-sm font-bold text-green-600">
-                      {selectedDrug === 'Osimertinib' ? '$5.4B' : 
-                       selectedDrug === 'Lazertinib' ? '$1.2B' : 
-                       selectedDrug === 'Furmonertinib' ? '$800M' : 'TBD'}
+                      {(() => {
+                        const competitor = analysisData?.competitiveLandscape?.directCompetitors?.find(c => c.name === selectedDrug);
+                        return competitor?.marketValue || 'TBD';
+                      })()}
                     </div>
                   </div>
                   <div>
                     <span className="text-sm text-gray-600">Patient Base:</span>
                     <div className="text-sm font-medium text-gray-900">
-                      {selectedDrug === 'Osimertinib' ? '45K' : 
-                       selectedDrug === 'Lazertinib' ? '12K' : 
-                       selectedDrug === 'Furmonertinib' ? '8K' : 'TBD'}
+                      {(() => {
+                        const competitor = analysisData?.competitiveLandscape?.directCompetitors?.find(c => c.name === selectedDrug);
+                        return competitor?.patients || 'TBD';
+                      })()}
                     </div>
                   </div>
                   <div>
                     <span className="text-sm text-gray-600">Status:</span>
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium text-gray-900">
-                        {selectedDrug === 'Osimertinib' ? 'approved' : 
-                         selectedDrug === 'Lazertinib' ? 'development' : 
-                         selectedDrug === 'Furmonertinib' ? 'approved' : 'development'}
+                        {(() => {
+                          const competitor = analysisData?.competitiveLandscape?.directCompetitors?.find(c => c.name === selectedDrug);
+                          return competitor?.status || 'development';
+                        })()}
                       </span>
                       {selectedDrug === 'Lazertinib' && (
                         <span className="px-2 py-1 text-xs text-gray-700 bg-gray-100 rounded-full">development</span>
@@ -1091,13 +1216,19 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                   <div>
                     <span className="text-sm text-gray-600">MoA:</span>
                     <div className="text-sm font-medium text-gray-900">
-                      {selectedDrug === 'Nazartinib' ? 'Pan-HER TKI' : '3rd-gen EGFR TKI'}
+                      {(() => {
+                        const competitor = analysisData?.competitiveLandscape?.directCompetitors?.find(c => c.name === selectedDrug);
+                        return competitor?.mechanismOfAction || 'Mechanism of Action';
+                      })()}
                     </div>
                   </div>
                   <div>
                     <span className="text-sm text-gray-600">Target:</span>
                     <div className="text-sm font-medium text-gray-900">
-                      {selectedDrug === 'Nazartinib' ? 'EGFR/HER2' : 'EGFR T790M'}
+                      {(() => {
+                        const competitor = analysisData?.competitiveLandscape?.directCompetitors?.find(c => c.name === selectedDrug);
+                        return competitor?.target || 'Target';
+                      })()}
                     </div>
                   </div>
                 </div>
@@ -1110,34 +1241,40 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
             {/* Data Sources */}
             <div>
               <h3 className="mb-4 text-lg font-semibold text-gray-900">Data Sources</h3>
-              <div className="flex space-x-4">
-                <button 
-                  onClick={() => window.open('https://www.biocentury.com/', '_blank')}
-                  className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
-                >
-                  <span>BioCentury Intelligence</span>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </button>
-                <button 
-                  onClick={() => window.open('https://www.janssen.com/', '_blank')}
-                  className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
-                >
-                  <span>Janssen Press Release</span>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </button>
-                <button 
-                  onClick={() => window.open('https://clinicaltrials.gov/', '_blank')}
-                  className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
-                >
-                  <span>ClinicalTrials.gov</span>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </button>
+              <div className="flex flex-wrap gap-4">
+                {analysisData?.contentSections?.sources?.slice(0, 3).map((source, index) => (
+                  <button 
+                    key={index}
+                    onClick={() => window.open(source.url, '_blank')}
+                    className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
+                  >
+                    <span>{source.title}</span>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </button>
+                )) || (
+                  <>
+                    <button 
+                      onClick={() => window.open('https://www.biocentury.com/', '_blank')}
+                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
+                    >
+                      <span>BioCentury Intelligence</span>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </button>
+                    <button 
+                      onClick={() => window.open('https://clinicaltrials.gov/', '_blank')}
+                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
+                    >
+                      <span>ClinicalTrials.gov</span>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </button>
+                  </>
+                )}
               </div>
             </div>
               </div>
@@ -1155,31 +1292,43 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                     <div className="space-y-3">
                       <div>
                         <span className="text-sm text-gray-600">Phase:</span>
-                        <div className="text-sm font-medium text-gray-900">Phase III (FLAURA)</div>
+                        <div className="text-sm font-medium text-gray-900">
+                          Phase III (FLAURA)
+                        </div>
                       </div>
                       <div>
                         <span className="text-sm text-gray-600">Enrollment:</span>
-                        <div className="text-sm font-medium text-gray-900">556 patients</div>
+                        <div className="text-sm font-medium text-gray-900">
+                          556 patients
+                        </div>
                       </div>
                       <div>
                         <span className="text-sm text-gray-600">Primary Endpoint:</span>
-                        <div className="text-sm font-medium text-gray-900">Progression-free survival</div>
+                        <div className="text-sm font-medium text-gray-900">
+                          Progression-free survival
+                        </div>
                       </div>
                       <div>
                         <span className="text-sm text-gray-600">Trial ID:</span>
-                        <div className="text-sm font-medium text-gray-900">NCT02296125</div>
+                        <div className="text-sm font-medium text-gray-900">
+                          NCT02296125
+                        </div>
                       </div>
                     </div>
                     <div className="space-y-3">
                       <div>
                         <span className="text-sm text-gray-600">Status:</span>
                         <div className="flex items-center gap-2">
-                          <span className="px-2 py-1 text-xs text-gray-700 bg-gray-100 rounded-full">Completed</span>
+                          <span className="px-2 py-1 text-xs text-gray-700 bg-gray-100 rounded-full">
+                            Completed
+                          </span>
                         </div>
                       </div>
                       <div>
                         <span className="text-sm text-gray-600">Est. Completion:</span>
-                        <div className="text-sm font-medium text-gray-900">Completed 2017</div>
+                        <div className="text-sm font-medium text-gray-900">
+                          Completed 2017
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1191,50 +1340,40 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 {/* Data Sources */}
                 <div>
                   <h3 className="mb-4 text-lg font-semibold text-gray-900">Data Sources</h3>
-                  <div className="flex space-x-4">
-                    <button 
-                      onClick={() => window.open('https://www.clarivate.com/cortellis/', '_blank')}
-                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
-                      </svg>
-                      <span>Clarivate Cortellis</span>
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                    </button>
-                    <button 
-                      onClick={() => window.open('https://clinicaltrials.gov/', '_blank')}
-                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                      <span>ClinicalTrials.gov</span>
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                    </button>
-                    <button 
-                      onClick={() => {
-                        const company = selectedDrug === 'Osimertinib' ? 'astrazeneca' : 
-                                       selectedDrug === 'Lazertinib' ? 'janssen' : 
-                                       selectedDrug === 'Furmonertinib' ? 'allist' : 'novartis';
-                        window.open(`https://www.sec.gov/edgar/search/index.php?company=${company}`, '_blank');
-                      }}
-                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                      <span>{selectedDrug === 'Osimertinib' ? 'AstraZeneca 10-K' : 
-                             selectedDrug === 'Lazertinib' ? 'Yuhan/Janssen 10-K' : 
-                             selectedDrug === 'Furmonertinib' ? 'Allist Pharma 10-K' : 'Novartis 10-K'}</span>
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                    </button>
+                  <div className="flex flex-wrap gap-4">
+                    {analysisData?.contentSections?.sources?.slice(0, 3).map((source, index) => (
+                      <button 
+                        key={index}
+                        onClick={() => window.open(source.url, '_blank')}
+                        className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
+                      >
+                        <span>{source.title}</span>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </button>
+                    )) || (
+                      <>
+                        <button 
+                          onClick={() => window.open('https://www.biocentury.com/', '_blank')}
+                          className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
+                        >
+                          <span>BioCentury Intelligence</span>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </button>
+                        <button 
+                          onClick={() => window.open('https://clinicaltrials.gov/', '_blank')}
+                          className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
+                        >
+                          <span>ClinicalTrials.gov</span>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -1278,41 +1417,40 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 {/* Data Sources */}
                 <div>
                   <h3 className="mb-4 text-lg font-semibold text-gray-900">Data Sources</h3>
-                  <div className="flex space-x-4">
-                    <button 
-                      onClick={() => window.open('https://www.clarivate.com/cortellis/', '_blank')}
-                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
-                    >
-                      <span>Clarivate Cortellis</span>
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                    </button>
-                    <button 
-                      onClick={() => window.open('https://clinicaltrials.gov/', '_blank')}
-                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
-                    >
-                      <span>ClinicalTrials.gov</span>
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                    </button>
-                    <button 
-                      onClick={() => {
-                        const company = selectedDrug === 'Osimertinib' ? 'astrazeneca' : 
-                                       selectedDrug === 'Lazertinib' ? 'janssen' : 
-                                       selectedDrug === 'Furmonertinib' ? 'allist' : 'novartis';
-                        window.open(`https://www.sec.gov/edgar/search/index.php?company=${company}`, '_blank');
-                      }}
-                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
-                    >
-                      <span>{selectedDrug === 'Osimertinib' ? 'AstraZeneca 10-K' : 
-                             selectedDrug === 'Lazertinib' ? 'Yuhan/Janssen 10-K' : 
-                             selectedDrug === 'Furmonertinib' ? 'Allist Pharma 10-K' : 'Novartis 10-K'}</span>
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                    </button>
+                  <div className="flex flex-wrap gap-4">
+                    {analysisData?.contentSections?.sources?.slice(0, 3).map((source, index) => (
+                      <button 
+                        key={index}
+                        onClick={() => window.open(source.url, '_blank')}
+                        className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
+                      >
+                        <span>{source.title}</span>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </button>
+                    )) || (
+                      <>
+                        <button 
+                          onClick={() => window.open('https://www.biocentury.com/', '_blank')}
+                          className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
+                        >
+                          <span>BioCentury Intelligence</span>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </button>
+                        <button 
+                          onClick={() => window.open('https://clinicaltrials.gov/', '_blank')}
+                          className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
+                        >
+                          <span>ClinicalTrials.gov</span>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -1360,41 +1498,40 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 {/* Data Sources */}
                 <div>
                   <h3 className="mb-4 text-lg font-semibold text-gray-900">Data Sources</h3>
-                  <div className="flex space-x-4">
-                    <button 
-                      onClick={() => window.open('https://www.clarivate.com/cortellis/', '_blank')}
-                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
-                    >
-                      <span>Clarivate Cortellis</span>
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                    </button>
-                    <button 
-                      onClick={() => window.open('https://clinicaltrials.gov/', '_blank')}
-                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
-                    >
-                      <span>ClinicalTrials.gov</span>
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                    </button>
-                    <button 
-                      onClick={() => {
-                        const company = selectedDrug === 'Osimertinib' ? 'astrazeneca' : 
-                                       selectedDrug === 'Lazertinib' ? 'janssen' : 
-                                       selectedDrug === 'Furmonertinib' ? 'allist' : 'novartis';
-                        window.open(`https://www.sec.gov/edgar/search/index.php?company=${company}`, '_blank');
-                      }}
-                      className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
-                    >
-                      <span>{selectedDrug === 'Osimertinib' ? 'AstraZeneca 10-K' : 
-                             selectedDrug === 'Lazertinib' ? 'Yuhan/Janssen 10-K' : 
-                             selectedDrug === 'Furmonertinib' ? 'Allist Pharma 10-K' : 'Novartis 10-K'}</span>
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                    </button>
+                  <div className="flex flex-wrap gap-4">
+                    {analysisData?.contentSections?.sources?.slice(0, 3).map((source, index) => (
+                      <button 
+                        key={index}
+                        onClick={() => window.open(source.url, '_blank')}
+                        className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
+                      >
+                        <span>{source.title}</span>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </button>
+                    )) || (
+                      <>
+                        <button 
+                          onClick={() => window.open('https://www.biocentury.com/', '_blank')}
+                          className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
+                        >
+                          <span>BioCentury Intelligence</span>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </button>
+                        <button 
+                          onClick={() => window.open('https://clinicaltrials.gov/', '_blank')}
+                          className="flex items-center px-6 py-3 space-x-2 text-sm transition-colors duration-200 bg-transparent border border-black hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 rounded-2xl"
+                        >
+                          <span>ClinicalTrials.gov</span>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -1628,8 +1765,12 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
           {/* Left Panel: Market Growth Projection */}
           <div className="bg-white rounded-lg shadow-sm">
             <div className="flex flex-col space-y-1.5 p-6">
-              <div className="text-2xl font-semibold leading-none tracking-tight">Market Growth Projection</div>
-              <div className="text-sm text-muted-foreground">Market size and penetration trends 2024-2030</div>
+                              <div className={`text-2xl font-semibold leading-none tracking-tight ${shouldBlur('contentSections.marketGrowthChartTitle', 'Market Growth Projection') ? 'blur-sm opacity-50' : ''}`}>
+                  {getAnalysisData('contentSections.marketGrowthChartTitle', 'Market Growth Projection')}
+                </div>
+                              <div className={`text-sm text-muted-foreground ${shouldBlur('contentSections.marketGrowthSubtitle', 'Market size and penetration trends 2024-2030') ? 'blur-sm opacity-50' : ''}`}>
+                  {getAnalysisData('contentSections.marketGrowthSubtitle', 'Market size and penetration trends 2024-2030')}
+                </div>
             </div>
             <div className="p-6 pt-0">
               <div 
@@ -1653,15 +1794,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
                 </style>
                 <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                   <ComposedChart
-                    data={[
-                      { year: '2024', marketSize: 1500, penetration: 12 },
-                      { year: '2025', marketSize: 1700, penetration: 15 },
-                      { year: '2026', marketSize: 2000, penetration: 18 },
-                      { year: '2027', marketSize: 2200, penetration: 21 },
-                      { year: '2028', marketSize: 2350, penetration: 24 },
-                      { year: '2029', marketSize: 2700, penetration: 27 },
-                      { year: '2030', marketSize: 2850, penetration: 27 }
-                    ]}
+                    data={getMarketGrowthData()}
                     margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                   >
                     <CartesianGrid 
@@ -3685,7 +3818,9 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
               </div>
             </div>
             <div className="text-sm font-medium text-gray-900">Total 10-Year Revenue</div>
-            <div className="text-xs text-gray-500">2024-2033</div>
+                          <div className={`text-xs text-gray-500 ${shouldBlur('contentSections.revenueForecastSubtitle', '2024-2033') ? 'blur-sm opacity-50' : ''}`}>
+                {getAnalysisData('contentSections.revenueForecastSubtitle', '2024-2033')}
+              </div>
           </div>
 
           {/* Card 3: Peak Market Share */}
@@ -3794,7 +3929,9 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
           {/* Revenue Forecasting Chart */}
           <div className="p-6 mt-8 bg-white border border-gray-200 rounded-lg shadow-sm col-span-full">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">Revenue Forecasting (2024-2033)</h3>
+              <h3 className={`text-lg font-semibold text-gray-900 ${shouldBlur('contentSections.revenueChartTitle', 'Revenue Forecasting (2024-2033)') ? 'blur-sm opacity-50' : ''}`}>
+                {getAnalysisData('contentSections.revenueChartTitle', 'Revenue Forecasting (2024-2033)')}
+              </h3>
               <button 
                 onClick={() => setShowSourcesModal(true)}
                 className="flex items-center px-3 py-2 space-x-2 text-sm font-medium text-gray-700 bg-transparent border border-black rounded-md hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
@@ -3807,18 +3944,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
             
             <div className="h-[400px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={[
-                  { year: '2024', usRevenue: 0, exUsRevenue: 0, marketShare: 0, grossToNet: 0 },
-                  { year: '2025', usRevenue: 0, exUsRevenue: 0, marketShare: 0, grossToNet: 0 },
-                  { year: '2026', usRevenue: 0, exUsRevenue: 0, marketShare: 0, grossToNet: 0 },
-                  { year: '2027', usRevenue: 500, exUsRevenue: 100, marketShare: 5, grossToNet: 20 },
-                  { year: '2028', usRevenue: 1800, exUsRevenue: 600, marketShare: 10, grossToNet: 30 },
-                  { year: '2029', usRevenue: 2700, exUsRevenue: 1200, marketShare: 15, grossToNet: 35 },
-                  { year: '2030', usRevenue: 2900, exUsRevenue: 1500, marketShare: 17, grossToNet: 38 },
-                  { year: '2031', usRevenue: 2700, exUsRevenue: 1400, marketShare: 16, grossToNet: 39 },
-                  { year: '2032', usRevenue: 2500, exUsRevenue: 1200, marketShare: 16, grossToNet: 40 },
-                  { year: '2033', usRevenue: 1800, exUsRevenue: 900, marketShare: 14, grossToNet: 40 }
-                ]}>
+                <ComposedChart data={getRevenueForecastData()}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
                   <XAxis 
                     dataKey="year" 
@@ -3887,14 +4013,7 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
               
               <div className="h-[300px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <ComposedChart data={[
-                    { year: '2030', revenue: 4500, loeImpact: 0 },
-                    { year: '2031', revenue: 4100, loeImpact: 200 },
-                    { year: '2032', revenue: 3700, loeImpact: 500 },
-                    { year: '2033', revenue: 3200, loeImpact: 800 },
-                    { year: '2034', revenue: 2500, loeImpact: 1200 },
-                    { year: '2035', revenue: 2000, loeImpact: 1500 }
-                  ]}>
+                  <ComposedChart data={getLOEImpactData()}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
                     <XAxis 
                       dataKey="year" 
@@ -4100,23 +4219,33 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
           {/* Five Categories */}
           <div className="grid grid-cols-5 gap-4 pt-6 border-t border-gray-200">
             <div className="text-center">
-              <div className="mb-1 text-lg font-bold text-green-600">18/25</div>
+              <div className={`mb-1 text-lg font-bold text-green-600 ${shouldBlur('strategicFit.fdaDesignations', '18') ? 'blur-sm opacity-50' : ''}`}>
+                {Math.round((parseInt(getAnalysisData('strategicFit.fdaDesignations', '18')) / 25) * 100)}%
+              </div>
               <div className="text-xs text-gray-600">FDA Designations</div>
             </div>
             <div className="text-center">
-              <div className="mb-1 text-lg font-bold text-green-600">15/20</div>
+              <div className={`mb-1 text-lg font-bold text-green-600 ${shouldBlur('strategicFit.guidanceDocuments', '15') ? 'blur-sm opacity-50' : ''}`}>
+                {Math.round((parseInt(getAnalysisData('strategicFit.guidanceDocuments', '15')) / 20) * 100)}%
+              </div>
               <div className="text-xs text-gray-600">Guidance Documents</div>
             </div>
             <div className="text-center">
-              <div className="mb-1 text-lg font-bold text-green-600">12/20</div>
+              <div className={`mb-1 text-lg font-bold text-green-600 ${shouldBlur('strategicFit.policyIncentives', '12') ? 'blur-sm opacity-50' : ''}`}>
+                {Math.round((parseInt(getAnalysisData('strategicFit.policyIncentives', '12')) / 20) * 100)}%
+              </div>
               <div className="text-xs text-gray-600">Policy Incentives</div>
             </div>
             <div className="text-center">
-              <div className="mb-1 text-lg font-bold text-green-600">14/15</div>
+              <div className={`mb-1 text-lg font-bold text-green-600 ${shouldBlur('strategicFit.advocacyActivity', '14') ? 'blur-sm opacity-50' : ''}`}>
+                {Math.round((parseInt(getAnalysisData('strategicFit.advocacyActivity', '14')) / 15) * 100)}%
+              </div>
               <div className="text-xs text-gray-600">Advocacy Activity</div>
             </div>
             <div className="text-center">
-              <div className="mb-1 text-lg font-bold text-green-600">8/20</div>
+              <div className={`mb-1 text-lg font-bold text-green-600 ${shouldBlur('strategicFit.marketPrecedent', '8') ? 'blur-sm opacity-50' : ''}`}>
+                {Math.round((parseInt(getAnalysisData('strategicFit.marketPrecedent', '8')) / 20) * 100)}%
+              </div>
               <div className="text-xs text-gray-600">Market Precedent</div>
             </div>
           </div>
@@ -4128,16 +4257,24 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
           <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-lg font-semibold text-gray-900">FDA Designations</h4>
-              <div className="text-lg font-bold text-blue-600">18/25</div>
+              <div className={`text-lg font-bold text-blue-600 ${shouldBlur('strategicFit.fdaDesignations', '18') ? 'blur-sm opacity-50' : ''}`}>
+                {Math.round((parseInt(getAnalysisData('strategicFit.fdaDesignations', '18')) / 25) * 100)}%
+              </div>
             </div>
-            <div className="w-full h-2 mb-6 bg-gray-200 rounded-full">
-              <div className="h-2 bg-black rounded-full" style={{ width: '72%' }}></div>
+            <div className="w-full h-2 mb-4 bg-gray-200 rounded-full">
+              <div className={`h-2 bg-black rounded-full transition-all duration-300 ${shouldBlur('strategicFit.fdaDesignations', '18') ? 'blur-sm opacity-50' : ''}`} 
+                   style={{ width: `${Math.round((parseInt(getAnalysisData('strategicFit.fdaDesignations', '18')) / 25) * 100)}%` }}></div>
             </div>
+            <p className={`text-xs text-gray-600 mb-4 ${shouldBlur('contentSections.fdaCardDescription', 'An overview of FDA designations, including Breakthrough Therapy and Orphan Drug statuses.') ? 'blur-sm opacity-50' : ''}`}>
+              {getAnalysisData('contentSections.fdaCardDescription', 'An overview of FDA designations, including Breakthrough Therapy and Orphan Drug statuses.')}
+            </p>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-700">Breakthrough Therapy</span>
                 <div className="flex items-center space-x-2">
-                  <span className="px-2 py-1 text-xs font-medium text-white bg-black rounded-full">High</span>
+                  <span className={`px-2 py-1 text-xs font-medium text-white bg-black rounded-full ${shouldBlur('contentSections.breakthroughTherapyStatus', 'High') ? 'blur-sm opacity-50' : ''}`}>
+                    {getAnalysisData('contentSections.breakthroughTherapyStatus', 'High')}
+                  </span>
                   <div className="w-4 h-4 text-gray-400">
                     <svg fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
@@ -4149,7 +4286,9 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-700">Fast Track</span>
                 <div className="flex items-center space-x-2">
-                  <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full">Medium</span>
+                  <span className={`px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full ${shouldBlur('contentSections.fastTrackStatus', 'Medium') ? 'blur-sm opacity-50' : ''}`}>
+                    {getAnalysisData('contentSections.fastTrackStatus', 'Medium')}
+                  </span>
                   <div className="w-4 h-4 text-gray-400">
                     <svg fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
@@ -4161,7 +4300,9 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-700">Orphan Drug</span>
                 <div className="flex items-center space-x-2">
-                  <span className="px-2 py-1 text-xs font-medium text-white bg-black rounded-full">High</span>
+                  <span className={`px-2 py-1 text-xs font-medium text-white bg-black rounded-full ${shouldBlur('contentSections.orphanDrugStatus', 'High') ? 'blur-sm opacity-50' : ''}`}>
+                    {getAnalysisData('contentSections.orphanDrugStatus', 'High')}
+                  </span>
                   <div className="w-4 h-4 text-gray-400">
                     <svg fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
@@ -4173,7 +4314,9 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-700">Priority Review</span>
                 <div className="flex items-center space-x-2">
-                  <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full">Medium</span>
+                  <span className={`px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 rounded-full ${shouldBlur('contentSections.priorityReviewStatus', 'Medium') ? 'blur-sm opacity-50' : ''}`}>
+                    {getAnalysisData('contentSections.priorityReviewStatus', 'Medium')}
+                  </span>
                   <div className="w-4 h-4 text-gray-400">
                     <svg fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
@@ -4189,10 +4332,13 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
           <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-lg font-semibold text-gray-900">Guidance Documents</h4>
-              <div className="text-lg font-bold text-blue-600">15/20</div>
+              <div className={`text-lg font-bold text-blue-600 ${shouldBlur('strategicFit.guidanceDocuments', '15') ? 'blur-sm opacity-50' : ''}`}>
+                {getAnalysisData('strategicFit.guidanceDocuments', '15')}/20
+              </div>
             </div>
             <div className="w-full h-2 mb-6 bg-gray-200 rounded-full">
-              <div className="h-2 bg-black rounded-full" style={{ width: '75%' }}></div>
+              <div className={`h-2 bg-black rounded-full transition-all duration-300 ${shouldBlur('strategicFit.guidanceDocuments', '15') ? 'blur-sm opacity-50' : ''}`} 
+                   style={{ width: `${Math.round((parseInt(getAnalysisData('strategicFit.guidanceDocuments', '15')) / 20) * 100)}%` }}></div>
             </div>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
@@ -4250,10 +4396,13 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
           <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-lg font-semibold text-gray-900">Policy Incentives</h4>
-              <div className="text-lg font-bold text-blue-600">12/20</div>
+              <div className={`text-lg font-bold text-blue-600 ${shouldBlur('strategicFit.policyIncentives', '12') ? 'blur-sm opacity-50' : ''}`}>
+                {getAnalysisData('strategicFit.policyIncentives', '12')}/20
+              </div>
             </div>
             <div className="w-full h-2 mb-6 bg-gray-200 rounded-full">
-              <div className="h-2 bg-black rounded-full" style={{ width: '60%' }}></div>
+              <div className={`h-2 bg-black rounded-full transition-all duration-300 ${shouldBlur('strategicFit.policyIncentives', '12') ? 'blur-sm opacity-50' : ''}`} 
+                   style={{ width: `${Math.round((parseInt(getAnalysisData('strategicFit.policyIncentives', '12')) / 20) * 100)}%` }}></div>
             </div>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
@@ -4311,10 +4460,13 @@ const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, s
           <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-lg font-semibold text-gray-900">Advocacy Activity</h4>
-              <div className="text-lg font-bold text-blue-600">14/15</div>
+              <div className={`text-lg font-bold text-blue-600 ${shouldBlur('strategicFit.advocacyActivity', '14') ? 'blur-sm opacity-50' : ''}`}>
+                {getAnalysisData('strategicFit.advocacyActivity', '14')}/15
+              </div>
             </div>
             <div className="w-full h-2 mb-6 bg-gray-200 rounded-full">
-              <div className="h-2 bg-black rounded-full" style={{ width: '93%' }}></div>
+              <div className={`h-2 bg-black rounded-full transition-all duration-300 ${shouldBlur('strategicFit.advocacyActivity', '14') ? 'blur-sm opacity-50' : ''}`} 
+                   style={{ width: `${Math.round((parseInt(getAnalysisData('strategicFit.advocacyActivity', '14')) / 15) * 100)}%` }}></div>
             </div>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
@@ -4740,8 +4892,8 @@ function App() {
         setSubmitMessage(`Market analysis completed successfully! Analysis ID: ${result.data.id}`)
         
         // Store the analysis data for use in the results page
-        setAnalysisData(result.data)
-        localStorage.setItem('marketAnalysisData', JSON.stringify(result.data))
+        setAnalysisData(result.data.analysis)
+        localStorage.setItem('marketAnalysisData', JSON.stringify(result.data.analysis))
         
         // Reset form after successful submission
         setFormData({
@@ -4758,14 +4910,20 @@ function App() {
         })
         setSelectedIndications([])
         setSelectedRegions([])
+        
+        // Show results immediately after successful API response
+        setIsLoading(false)
+        setShowResults(true)
       } else {
         setSubmitStatus('error')
         setSubmitMessage(result.error || 'Failed to complete market analysis')
+        setIsLoading(false)
       }
     } catch (error) {
       console.error('Error submitting market analysis:', error)
       setSubmitStatus('error')
       setSubmitMessage('Network error. Please check your connection and try again.')
+      setIsLoading(false)
     } finally {
       setIsSubmitting(false)
     }
