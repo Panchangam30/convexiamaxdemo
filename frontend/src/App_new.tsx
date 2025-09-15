@@ -1,11 +1,18 @@
 import { useState, useEffect } from 'react'
+import { Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ComposedChart, Area } from 'recharts'
+import { LuPill } from "react-icons/lu";
+import { LuTarget } from "react-icons/lu";
 import { LuMicroscope } from "react-icons/lu";
+import { LuBeaker } from "react-icons/lu";
+import { LuGlobe } from "react-icons/lu";
+import { LuFileText } from "react-icons/lu";
+import { LuSparkles } from "react-icons/lu";
 import { LuDatabase } from "react-icons/lu";
 import { LuChartColumn } from "react-icons/lu";
 import { LuTrendingUp } from "react-icons/lu";
 import { LuZap } from "react-icons/lu";
 import { LuDollarSign } from "react-icons/lu";
-import { LuPill } from "react-icons/lu";
+import { LuShield } from "react-icons/lu";
 import Input from './Input';
 
 // Type definitions for analysis data
@@ -175,11 +182,115 @@ const LoadingPage = ({ progress }: { progress: number }) => (
   </div>
 );
 
-const ResultsPage = ({ activeTab, setActiveTab }: { 
+const ResultsPage = ({ showCompoundProfile, setShowCompoundProfile, activeTab, setActiveTab, showModal, setShowModal, selectedDrug, setSelectedDrug, modalTab, setModalTab, activeSubTab, setActiveSubTab, showPipelineModal, setShowPipelineModal, showSourcesModal, setShowSourcesModal, showCompetitiveLandscape, setShowCompetitiveLandscape, showMarketSizeModal, setShowMarketSizeModal, showPeakSalesModal, setShowPeakSalesModal, showCAGRModal, setShowCAGRModal, showMarketSourcesModal, setShowMarketSourcesModal, isMarketSizeExpanded, setIsMarketSizeExpanded, isFinancialProjectionsExpanded, setIsFinancialProjectionsExpanded, showPricingModal, setShowPricingModal, showPatentModal, setShowPatentModal, showMethodModal, setShowMethodModal, showIPStrategyModal, setShowIPStrategyModal, analysisData }: { 
+  showCompoundProfile: boolean, 
+  setShowCompoundProfile: (show: boolean) => void,
   activeTab: string,
-  setActiveTab: (tab: string) => void
+  setActiveTab: (tab: string) => void,
+  showModal: boolean,
+  setShowModal: (show: boolean) => void,
+  selectedDrug: string,
+  setSelectedDrug: (drug: string) => void,
+  modalTab: string,
+  setModalTab: (tab: string) => void,
+  activeSubTab: string,
+  setActiveSubTab: (tab: string) => void,
+  showPipelineModal: boolean,
+  setShowPipelineModal: (show: boolean) => void,
+  showSourcesModal: boolean,
+  setShowSourcesModal: (show: boolean) => void,
+  showCompetitiveLandscape: boolean,
+  setShowCompetitiveLandscape: (show: boolean) => void,
+  showMarketSizeModal: boolean,
+  setShowMarketSizeModal: (show: boolean) => void,
+  showPeakSalesModal: boolean,
+  setShowPeakSalesModal: (show: boolean) => void,
+  showCAGRModal: boolean,
+  setShowCAGRModal: (show: boolean) => void,
+  showMarketSourcesModal: boolean,
+  setShowMarketSourcesModal: (show: boolean) => void,
+  isMarketSizeExpanded: boolean,
+  setIsMarketSizeExpanded: (expanded: boolean) => void,
+  isFinancialProjectionsExpanded: boolean,
+  setIsFinancialProjectionsExpanded: (expanded: boolean) => void,
+  showPricingModal: boolean,
+  setShowPricingModal: (show: boolean) => void,
+  showPatentModal: boolean,
+  setShowPatentModal: (show: boolean) => void,
+  showMethodModal: boolean,
+  setShowMethodModal: (show: boolean) => void,
+  showIPStrategyModal: boolean,
+  setShowIPStrategyModal: (show: boolean) => void,
+  analysisData: MarketAnalysisData | null
 }) => {
+  // Helper function to safely get data from analysis
+  const getAnalysisData = (path: string, fallback: string = 'Data not available'): string => {
+    if (!analysisData) return fallback;
+    
+    const keys = path.split('.');
+    let value: any = analysisData;
+    
+    for (const key of keys) {
+      if (value && typeof value === 'object' && key in value) {
+        value = value[key];
+      } else {
+        return fallback;
+      }
+    }
+    
+    return typeof value === 'string' ? value : fallback;
+  };
 
+  // Helper function to check if content should be blurred
+  const shouldBlur = (path: string, fallback: string = 'Data not available'): boolean => {
+    const value = getAnalysisData(path, fallback);
+    return value === fallback || value === 'Data not available';
+  };
+
+  // Helper function to generate market growth chart data
+  const getMarketGrowthData = () => {
+    return [
+      { year: '2024', marketSize: 1200, penetration: 8 },
+      { year: '2025', marketSize: 1350, penetration: 12 },
+      { year: '2026', marketSize: 1520, penetration: 16 },
+      { year: '2027', marketSize: 1710, penetration: 20 },
+      { year: '2028', marketSize: 1920, penetration: 24 },
+      { year: '2029', marketSize: 2150, penetration: 26 },
+      { year: '2030', marketSize: 2400, penetration: 28 }
+    ];
+  };
+
+  // Helper function to generate revenue forecasting chart data
+  const getRevenueForecastData = () => {
+    return [
+      { year: '2024', usRevenue: 50, exUsRevenue: 20, marketShare: 5, grossToNet: 85 },
+      { year: '2025', usRevenue: 120, exUsRevenue: 80, marketShare: 8, grossToNet: 82 },
+      { year: '2026', usRevenue: 250, exUsRevenue: 180, marketShare: 12, grossToNet: 80 },
+      { year: '2027', usRevenue: 420, exUsRevenue: 320, marketShare: 16, grossToNet: 78 },
+      { year: '2028', usRevenue: 650, exUsRevenue: 520, marketShare: 20, grossToNet: 76 },
+      { year: '2029', usRevenue: 920, exUsRevenue: 780, marketShare: 24, grossToNet: 74 },
+      { year: '2030', usRevenue: 1250, exUsRevenue: 1100, marketShare: 28, grossToNet: 72 },
+      { year: '2031', usRevenue: 1200, exUsRevenue: 1050, marketShare: 26, grossToNet: 70 },
+      { year: '2032', usRevenue: 1100, exUsRevenue: 950, marketShare: 24, grossToNet: 68 },
+      { year: '2033', usRevenue: 1000, exUsRevenue: 850, marketShare: 22, grossToNet: 66 }
+    ];
+  };
+
+  // Helper function to generate LOE impact chart data
+  const getLOEImpactData = () => {
+    return [
+      { year: '2024', revenue: 70, erosion: 0 },
+      { year: '2025', revenue: 200, erosion: 0 },
+      { year: '2026', revenue: 430, erosion: 0 },
+      { year: '2027', revenue: 740, erosion: 0 },
+      { year: '2028', revenue: 1170, erosion: 0 },
+      { year: '2029', revenue: 1700, erosion: 0 },
+      { year: '2030', revenue: 2350, erosion: 0 },
+      { year: '2031', revenue: 2250, erosion: 100 },
+      { year: '2032', revenue: 2050, erosion: 200 },
+      { year: '2033', revenue: 1850, erosion: 300 }
+    ];
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -195,6 +306,7 @@ const ResultsPage = ({ activeTab, setActiveTab }: {
             </div>
             <div className="flex items-center space-x-4">
               <button 
+                onClick={() => setShowSourcesModal(true)}
                 className="flex items-center px-4 py-2 space-x-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
               >
                 <LuDatabase className="w-4 h-4" />
@@ -280,7 +392,25 @@ function App() {
   const [modalityOpen, setModalityOpen] = useState(false)
   const [phaseOpen, setPhaseOpen] = useState(false)
   const [routeOpen, setRouteOpen] = useState(false)
+  const [showModal, setShowModal] = useState(false)
+  const [selectedDrug, setSelectedDrug] = useState('')
+  const [modalTab, setModalTab] = useState('overview')
   const [activeTab, setActiveTab] = useState('compound-profile')
+  const [activeSubTab, setActiveSubTab] = useState('direct-competitors')
+  const [showPipelineModal, setShowPipelineModal] = useState(false)
+  const [showSourcesModal, setShowSourcesModal] = useState(false)
+  const [showCompetitiveLandscape, setShowCompetitiveLandscape] = useState(true)
+  const [showMarketSizeModal, setShowMarketSizeModal] = useState(false)
+  const [showPeakSalesModal, setShowPeakSalesModal] = useState(false)
+  const [showCAGRModal, setShowCAGRModal] = useState(false)
+  const [showMarketSourcesModal, setShowMarketSourcesModal] = useState(false)
+  const [isMarketSizeExpanded, setIsMarketSizeExpanded] = useState(true)
+  const [isFinancialProjectionsExpanded, setIsFinancialProjectionsExpanded] = useState(true)
+  const [showPricingModal, setShowPricingModal] = useState(false)
+  const [showPatentModal, setShowPatentModal] = useState(false)
+  const [showMethodModal, setShowMethodModal] = useState(false)
+  const [showIPStrategyModal, setShowIPStrategyModal] = useState(false)
+  const [analysisData, setAnalysisData] = useState<MarketAnalysisData | null>(null)
 
   // Animate progress when loading
   useEffect(() => {
@@ -428,6 +558,7 @@ function App() {
       }
       
       // Store the mock analysis data
+      setAnalysisData(mockAnalysisData)
       localStorage.setItem('marketAnalysisData', JSON.stringify(mockAnalysisData))
       
       // Reset form after successful submission
@@ -460,8 +591,45 @@ function App() {
 
   if (showResults) {
     return <ResultsPage 
+      showCompoundProfile={showCompoundProfile}
+      setShowCompoundProfile={setShowCompoundProfile}
       activeTab={activeTab}
       setActiveTab={setActiveTab}
+      showModal={showModal}
+      setShowModal={setShowModal}
+      selectedDrug={selectedDrug}
+      setSelectedDrug={setSelectedDrug}
+      modalTab={modalTab}
+      setModalTab={setModalTab}
+      activeSubTab={activeSubTab}
+      setActiveSubTab={setActiveSubTab}
+      showPipelineModal={showPipelineModal}
+      setShowPipelineModal={setShowPipelineModal}
+      showSourcesModal={showSourcesModal}
+      setShowSourcesModal={setShowSourcesModal}
+      showCompetitiveLandscape={showCompetitiveLandscape}
+      setShowCompetitiveLandscape={setShowCompetitiveLandscape}
+      showMarketSizeModal={showMarketSizeModal}
+      setShowMarketSizeModal={setShowMarketSizeModal}
+      showPeakSalesModal={showPeakSalesModal}
+      setShowPeakSalesModal={setShowPeakSalesModal}
+      showCAGRModal={showCAGRModal}
+      setShowCAGRModal={setShowCAGRModal}
+      showMarketSourcesModal={showMarketSourcesModal}
+      setShowMarketSourcesModal={setShowMarketSourcesModal}
+      isMarketSizeExpanded={isMarketSizeExpanded}
+      setIsMarketSizeExpanded={setIsMarketSizeExpanded}
+      isFinancialProjectionsExpanded={isFinancialProjectionsExpanded}
+      setIsFinancialProjectionsExpanded={setIsFinancialProjectionsExpanded}
+      showPricingModal={showPricingModal}
+      setShowPricingModal={setShowPricingModal}
+      showPatentModal={showPatentModal}
+      setShowPatentModal={setShowPatentModal}
+      showMethodModal={showMethodModal}
+      setShowMethodModal={setShowMethodModal}
+      showIPStrategyModal={showIPStrategyModal}
+      setShowIPStrategyModal={setShowIPStrategyModal}
+      analysisData={analysisData}
     />
   }
 

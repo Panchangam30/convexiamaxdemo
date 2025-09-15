@@ -196,13 +196,16 @@ app.use('*', (req, res) => {
   });
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Market Analysis Agent API running on port ${PORT}`);
-  console.log(`📡 Health check: http://localhost:${PORT}/health`);
-  console.log(`🌐 API base: http://localhost:${PORT}/api`);
-  
-  if (!process.env.OPENAI_API_KEY) {
-    console.warn('⚠️  Warning: OPENAI_API_KEY not set. GPT functionality will not work.');
-  }
-}); 
+// Start server - TEMPORARILY DISABLED
+// app.listen(PORT, () => {
+//   console.log(`🚀 Market Analysis Agent API running on port ${PORT}`);
+//   console.log(`📡 Health check: http://localhost:${PORT}/health`);
+//   console.log(`🌐 API base: http://localhost:${PORT}/api`);
+//   
+//   if (!process.env.OPENAI_API_KEY) {
+//     console.warn('⚠️  Warning: OPENAI_API_KEY not set. GPT functionality will not work.');
+//   }
+// });
+
+console.log('🚫 Backend temporarily disabled for maintenance');
+console.log('📝 To re-enable, uncomment the app.listen section in backend/src/index.ts'); 

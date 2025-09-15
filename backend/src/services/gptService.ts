@@ -300,8 +300,8 @@ export class GPTService {
         "preclinicalFindings": {
           "ic50Mutant": "REAL IC50 value for ${request.moleculeName} (provide nM value like '5nM' for small molecules, 'Not applicable' for antibodies)",
           "ic50WildType": "REAL IC50 value for ${request.moleculeName} (provide nM value like '50nM' for small molecules, 'Not applicable' for antibodies)",
-          "tumorInhibition": "REAL tumor inhibition percentage for ${request.moleculeName} (provide ONLY the number, e.g., '87' for 87%)",
-          "survivalImprovement": "REAL survival improvement percentage for ${request.moleculeName} (provide ONLY the number, e.g., '65' for 65%)"
+          "tumorInhibition": "REAL tumor inhibition value for ${request.moleculeName} (provide ONLY a reasonable number between 50-90, no percentages or symbols, e.g., '72')",
+          "survivalImprovement": "REAL survival improvement value for ${request.moleculeName} (provide ONLY a reasonable number between 40-80, no percentages or symbols, e.g., '58')"
         },
         "clinicalData": {
           "phase1Results": "REAL Phase 1 results for ${request.moleculeName} (keep it short)",
